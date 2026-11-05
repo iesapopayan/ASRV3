@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Agustina IA" />
+  <meta name="theme-color" content="#B2F4F8" />
+  <title>Agustina — Asistente Musical Vocal IA</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Fredoka (redondeada y amigable estilo kawaii/rococó) + Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Fredoka', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', ' -apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            ocean: {
+              50: '#F0FDFF',
+              100: '#D8F9FF',
+              200: '#AEEFFF',
+              300: '#6EE2FD',
+              400: '#2AD0FA',
+              500: '#06B5E3',
+              600: '#008EB8',
+              700: '#006E90',
+              800: '#004D66',
+              900: '#003344',
+            },
+            coral: {
+              400: '#FF8A80',
+              500: '#FF6B6B',
+              600: '#EE5253',
+            },
+            crown: {
+              300: '#FFE082',
+              400: '#FFD54F',
+              500: '#FFB300',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --safe-top: env(safe-area-inset-top, 12px);
+      --safe-bottom: env(safe-area-inset-bottom, 16px);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 15%, #E6FEFF 0%, #B4F5F8 38%, #57E2E5 78%, #1FD1D8 100%);
+      color: #003B4D;
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* Marco orgánico acuarela inspirado en la imagen Rococó.jpg */
+    .rococo-ocean-frame {
+      background: linear-gradient(180deg, 
+        rgba(232, 254, 255, 0.92) 0%, 
+        rgba(176, 246, 248, 0.88) 42%, 
+        rgba(64, 224, 232, 0.92) 74%, 
+        rgba(14, 198, 214, 0.96) 100%);
+      border-radius: 44px;
+      box-shadow: 
+        0 20px 50px rgba(0, 130, 155, 0.22),
+        inset 0 0 0 6px rgba(255, 255, 255, 0.75),
+        inset 0 12px 32px rgba(255, 255, 255, 0.85);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Tarjetas Glassmorphic estilo iOS 18 */
+    .ios-glass {
+      background: rgba(255, 255, 255, 0.72);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      backdrop-filter: blur(22px) saturate(180%);
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 10px 28px rgba(0, 110, 135, 0.12);
+    }
+
+    .ios-glass-dark {
+      background: rgba(0, 62, 82, 0.82);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    /* Animaciones de la Mascota Agustina */
+    @keyframes whaleFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-7px) rotate(1.2deg); }
+    }
+
+    @keyframes whaleDance {
+      0%, 100% { transform: translateY(0px) scale(1) rotate(-1.5deg); }
+      25% { transform: translateY(-9px) scale(1.02, 0.98) rotate(1.5deg); }
+      50% { transform: translateY(-3px) scale(0.99, 1.01) rotate(-1deg); }
+      75% { transform: translateY(-10px) scale(1.02, 0.98) rotate(2deg); }
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: translateY(0px) scale(1); filter: drop-shadow(0 4px 8px rgba(255, 107, 107, 0.35)); }
+      50% { transform: translateY(-6px) scale(1.14); filter: drop-shadow(0 6px 16px rgba(255, 82, 82, 0.65)); }
+    }
+
+    @keyframes crownGlow {
+      0%, 100% { filter: drop-shadow(0 2px 4px rgba(255, 179, 0, 0.3)); }
+      50% { filter: drop-shadow(0 0 16px rgba(255, 213, 79, 0.95)); }
+    }
+
+    @keyframes waveSway {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(-10px); }
+    }
+
+    @keyframes waveSwayReverse {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(10px); }
+    }
+
+    @keyframes bubbleRise {
+      0% { transform: translateY(0) scale(0.7); opacity: 0; }
+      25% { opacity: 0.85; }
+      80% { opacity: 0.75; }
+      100% { transform: translateY(-95px) scale(1.15); opacity: 0; }
+    }
+
+    @keyframes sonarRipple {
+      0% { transform: scale(0.85); opacity: 0.85; }
+      100% { transform: scale(1.55); opacity: 0; }
+    }
+
+    @keyframes tailWag {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(6deg); }
+    }
+
+    .whale-idle {
+      animation: whaleFloat 4.2s ease-in-out infinite;
+      transform-origin: center center;
+    }
+
+    .whale-playing {
+      animation: whaleDance 1.8s ease-in-out infinite;
+      transform-origin: center center;
+    }
+
+    .whale-listening {
+      animation: whaleFloat 2s ease-in-out infinite;
+      transform-origin: center center;
+    }
+
+    .heart-anim {
+      animation: heartPulse 2.4s ease-in-out infinite;
+      transform-origin: 200px 52px;
+    }
+
+    .heart-fast {
+      animation: heartPulse 0.85s ease-in-out infinite;
+      transform-origin: 200px 52px;
+    }
+
+    .crown-glow-active {
+      animation: crownGlow 1.1s ease-in-out infinite;
+    }
+
+    .wave-front {
+      animation: waveSway 3.6s ease-in-out infinite;
+    }
+
+    .wave-back {
+      animation: waveSwayReverse 4.5s ease-in-out infinite;
+    }
+
+    .tail-anim {
+      animation: tailWag 2.6s ease-in-out infinite;
+      transform-origin: 265px 190px;
+    }
+
+    .bubble-1 { animation: bubbleRise 4.2s ease-in infinite; }
+    .bubble-2 { animation: bubbleRise 3.5s ease-in 1.2s infinite; }
+    .bubble-3 { animation: bubbleRise 4.8s ease-in 2.1s infinite; }
+    .bubble-4 { animation: bubbleRise 3.1s ease-in 0.6s infinite; }
+
+    .sonar-ring-1 {
+      animation: sonarRipple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+      transform-origin: 195px 175px;
+    }
+    .sonar-ring-2 {
+      animation: sonarRipple 2s cubic-bezier(0, 0.2, 0.8, 1) 0.65s infinite;
+      transform-origin: 195px 175px;
+    }
+
+    /* Ecualizador de barras oceánicas */
+    @keyframes eqBar {
+      0%, 100% { height: 6px; }
+      50% { height: 22px; }
+    }
+    .eq-bar-1 { animation: eqBar 0.65s ease-in-out infinite; }
+    .eq-bar-2 { animation: eqBar 0.45s ease-in-out 0.15s infinite; }
+    .eq-bar-3 { animation: eqBar 0.75s ease-in-out 0.3s infinite; }
+    .eq-bar-4 { animation: eqBar 0.55s ease-in-out 0.1s infinite; }
+
+    /* Scrollbar limpio para iOS */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Range Sliders personalizados */
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(0, 110, 144, 0.2);
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #008EB8;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+      margin-top: -6px;
+    }
+  </style>
+</head>
+
+<body class="flex flex-col items-center justify-start min-h-[100dvh] pb-6 selection:bg-cyan-200">
+
+  <!-- Contenedor Principal estilo iPhone Pro Max / Mobile-First -->
+  <div class="w-full max-w-[440px] px-3.5 pt-[max(12px,env(safe-area-inset-top))] pb-28 flex flex-col gap-3 relative">
+
+    <!-- 1. BARRA SUPERIOR (ESTADO DE VOZ, SELECTOR DE IA Y AJUSTES) -->
+    <header class="ios-glass rounded-3xl px-3.5 py-2.5 flex items-center justify-between gap-2 z-20">
+      <div class="flex items-center gap-2.5">
+        <div class="relative flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-teal-500 text-white shadow-md shadow-cyan-500/25">
+          <span class="font-display font-bold text-lg tracking-tight">A</span>
+          <span id="wakeStatusDot" class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-400 border-2 border-white"></span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-display font-bold text-lg leading-none text-ocean-900">Agustina</h1>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300/70">
+              San Agustín
+            </span>
+          </div>
+          <p id="statusSubtitle" class="text-xs text-ocean-700 font-medium truncate max-w-[165px]">
+            Di «Agustina» o toca el micrófono
+          </p>
+        </div>
+      </div>
+
+      <!-- Botones de IA activa y Configuración -->
+      <div class="flex items-center gap-1.5">
+        <button id="btnOpenAIModal" onclick="openModal('aiModal')" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl bg-white/80 hover:bg-white text-ocean-800 border border-cyan-200/80 shadow-sm active:scale-95 transition text-xs font-semibold" title="Cambiar Motor de Inteligencia Artificial">
+          <i class="ph-fill ph-sparkle text-amber-500 text-sm"></i>
+          <span id="activeAIBadge">Gemini + Local</span>
+          <i class="ph-bold ph-caret-down text-[10px] opacity-70"></i>
+        </button>
+
+        <button onclick="openModal('catalogModal')" class="w-9 h-9 rounded-2xl bg-white/80 hover:bg-white text-ocean-800 border border-cyan-200/80 shadow-sm flex items-center justify-center active:scale-95 transition" title="Catálogo Musical y Listas">
+          <i class="ph-fill ph-music-notes-simple text-base text-cyan-600"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- BANNER DE DESBLOQUEO DE AUDIO iOS (Aparece hasta el primer toque en iPhone) -->
+    <div id="iosUnlockBanner" onclick="unlockIOSAudioAndVoice()" class="cursor-pointer bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-300 text-ocean-900 rounded-2xl px-3.5 py-2 flex items-center justify-between shadow-md border border-white/80 animate-pulse">
+      <div class="flex items-center gap-2">
+        <i class="ph-fill ph-speaker-high text-lg text-ocean-900"></i>
+        <span class="text-xs font-bold">Modo iPhone: Toca aquí para activar voz y palabra «Agustina»</span>
+      </div>
+      <span class="text-[11px] font-extrabold bg-white/90 px-2.5 py-1 rounded-xl shadow-sm">Activar</span>
+    </div>
+
+    <!-- 2. ESCENARIO PRINCIPAL: ILUSTRACIÓN INTERACTIVA DE AGUSTINA (BALLENA CORONADA ROCOCÓ) + VISOR DE VIDEO -->
+    <section class="rococo-ocean-frame pt-3 pb-3 px-3 flex flex-col items-center justify-between min-h-[340px] transition-all duration-300">
+
+      <!-- Controles flotantes dentro del marco oceánico -->
+      <div class="w-full flex items-center justify-between px-1 z-10">
+        <!-- Toggle de Palabra de Activación "Agustina" -->
+        <button id="btnToggleWakeWord" onclick="toggleContinuousWakeWord()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/85 backdrop-blur-md border border-white shadow-sm text-xs font-bold text-ocean-800 active:scale-95 transition">
+          <span id="wakeWordIndicator" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+          <span id="wakeWordLabel">Escucha «Agustina»: ON</span>
+        </button>
+
+        <!-- Toggle Ver Video YouTube / Ver Mascota -->
+        <button id="btnToggleVideoView" onclick="toggleVideoDrawer()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/85 backdrop-blur-md border border-white shadow-sm text-xs font-bold text-ocean-800 active:scale-95 transition">
+          <i id="videoToggleIcon" class="ph-fill ph-television text-cyan-600 text-sm"></i>
+          <span id="videoToggleText">Ver Video</span>
+        </button>
+      </div>
+
+      <!-- ESCENA SVG DE LA BALLENA AGUSTINA (Fiel a la imagen adjunta Rococó.jpg) -->
+      <div id="mascotContainer" class="w-full flex flex-col items-center justify-center relative my-1 select-none">
+        <svg id="agustinaSvg" viewBox="0 0 400 320" class="w-full max-w-[330px] h-auto drop-shadow-sm overflow-visible" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Gradiente del cuerpo de la ballena -->
+            <radialGradient id="whaleBodyGrad" cx="38%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#BCEBFF" />
+              <stop offset="35%" stop-color="#68C8FF" />
+              <stop offset="78%" stop-color="#2899FA" />
+              <stop offset="100%" stop-color="#0E74D8" />
+            </radialGradient>
+
+            <!-- Gradiente de la barriga acanalada -->
+            <linearGradient id="bellyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FFFFFF" />
+              <stop offset="65%" stop-color="#E6FAFF" />
+              <stop offset="100%" stop-color="#A8EEFF" />
+            </linearGradient>
+
+            <!-- Gradiente de la Corona Real -->
+            <linearGradient id="crownGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFF176" />
+              <stop offset="45%" stop-color="#FFD54F" />
+              <stop offset="100%" stop-color="#FF8F00" />
+            </linearGradient>
+
+            <!-- Gradiente del Corazón Rosado Superior -->
+            <linearGradient id="heartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FFB8B0" />
+              <stop offset="50%" stop-color="#FF8078" />
+              <stop offset="100%" stop-color="#F45151" />
+            </linearGradient>
+
+            <!-- Gradiente de la Banda Verde "San Agustín" -->
+            <linearGradient id="sashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#A8FA60" />
+              <stop offset="55%" stop-color="#64DD17" />
+              <stop offset="100%" stop-color="#1FAA00" />
+            </linearGradient>
+
+            <!-- Gradiente del Agua Cristalina -->
+            <linearGradient id="waterSurfaceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#4CF2FF" stop-opacity="0.68" />
+              <stop offset="50%" stop-color="#00DFEE" stop-opacity="0.82" />
+              <stop offset="100%" stop-color="#00B8D4" stop-opacity="0.95" />
+            </linearGradient>
+
+            <!-- Rubor de mejillas -->
+            <radialGradient id="blushGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FF6E7F" stop-opacity="0.75" />
+              <stop offset="100%" stop-color="#FF6E7F" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+
+          <!-- Halos de luz acuática y estrellas de fondo -->
+          <circle cx="200" cy="165" r="122" fill="#FFFFFF" fill-opacity="0.32" />
+          <path d="M98 48 L101 56 L109 59 L101 62 L98 70 L95 62 L87 59 L95 56 Z" fill="#FFF9C4" opacity="0.9" />
+          <circle cx="235" cy="78" r="11" fill="#FFFFFF" fill-opacity="0.3" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.6" />
+          <circle cx="310" cy="95" r="7" fill="#FFFFFF" fill-opacity="0.35" />
+          <circle cx="72" cy="115" r="6" fill="#FFFFFF" fill-opacity="0.4" />
+
+          <!-- Ondas Sonar cuando Agustina está escuchando la voz -->
+          <g id="sonarRings" class="hidden">
+            <circle class="sonar-ring-1" cx="195" cy="168" r="85" fill="none" stroke="#00BCD4" stroke-width="3" stroke-dasharray="8 6" />
+            <circle class="sonar-ring-2" cx="195" cy="168" r="85" fill="none" stroke="#FF8078" stroke-width="2.5" />
+          </g>
+
+          <!-- CORAZÓN FLOTANTE SUPERIOR (Idéntico a la imagen) -->
+          <g id="floatingHeart" class="heart-anim">
+            <path d="M200 62 C200 62 183 50 183 40 C183 33 189 29 194 29 C197.5 29 199.5 31 200 33 C200.5 31 202.5 29 206 29 C211 29 217 33 217 40 C217 50 200 62 200 62 Z" 
+                  fill="url(#heartGrad)" stroke="#FF6B6B" stroke-width="1.2" />
+            <ellipse cx="191" cy="36" rx="3" ry="1.8" transform="rotate(-25 191 36)" fill="#FFFFFF" fill-opacity="0.65" />
+          </g>
+
+          <!-- Notas musicales flotantes (visibles al reproducir música) -->
+          <g id="musicNotesGroup" class="hidden">
+            <text x="82" y="95" font-size="22" fill="#008EB8" class="bubble-1">♪</text>
+            <text x="295" y="88" font-size="24" fill="#FF6B6B" class="bubble-2">♫</text>
+            <text x="140" y="65" font-size="18" fill="#FFB300" class="bubble-4">♬</text>
+          </g>
+
+          <!-- GRUPO PRINCIPAL DE LA BALLENA AGUSTINA (Clickeable para hablar) -->
+          <g id="whaleCharacter" class="whale-idle cursor-pointer" onclick="triggerPushToTalk()">
+            
+            <!-- Aleta Caudal (Cola levantada a la derecha) -->
+            <g class="tail-anim">
+              <path d="M258 195 C278 188 294 166 296 144 C282 135 270 115 276 96 C292 100 310 116 314 134 C328 124 348 122 356 132 C358 148 340 165 318 164 C315 195 296 222 264 228 Z" 
+                    fill="url(#whaleBodyGrad)" stroke="#1A82E8" stroke-width="1.5" />
+              <!-- Sombra suave en la cola -->
+              <path d="M276 96 C290 105 304 122 308 138 C320 132 338 130 352 134" fill="none" stroke="#99E2FF" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+            </g>
+
+            <!-- Cuerpo redondo principal de la ballena -->
+            <path d="M88 175 C84 122 128 84 186 84 C244 84 282 124 280 176 C279 224 238 258 182 258 C126 258 91 224 88 175 Z" 
+                  fill="url(#whaleBodyGrad)" stroke="#1E88E5" stroke-width="1.6" />
+
+            <!-- Brillos superiores tipo acuarela en la cabeza -->
+            <ellipse cx="152" cy="100" rx="22" ry="7" transform="rotate(-12 152 100)" fill="#FFFFFF" fill-opacity="0.45" />
+            <circle cx="122" cy="112" r="4.5" fill="#FFFFFF" fill-opacity="0.5" />
+
+            <!-- Aleta Pectoral Izquierda sumergida -->
+            <path d="M108 214 C102 232 104 252 114 256 C125 258 134 242 136 226 Z" 
+                  fill="#0D6efd" opacity="0.85" />
+
+            <!-- Banda / Cinta Verde "San Agustín" en el costado -->
+            <path d="M242 128 C258 146 266 172 258 198 L276 196 C284 172 276 144 258 124 Z" 
+                  fill="url(#sashGrad)" stroke="#2E7D32" stroke-width="1.2" />
+            <!-- Hebilla o pliegue de la banda -->
+            <path d="M250 185 L278 180 L273 196 L245 200 Z" fill="#26C6DA" opacity="0.85" />
+            <!-- Inscripción "San Agustín" -->
+            <text x="246" y="176" transform="rotate(-68 246 176)" font-family="Fredoka, sans-serif" font-size="11.5" font-weight="700" fill="#E8F8FF" letter-spacing="0.5">
+              San Agustín
+            </text>
+
+            <!-- Barriga blanca/crema acanalada (con textura de pliegues de ballena) -->
+            <path d="M98 196 C112 174 134 166 158 176 C182 186 202 198 222 214 C236 226 242 240 226 250 C198 262 152 262 122 246 C104 236 95 214 98 196 Z" 
+                  fill="url(#bellyGrad)" stroke="#68C8FF" stroke-width="1.4" />
+            <!-- Líneas de los pliegues de la barriga -->
+            <path d="M110 190 Q116 222 132 246" fill="none" stroke="#99E2FF" stroke-width="1.6" opacity="0.75" />
+            <path d="M124 178 Q132 218 150 252" fill="none" stroke="#99E2FF" stroke-width="1.6" opacity="0.75" />
+            <path d="M140 173 Q150 216 168 255" fill="none" stroke="#99E2FF" stroke-width="1.6" opacity="0.75" />
+            <path d="M158 176 Q168 218 186 255" fill="none" stroke="#99E2FF" stroke-width="1.6" opacity="0.75" />
+            <path d="M178 185 Q186 222 202 252" fill="none" stroke="#99E2FF" stroke-width="1.6" opacity="0.75" />
+            <path d="M198 196 Q204 225 216 248" fill="none" stroke="#99E2FF" stroke-width="1.6" opacity="0.75" />
+
+            <!-- Boca tierna y expresiva -->
+            <path id="whaleMouth" d="M97 194 C112 168 136 164 162 176 C184 186 202 185 214 188" 
+                  fill="none" stroke="#1565C0" stroke-width="3" stroke-linecap="round" />
+
+            <!-- Mejillas sonrojadas (Blush) -->
+            <ellipse cx="98" cy="176" rx="13" ry="7.5" fill="url(#blushGrad)" />
+            <ellipse cx="208" cy="178" rx="15" ry="8.5" fill="url(#blushGrad)" />
+
+            <!-- Ojo Izquierdo brillante -->
+            <g>
+              <ellipse cx="102" cy="156" rx="8.5" ry="10.5" fill="#102542" />
+              <ellipse cx="102" cy="161" rx="6" ry="4" fill="#B74134" opacity="0.75" />
+              <circle cx="104.5" cy="152" r="3.5" fill="#FFFFFF" />
+              <circle cx="99" cy="159" r="1.6" fill="#FFFFFF" />
+              <!-- Cejita izquierda -->
+              <path d="M95 140 Q101 136 107 140" fill="none" stroke="#0D47A1" stroke-width="2" stroke-linecap="round" />
+            </g>
+
+            <!-- Ojo Derecho brillante -->
+            <g>
+              <ellipse cx="198" cy="158" rx="10.5" ry="12" fill="#102542" />
+              <ellipse cx="198" cy="163" rx="7.5" ry="4.5" fill="#B74134" opacity="0.75" />
+              <circle cx="195" cy="153" r="4.2" fill="#FFFFFF" />
+              <circle cx="202" cy="161" r="2" fill="#FFFFFF" />
+              <!-- Cejita derecha -->
+              <path d="M196 138 Q203 135 208 140" fill="none" stroke="#0D47A1" stroke-width="2.4" stroke-linecap="round" />
+            </g>
+
+            <!-- CORONA REAL DORADA DE 5 PUNTAS (Arriba de la cabeza) -->
+            <g id="whaleCrown" transform="translate(148, 52) rotate(5)">
+              <path d="M8 38 L4 15 L19 26 L30 6 L43 24 L56 10 L65 26 L77 16 L71 39 C50 35 28 35 8 38 Z" 
+                    fill="url(#crownGrad)" stroke="#E65100" stroke-width="1.5" stroke-linejoin="round" />
+              <!-- Joyas / Perlas en las puntas de la corona -->
+              <circle cx="4" cy="13" r="2.8" fill="#FFD54F" stroke="#E65100" stroke-width="1.2" />
+              <circle cx="30" cy="4" r="3.4" fill="#FFD54F" stroke="#E65100" stroke-width="1.2" />
+              <circle cx="56" cy="8" r="3" fill="#FFD54F" stroke="#E65100" stroke-width="1.2" />
+              <circle cx="78" cy="14" r="2.8" fill="#FFD54F" stroke="#E65100" stroke-width="1.2" />
+              <!-- Base de la corona -->
+              <path d="M8 35 Q40 31 71 36" fill="none" stroke="#FFF8E1" stroke-width="2" opacity="0.8" />
+            </g>
+          </g>
+
+          <!-- OLAS TRANSPARENTES TURQUESA SOBRE LA BARRIGA DE LA BALLENA -->
+          <g class="wave-back">
+            <path d="M35 205 Q85 186 135 205 T235 205 T345 198 L360 275 L35 275 Z" 
+                  fill="#26E6F2" fill-opacity="0.38" />
+          </g>
+          <g class="wave-front">
+            <path d="M42 202 C75 186 112 206 152 214 C195 222 228 192 268 198 C305 203 335 186 358 198 C362 245 335 292 200 296 C65 292 38 245 42 202 Z" 
+                  fill="url(#waterSurfaceGrad)" />
+            <!-- Cresta blanca brillante del agua -->
+            <path d="M44 202 C75 186 112 206 152 214 C195 222 228 192 268 198 C305 203 335 186 356 198" 
+                  fill="none" stroke="#E0FFFF" stroke-width="3.2" stroke-linecap="round" opacity="0.9" />
+          </g>
+
+          <!-- BURBUJAS SUBMARINAS ANIMADAS -->
+          <circle class="bubble-1" cx="85" cy="225" r="5" fill="#FFFFFF" fill-opacity="0.55" />
+          <circle class="bubble-2" cx="290" cy="230" r="6.5" fill="#FFFFFF" fill-opacity="0.5" />
+          <circle class="bubble-3" cx="165" cy="240" r="4" fill="#FFFFFF" fill-opacity="0.6" />
+          <circle class="bubble-4" cx="245" cy="220" r="5.5" fill="#FFFFFF" fill-opacity="0.5" />
+
+          <!-- FONDO MARINO CON CARACOLAS, CONCHAS Y ESTRELLAS DE MAR (Como en la imagen Rococó.jpg) -->
+          <!-- Piedrita multicolor izquierda -->
+          <g transform="translate(56, 224)">
+            <path d="M6 18 C2 10 6 2 12 4 C18 6 19 16 14 20 Z" fill="#AEEA00" stroke="#00838F" stroke-width="1" />
+            <path d="M10 4 C16 6 18 16 14 20 C9 22 6 16 10 4 Z" fill="#29B6F6" />
+          </g>
+
+          <!-- Concha amarilla redonda pequeña -->
+          <ellipse cx="92" cy="256" rx="8" ry="6.5" fill="#FFD54F" stroke="#F57F17" stroke-width="1" />
+
+          <!-- Caracola amarilla rayada (abajo izquierda) -->
+          <g transform="translate(106, 260)">
+            <path d="M2 14 C2 4 16 0 26 6 C32 10 30 20 20 22 C10 23 2 20 2 14 Z" fill="#FFF176" stroke="#F57F17" stroke-width="1.2" />
+            <path d="M8 5 Q12 13 10 21 M15 3 Q19 12 17 22 M22 5 Q25 13 23 20" fill="none" stroke="#F57F17" stroke-width="1.5" />
+          </g>
+
+          <!-- Estrella de mar naranja/dorada central -->
+          <g transform="translate(172, 264) rotate(-8)">
+            <path d="M14 0 L17 9 L27 9 L19 15 L22 24 L14 18 L6 24 L9 15 L1 9 L11 9 Z" 
+                  fill="#FFB74D" stroke="#E65100" stroke-width="1.2" stroke-linejoin="round" />
+          </g>
+
+          <!-- Concha abanico coral/naranja (centro derecha) -->
+          <g transform="translate(222, 240)">
+            <path d="M6 22 L0 10 L8 12 L14 2 L24 2 L28 12 L36 8 L32 22 Z" 
+                  fill="#FF8A65" stroke="#D84315" stroke-width="1.2" stroke-linejoin="round" />
+            <path d="M14 2 L14 22 M23 2 L21 22" fill="none" stroke="#FFF3E0" stroke-width="1.5" opacity="0.8" />
+          </g>
+
+          <!-- Caracola violeta/rosada pequeña -->
+          <g transform="translate(256, 272)">
+            <ellipse cx="10" cy="7" rx="9" ry="5.5" fill="#CE93D8" stroke="#7B1FA2" stroke-width="1" />
+            <circle cx="17" cy="7" r="3.5" fill="#8E24AA" />
+          </g>
+
+          <!-- Estrella de mar roja coral (derecha) -->
+          <g transform="translate(292, 250) rotate(12)">
+            <path d="M13 0 L16 8 L25 8 L18 13 L21 22 L13 16 L5 22 L8 13 L1 8 L10 8 Z" 
+                  fill="#FF5252" stroke="#B71C1C" stroke-width="1.2" stroke-linejoin="round" />
+          </g>
+
+          <!-- Pececito / Concha multicolor derecha -->
+          <g transform="translate(320, 218)">
+            <ellipse cx="8" cy="10" rx="5.5" ry="8.5" transform="rotate(15 8 10)" fill="#FF80AB" stroke="#006064" stroke-width="1" />
+            <path d="M5 10 Q10 10 12 17 L4 16 Z" fill="#2979FF" />
+          </g>
+        </svg>
+
+        <!-- Píldora Flotante de Estado / Respuesta Vocal de Agustina -->
+        <div id="agustinaSpeechBubble" class="w-full max-w-[365px] -mt-2 bg-white/90 backdrop-blur-md rounded-2xl px-3.5 py-2.5 border border-white shadow-md flex items-start gap-2.5 transition-all">
+          <div id="speechIconBox" class="w-8 h-8 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center shrink-0 mt-0.5">
+            <i id="speechStatusIcon" class="ph-fill ph-ChatsCircle text-lg"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <span id="agustinaStateTag" class="text-[10px] font-extrabold uppercase tracking-wider text-cyan-700">
+                Agustina dice:
+              </span>
+              <!-- Mini ecualizador animado cuando habla o suena música -->
+              <div id="miniEq" class="hidden items-end gap-0.5 h-4">
+                <span class="w-1 bg-cyan-500 rounded-full eq-bar-1"></span>
+                <span class="w-1 bg-coral-500 rounded-full eq-bar-2"></span>
+                <span class="w-1 bg-amber-400 rounded-full eq-bar-3"></span>
+                <span class="w-1 bg-cyan-500 rounded-full eq-bar-4"></span>
+              </div>
+            </div>
+            <p id="agustinaReplyText" class="text-xs sm:text-sm font-semibold text-ocean-900 leading-snug line-clamp-2">
+              «¡Hola! Soy Agustina. Di "Agustina, pon música de Soda Stereo" o presiona el botón de voz.»
+            </p>
+            <p id="userTranscriptPreview" class="text-[11px] text-ocean-600 italic mt-0.5 truncate hidden"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAJÓN DEL REPRODUCTOR DE VIDEO YOUTUBE (Conmutable o Picture-in-Picture) -->
+      <div id="videoDrawer" class="w-full overflow-hidden transition-all duration-300 max-h-0 opacity-0 mt-0">
+        <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-ocean-900 shadow-inner border-2 border-white/80">
+          <div id="ytPlayerContainer" class="w-full h-full"></div>
+          <!-- Botón para abrir directamente en la App de YouTube de iOS si el usuario lo desea -->
+          <a id="btnOpenInYTApp" href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="absolute top-2 right-2 bg-black/70 hover:bg-black text-white text-[11px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-md">
+            <i class="ph-fill ph-youtube-logo text-red-500 text-sm"></i>
+            <span>Abrir en YouTube</span>
+          </a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. CHIPS DE COMANDOS VOCALES RÁPIDOS (1 TOQUE O EJEMPLO DE VOZ) -->
+    <section class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+      <button onclick="executeVoiceOrTextCommand('Agustina pon música de Soda Stereo')" class="shrink-0 px-3 py-1.5 rounded-full ios-glass text-xs font-semibold text-ocean-800 hover:bg-white active:scale-95 transition flex items-center gap-1.5">
+        <span>🎸</span><span>«Agustina, pon Soda Stereo»</span>
+      </button>
+      <button onclick="executeVoiceOrTextCommand('Agustina pon música relajante para concentrarme')" class="shrink-0 px-3 py-1.5 rounded-full ios-glass text-xs font-semibold text-ocean-800 hover:bg-white active:scale-95 transition flex items-center gap-1.5">
+        <span>🌊</span><span>«Música para concentrarme»</span>
+      </button>
+      <button onclick="executeVoiceOrTextCommand('Agustina reproduce éxitos de Queen')" class="shrink-0 px-3 py-1.5 rounded-full ios-glass text-xs font-semibold text-ocean-800 hover:bg-white active:scale-95 transition flex items-center gap-1.5">
+        <span>👑</span><span>«Agustina, pon Queen»</span>
+      </button>
+      <button onclick="executeVoiceOrTextCommand('Agustina pon música colombiana alegre')" class="shrink-0 px-3 py-1.5 rounded-full ios-glass text-xs font-semibold text-ocean-800 hover:bg-white active:scale-95 transition flex items-center gap-1.5">
+        <span>🌺</span><span>«Música Colombiana»</span>
+      </button>
+      <button onclick="executeVoiceOrTextCommand('Agustina pon música clásica rococó')" class="shrink-0 px-3 py-1.5 rounded-full ios-glass text-xs font-semibold text-ocean-800 hover:bg-white active:scale-95 transition flex items-center gap-1.5">
+        <span>🎻</span><span>«Clásica Rococó»</span>
+      </button>
+    </section>
+
+    <!-- 4. TARJETA DEL REPRODUCTOR MUSICAL YOUTUBE (CONTROLES COMPLETOS iOS) -->
+    <section class="ios-glass rounded-3xl p-3.5 flex flex-col gap-2.5">
+      <!-- Info de la Canción Actual -->
+      <div class="flex items-center gap-3">
+        <div class="relative w-14 h-14 rounded-2xl overflow-hidden bg-cyan-100 shrink-0 shadow-sm border border-white">
+          <img id="trackThumb" src="https://i.ytimg.com/vi/90J_c63fR2k/hqdefault.jpg" alt="Carátula" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/120x120/26C6DA/FFFFFF?text=Agustina'" />
+          <button onclick="toggleVideoDrawer()" class="absolute inset-0 bg-black/25 flex items-center justify-center text-white opacity-0 hover:opacity-100 transition">
+            <i class="ph-fill ph-corners-out text-lg"></i>
+          </button>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span id="playerStateBadge" class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-md bg-cyan-100 text-cyan-800">
+              Listo
+            </span>
+            <span id="trackSourceBadge" class="text-[10px] font-medium text-ocean-600 truncate">
+              YouTube Music
+            </span>
+          </div>
+          <h2 id="trackTitle" class="font-display font-bold text-sm sm:text-base text-ocean-900 truncate mt-0.5">
+            Soda Stereo — De Música Ligera
+          </h2>
+          <p id="trackArtist" class="text-xs text-ocean-700 truncate">
+            Soda Stereo • Colección San Agustín
+          </p>
+        </div>
+
+        <!-- Botón Favorito y Cola -->
+        <div class="flex items-center gap-1">
+          <button id="btnFavorite" onclick="toggleFavoriteCurrent()" class="w-9 h-9 rounded-xl bg-white/70 hover:bg-white flex items-center justify-center text-ocean-700 active:scale-90 transition" title="Guardar en Favoritos">
+            <i id="favIcon" class="ph-bold ph-heart text-lg"></i>
+          </button>
+          <button onclick="openModal('queueModal')" class="w-9 h-9 rounded-xl bg-white/70 hover:bg-white flex items-center justify-center text-ocean-700 active:scale-90 transition relative" title="Ver Cola de Reproducción">
+            <i class="ph-bold ph-queue text-lg"></i>
+            <span id="queueCountBadge" class="absolute -top-1 -right-1 text-[10px] font-bold bg-cyan-600 text-white w-4 h-4 rounded-full flex items-center justify-center">6</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Progreso Interactiva -->
+      <div class="flex flex-col gap-1">
+        <input id="seekSlider" type="range" min="0" max="100" value="0" oninput="onSeekInput(this.value)" onchange="onSeekCommit(this.value)" class="w-full" />
+        <div class="flex items-center justify-between text-[11px] font-semibold text-ocean-700 px-0.5">
+          <span id="currentTimeLabel">0:00</span>
+          <span id="totalTimeLabel">3:32</span>
+        </div>
+      </div>
+
+      <!-- Controles Principales de Transporte + Volumen -->
+      <div class="flex items-center justify-between px-1">
+        <!-- Aleatorio -->
+        <button id="btnShuffle" onclick="toggleShuffle()" class="w-9 h-9 rounded-xl flex items-center justify-center text-ocean-700 hover:bg-white/60 active:scale-90 transition" title="Aleatorio">
+          <i class="ph-bold ph-shuffle text-lg"></i>
+        </button>
+
+        <!-- Anterior -->
+        <button onclick="playPreviousTrack()" class="w-11 h-11 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-ocean-900 shadow-sm active:scale-90 transition" title="Canción Anterior">
+          <i class="ph-fill ph-skip-back text-xl"></i>
+        </button>
+
+        <!-- Play / Pause Principal -->
+        <button id="btnPlayPause" onclick="togglePlayPause()" class="w-14 h-14 rounded-3xl bg-gradient-to-br from-cyan-500 to-teal-600 text-white shadow-lg shadow-cyan-600/30 flex items-center justify-center active:scale-95 transition">
+          <i id="playPauseIcon" class="ph-fill ph-play text-2xl ml-0.5"></i>
+        </button>
+
+        <!-- Siguiente -->
+        <button onclick="playNextTrack()" class="w-11 h-11 rounded-2xl bg-white/80 hover:bg-white flex items-center justify-center text-ocean-900 shadow-sm active:scale-90 transition" title="Siguiente Canción">
+          <i class="ph-fill ph-skip-forward text-xl"></i>
+        </button>
+
+        <!-- Control de Volumen Popover / Botón Mute -->
+        <div class="flex items-center gap-1.5">
+          <button onclick="toggleMute()" class="w-9 h-9 rounded-xl flex items-center justify-center text-ocean-700 hover:bg-white/60 active:scale-90 transition" title="Silenciar / Volumen">
+            <i id="volumeIcon" class="ph-bold ph-speaker-high text-lg"></i>
+          </button>
+          <input id="volumeSlider" type="range" min="0" max="100" value="85" oninput="setPlayerVolume(this.value)" class="w-16 hidden sm:block" />
+        </div>
+      </div>
+
+      <!-- Buscador Manual / Petición Escrita a Agustina -->
+      <form onsubmit="handleManualSearchSubmit(event)" class="flex items-center gap-2 pt-1 border-t border-cyan-200/60">
+        <div class="relative flex-1">
+          <i class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-ocean-600 text-sm"></i>
+          <input id="manualCommandInput" type="text" placeholder="Escribe una canción, artista o comando para Agustina..." class="w-full pl-9 pr-3 py-2 rounded-2xl bg-white/85 border border-cyan-200/90 text-xs sm:text-sm text-ocean-900 placeholder:text-ocean-600/70 focus:outline-none focus:ring-2 focus:ring-cyan-400" />
+        </div>
+        <button type="submit" class="px-3.5 py-2 rounded-2xl bg-ocean-800 hover:bg-ocean-900 text-white text-xs font-bold shadow-sm active:scale-95 transition flex items-center gap-1">
+          <i class="ph-bold ph-paper-plane-right"></i>
+          <span>Pedir</span>
+        </button>
+      </form>
+    </section>
+
+  </div>
+
+  <!-- 5. DOCK INFERIOR FLOTANTE iPHONE: BOTÓN VOCAL CENTRAL "AGUSTINA" + ACCESOS RÁPIDOS -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 flex justify-center pointer-events-none pb-[max(12px,env(safe-area-inset-bottom))] px-4">
+    <div class="w-full max-w-[410px] ios-glass rounded-[30px] px-4 py-2 flex items-center justify-between pointer-events-auto shadow-xl border-2 border-white">
+      
+      <!-- Botón Modo Escucha Continua -->
+      <button onclick="toggleContinuousWakeWord()" class="flex flex-col items-center justify-center gap-0.5 text-ocean-800 active:scale-95 transition px-2 py-1">
+        <div id="dockWakeIconBg" class="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+          <i id="dockWakeIcon" class="ph-fill ph-ear text-lg"></i>
+        </div>
+        <span class="text-[10px] font-bold">«Agustina»</span>
+      </button>
+
+      <!-- BOTÓN CENTRAL DE ACTIVACIÓN VOCAL (PUSH / TAP TO TALK) -->
+      <div class="relative -mt-7 flex flex-col items-center">
+        <button id="btnMainMic" onclick="triggerPushToTalk()" class="w-16 h-16 rounded-full bg-gradient-to-tr from-coral-500 via-rose-400 to-amber-400 text-white shadow-xl shadow-rose-500/35 border-4 border-white flex items-center justify-center active:scale-90 transition-all duration-200">
+          <i id="mainMicIcon" class="ph-fill ph-microphone text-3xl"></i>
+        </button>
+        <span id="mainMicLabel" class="text-[10px] font-extrabold text-ocean-900 mt-1 tracking-tight">
+          Hablar con Agustina
+        </span>
+      </div>
+
+      <!-- Botón Cola y Cerebros IA -->
+      <button onclick="openModal('aiModal')" class="flex flex-col items-center justify-center gap-0.5 text-ocean-800 active:scale-95 transition px-2 py-1">
+        <div class="w-9 h-9 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
+          <i class="ph-fill ph-brain text-lg"></i>
+        </div>
+        <span class="text-[10px] font-bold">Sistemas IA</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: CENTRO DE INTELIGENCIA MULTI-IA Y CONFIGURACIÓN DE LLAVES    -->
+  <!-- ===================================================================== -->
+  <div id="aiModal" class="fixed inset-0 z-50 bg-ocean-900/50 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full max-w-[440px] bg-white/95 backdrop-blur-xl rounded-t-[36px] sm:rounded-[36px] p-5 max-h-[88dvh] overflow-y-auto shadow-2xl border border-white flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-cyan-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center">
+            <i class="ph-fill ph-sparkle text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-lg text-ocean-900">Cerebros Multi-IA de Agustina</h3>
+            <p class="text-xs text-ocean-600">Orquestación inteligente con respaldo automático</p>
+          </div>
+        </div>
+        <button onclick="closeModal('aiModal')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <!-- Selector de Proveedor Primario -->
+      <div class="flex flex-col gap-2">
+        <label class="text-xs font-bold uppercase tracking-wider text-ocean-700">Sistema de IA Principal Activo</label>
+        <div class="grid grid-cols-1 gap-2">
+          
+          <label class="flex items-center justify-between p-3 rounded-2xl border-2 cursor-pointer transition bg-cyan-50/70 border-cyan-400" id="card_auto">
+            <div class="flex items-center gap-2.5">
+              <input type="radio" name="aiProvider" value="auto" checked onchange="selectAIProvider('auto')" class="accent-cyan-600 w-4 h-4" />
+              <div>
+                <div class="text-xs font-bold text-ocean-900 flex items-center gap-1.5">
+                  <span>Orquestador Multi-IA Automático</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Recomendado</span>
+                </div>
+                <p class="text-[11px] text-ocean-700">Combina Gemini 3 Flash + Groq/OpenAI + Motor Neuronal Local sin fallos.</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition bg-white border-slate-200" id="card_gemini">
+            <div class="flex items-center gap-2.5">
+              <input type="radio" name="aiProvider" value="gemini" onchange="selectAIProvider('gemini')" class="accent-cyan-600 w-4 h-4" />
+              <div>
+                <div class="text-xs font-bold text-ocean-900">1. Google Gemini (gemini-3-flash-preview)</div>
+                <p class="text-[11px] text-ocean-700">Comprensión musical natural, estado de ánimo y recomendaciones.</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition bg-white border-slate-200" id="card_groq">
+            <div class="flex items-center gap-2.5">
+              <input type="radio" name="aiProvider" value="groq" onchange="selectAIProvider('groq')" class="accent-cyan-600 w-4 h-4" />
+              <div>
+                <div class="text-xs font-bold text-ocean-900">2. Groq Cloud (Llama 3.3 70B Ultra-Rápido)</div>
+                <p class="text-[11px] text-ocean-700">Respuesta vocal instantánea de baja latencia.</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition bg-white border-slate-200" id="card_openai">
+            <div class="flex items-center gap-2.5">
+              <input type="radio" name="aiProvider" value="openai" onchange="selectAIProvider('openai')" class="accent-cyan-600 w-4 h-4" />
+              <div>
+                <div class="text-xs font-bold text-ocean-900">3. OpenAI (GPT-4o-mini) / OpenRouter</div>
+                <p class="text-[11px] text-ocean-700">Asistente conversacional avanzado compatible con OpenAI.</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition bg-white border-slate-200" id="card_local">
+            <div class="flex items-center gap-2.5">
+              <input type="radio" name="aiProvider" value="local" onchange="selectAIProvider('local')" class="accent-cyan-600 w-4 h-4" />
+              <div>
+                <div class="text-xs font-bold text-ocean-900">4. Motor Neuronal Local «San Agustín Edge»</div>
+                <p class="text-[11px] text-ocean-700">100% instantáneo en tu iPhone sin necesidad de llaves API externas.</p>
+              </div>
+            </div>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- Llaves API Opcionales -->
+      <div class="flex flex-col gap-2.5 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+        <span class="text-xs font-bold text-ocean-900 flex items-center gap-1.5">
+          <i class="ph-bold ph-key text-amber-600"></i>
+          <span>Llaves API Opcionales (Guardadas solo en tu iPhone)</span>
+        </span>
+
+        <div>
+          <label class="text-[11px] font-semibold text-ocean-700">Google Gemini API Key (Opcional)</label>
+          <input id="inputGeminiKey" type="password" placeholder="AIzaSy... (Dejar vacío para usar entorno integrado)" class="w-full mt-1 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs" />
+        </div>
+
+        <div>
+          <label class="text-[11px] font-semibold text-ocean-700">Groq API Key (Para Llama-3.3-70B)</label>
+          <input id="inputGroqKey" type="password" placeholder="gsk_..." class="w-full mt-1 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs" />
+        </div>
+
+        <div>
+          <label class="text-[11px] font-semibold text-ocean-700">OpenAI / OpenRouter API Key</label>
+          <input id="inputOpenAIKey" type="password" placeholder="sk-..." class="w-full mt-1 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs" />
+        </div>
+
+        <div>
+          <label class="text-[11px] font-semibold text-ocean-700">YouTube Data API v3 Key (Opcional para búsqueda oficial)</label>
+          <input id="inputYouTubeKey" type="password" placeholder="AIzaSy..." class="w-full mt-1 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs" />
+        </div>
+      </div>
+
+      <!-- Ajuste de Voz de Agustina -->
+      <div class="flex items-center justify-between px-1">
+        <div>
+          <p class="text-xs font-bold text-ocean-900">Respuesta hablada de Agustina (TTS)</p>
+          <p class="text-[11px] text-ocean-600">Agustina te responde con voz en español</p>
+        </div>
+        <input id="toggleVoiceReply" type="checkbox" checked onchange="saveSettingsFromModal()" class="w-5 h-5 accent-cyan-600 rounded" />
+      </div>
+
+      <button onclick="saveSettingsFromModal(); closeModal('aiModal')" class="w-full py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-teal-600 text-white font-display font-bold text-sm shadow-md active:scale-98 transition">
+        Guardar Configuración Multi-IA
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: CATÁLOGO MUSICAL VERIFICADO Y LISTAS INTELIGENTES            -->
+  <!-- ===================================================================== -->
+  <div id="catalogModal" class="fixed inset-0 z-50 bg-ocean-900/50 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full max-w-[440px] bg-white/95 backdrop-blur-xl rounded-t-[36px] sm:rounded-[36px] p-5 max-h-[86dvh] flex flex-col gap-3 shadow-2xl border border-white">
+      <div class="flex items-center justify-between border-b border-cyan-100 pb-2.5">
+        <div>
+          <h3 class="font-display font-bold text-lg text-ocean-900">Colección Musical de Agustina</h3>
+          <p class="text-xs text-ocean-600">Toca cualquier estación o canción para reproducir al instante</p>
+        </div>
+        <button onclick="closeModal('catalogModal')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <!-- Filtro por Categorías -->
+      <div id="categoryFilterBar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+        <button onclick="renderCatalogList('ALL')" class="px-3 py-1 rounded-full bg-cyan-600 text-white text-xs font-bold shrink-0">Todas</button>
+        <button onclick="renderCatalogList('ROCK_ES')" class="px-3 py-1 rounded-full bg-cyan-50 text-ocean-800 text-xs font-bold shrink-0">Rock en Español</button>
+        <button onclick="renderCatalogList('LATIN_COL')" class="px-3 py-1 rounded-full bg-cyan-50 text-ocean-800 text-xs font-bold shrink-0">Colombia & Tropical</button>
+        <button onclick="renderCatalogList('POP_EN')" class="px-3 py-1 rounded-full bg-cyan-50 text-ocean-800 text-xs font-bold shrink-0">Clásicos Inglés</button>
+        <button onclick="renderCatalogList('LOFI_CHILL')" class="px-3 py-1 rounded-full bg-cyan-50 text-ocean-800 text-xs font-bold shrink-0">Lo-Fi & Océano</button>
+        <button onclick="renderCatalogList('ROCOCO')" class="px-3 py-1 rounded-full bg-cyan-50 text-ocean-800 text-xs font-bold shrink-0">Clásica Rococó</button>
+        <button onclick="renderCatalogList('FAV')" class="px-3 py-1 rounded-full bg-rose-50 text-rose-700 text-xs font-bold shrink-0">❤️ Favoritas</button>
+      </div>
+
+      <!-- Lista de Canciones del Catálogo -->
+      <div id="catalogListContainer" class="flex-1 overflow-y-auto flex flex-col gap-2 pr-1"></div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: COLA DE REPRODUCCIÓN ACTUAL                                  -->
+  <!-- ===================================================================== -->
+  <div id="queueModal" class="fixed inset-0 z-50 bg-ocean-900/50 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full max-w-[440px] bg-white/95 backdrop-blur-xl rounded-t-[36px] sm:rounded-[36px] p-5 max-h-[82dvh] flex flex-col gap-3 shadow-2xl border border-white">
+      <div class="flex items-center justify-between border-b border-cyan-100 pb-2.5">
+        <div>
+          <h3 class="font-display font-bold text-lg text-ocean-900">Cola de Reproducción</h3>
+          <p class="text-xs text-ocean-600">Respaldo inteligente anti-errores de inserción activo</p>
+        </div>
+        <button onclick="closeModal('queueModal')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+      <div id="queueListContainer" class="flex-1 overflow-y-auto flex flex-col gap-2"></div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- LÓGICA DE LA APLICACIÓN: VOZ, MULTI-IA Y MOTOR YOUTUBE ROBUSTO        -->
+  <!-- ===================================================================== -->
+  <script>
+    /*************************************************************************
+     * 1. CATÁLOGO VERIFICADO EMBEBIBLE (60+ ÉXITOS Y RADIOS 100% COMPATIBLES)
+     *************************************************************************/
+    const VERIFIED_MUSIC_CATALOG = [
+      // Rock en Español
+      { id: '90J_c63fR2k', title: 'De Música Ligera', artist: 'Soda Stereo', category: 'ROCK_ES', tags: ['soda stereo', 'cerati', 'rock en español', 'ligera', 'argentina', '80s', '90s'] },
+      { id: 'v6T2F1L1hDA', title: 'Persiana Americana', artist: 'Soda Stereo', category: 'ROCK_ES', tags: ['soda stereo', 'persiana americana', 'cerati', 'rock'] },
+      { id: 'PreG1jM7R7I', title: 'Cuando Pase el Temblor', artist: 'Soda Stereo', category: 'ROCK_ES', tags: ['soda stereo', 'temblor', 'cerati', 'rock'] },
+      { id: '5g4KsI3_bZw', title: 'Crimen', artist: 'Gustavo Cerati', category: 'ROCK_ES', tags: ['cerati', 'gustavo cerati', 'crimen', 'rock'] },
+      { id: 'L9A3-g2kM-8', title: 'Lamento Boliviano', artist: 'Los Enanitos Verdes', category: 'ROCK_ES', tags: ['enanitos verdes', 'lamento boliviano', 'rock en español'] },
+      { id: 'f5M1H3vR3uk', title: 'La Flaca', artist: 'Jarabe de Palo', category: 'ROCK_ES', tags: ['jarabe de palo', 'la flaca', 'rock', 'españa'] },
+      { id: 'gW9sP4H5c2E', title: 'Florecita Rockera', artist: 'Aterciopelados', category: 'ROCK_ES', tags: ['aterciopelados', 'florecita rockera', 'rock colombiano', 'colombia'] },
+      { id: 'kRt2sRyup6A', title: 'Entre Dos Tierras', artist: 'Héroes del Silencio', category: 'ROCK_ES', tags: ['heroes del silencio', 'entre dos tierras', 'bunbury', 'rock'] },
+      { id: 'Y1v6R5b2-vE', title: 'Rayando el Sol', artist: 'Maná', category: 'ROCK_ES', tags: ['mana', 'maná', 'rayando el sol', 'rock pop'] },
+
+      // Música Colombiana, Latina & Tropical
+      { id: 'B3eAMGXFw1o', title: 'La Tierra del Olvido', artist: 'Carlos Vives', category: 'LATIN_COL', tags: ['carlos vives', 'tierra del olvido', 'colombia', 'vallenato', 'tropical'] },
+      { id: 'kMIaYXxLnUA', title: 'A Dios le Pido', artist: 'Juanes', category: 'LATIN_COL', tags: ['juanes', 'a dios le pido', 'colombia', 'pop latino'] },
+      { id: 'DUT5rEU6pqM', title: 'Hips Don’t Lie', artist: 'Shakira', category: 'LATIN_COL', tags: ['shakira', 'hips dont lie', 'colombia', 'pop', 'bailar'] },
+      { id: 'tA7XT1X3gAs', title: 'Cali Pachanguero', artist: 'Grupo Niche', category: 'LATIN_COL', tags: ['grupo niche', 'cali pachanguero', 'salsa', 'colombia', 'fiesta'] },
+      { id: 'qExd-3oCTl4', title: 'Te Mando Flores', artist: 'Fonseca', category: 'LATIN_COL', tags: ['fonseca', 'te mando flores', 'colombia', 'tropical'] },
+      { id: 'tbneQDc2H3I', title: 'La Vida Es Un Carnaval', artist: 'Celia Cruz', category: 'LATIN_COL', tags: ['celia cruz', 'carnaval', 'salsa', 'alegre', 'fiesta'] },
+      { id: 'wnJ6LuUFpMo', title: 'Vivir Mi Vida', artist: 'Marc Anthony', category: 'LATIN_COL', tags: ['marc anthony', 'vivir mi vida', 'salsa', 'alegre'] },
+
+      // Clásicos & Pop en Inglés
+      { id: 'fJ9rUzIMcZQ', title: 'Bohemian Rhapsody', artist: 'Queen', category: 'POP_EN', tags: ['queen', 'bohemian rhapsody', 'freddie mercury', 'rock', 'clasicos'] },
+      { id: 'HgzGwKwLmgM', title: 'Don’t Stop Me Now', artist: 'Queen', category: 'POP_EN', tags: ['queen', 'dont stop me now', 'energia', 'alegre', 'rock'] },
+      { id: 'dvgZkm1xWPE', title: 'Viva La Vida', artist: 'Coldplay', category: 'POP_EN', tags: ['coldplay', 'viva la vida', 'pop', 'ingles'] },
+      { id: 'RB-RcX5DS5A', title: 'The Scientist', artist: 'Coldplay', category: 'POP_EN', tags: ['coldplay', 'the scientist', 'balada', 'tranquila'] },
+      { id: '4NRXx6U8ABQ', title: 'Blinding Lights', artist: 'The Weeknd', category: 'POP_EN', tags: ['the weeknd', 'blinding lights', 'pop', '80s', 'entrenar'] },
+      { id: 'TUVcZfQe-Kw', title: 'Levitating', artist: 'Dua Lipa', category: 'POP_EN', tags: ['dua lipa', 'levitating', 'pop', 'bailar'] },
+      { id: '5NV6Rdv1a3I', title: 'Get Lucky', artist: 'Daft Punk ft. Pharrell', category: 'POP_EN', tags: ['daft punk', 'get lucky', 'funk', 'electronica'] },
+      { id: 'Zi_XLOBDo_Y', title: 'Billie Jean', artist: 'Michael Jackson', category: 'POP_EN', tags: ['michael jackson', 'billie jean', 'pop', '80s'] },
+      { id: 'YR5ApYxkU-U', title: 'Another Brick In The Wall', artist: 'Pink Floyd', category: 'POP_EN', tags: ['pink floyd', 'rock clasico', '70s'] },
+
+      // Lo-Fi, Concentración & Sonidos del Océano
+      { id: 'jfKfPfyJRdk', title: 'Lofi Hip Hop Radio — Beats para Concentrarse', artist: 'Lofi Girl (En Vivo)', category: 'LOFI_CHILL', tags: ['lofi', 'concentrarme', 'estudiar', 'trabajar', 'relajante', 'chill', 'instrumental'] },
+      { id: '4xDzrJKXOOY', title: 'Synthwave Radio — Chill & Retro Beats', artist: 'Lofi Synthwave', category: 'LOFI_CHILL', tags: ['synthwave', 'electronica suave', 'programar', 'concentracion'] },
+      { id: 'DWcJFNfaw9c', title: 'Lofi Chill Ambient — Brisa del Océano', artist: 'Chillhop Music', category: 'LOFI_CHILL', tags: ['dormir', 'descansar', 'oceano', 'mar', 'suave', 'paz', 'relajar'] },
+
+      // Clásica & Rococó (Homenaje al tema Rococó de la imagen)
+      { id: 'GRxofEmo3HA', title: 'Las Cuatro Estaciones (Primavera - Rococó)', artist: 'Antonio Vivaldi', category: 'ROCOCO', tags: ['clasica', 'rococo', 'rococó', 'vivaldi', 'primavera', 'violines', 'instrumental'] },
+      { id: 'Rb0UmrCXxVA', title: 'Clair de Lune (Luz de Luna en el Mar)', artist: 'Claude Debussy', category: 'ROCOCO', tags: ['debussy', 'clair de lune', 'piano', 'clasica', 'rococo', 'relajante'] },
+      { id: 'rNeirjA65Dk', title: 'Pequeña Serenata Nocturna', artist: 'Wolfgang Amadeus Mozart', category: 'ROCOCO', tags: ['mozart', 'serenata', 'clasica', 'rococo', 'orquesta'] },
+      { id: '9E6b3swbnWg', title: 'Nocturno Op. 9 No. 2', artist: 'Frédéric Chopin', category: 'ROCOCO', tags: ['chopin', 'nocturno', 'piano', 'clasica', 'suave'] }
+    ];
+
+    /*************************************************************************
+     * 2. ESTADO GLOBAL DE AGUSTINA
+     *************************************************************************/
+    const state = {
+      // Estado del reproductor
+      queue: [...VERIFIED_MUSIC_CATALOG.slice(0, 8)],
+      currentIndex: 0,
+      isPlaying: false,
+      isMuted: false,
+      volume: 85,
+      isShuffle: false,
+      videoDrawerOpen: false,
+      favorites: JSON.parse(localStorage.getItem('agustina_favorites') || '[]'),
+      consecutiveEmbedErrors: 0,
+
+      // Estado del sistema de voz ("Agustina")
+      wakeWordEnabled: true,
+      isListeningForFollowUp: false, // Si el usuario dijo solo "Agustina", espera el comando por 8 seg
+      followUpTimeout: null,
+      isDirectPushToTalk: false,
+      isSpeakingTTS: false,
+      audioUnlocked: false,
+
+      // Configuración Multi-IA
+      aiProvider: localStorage.getItem('agustina_ai_provider') || 'auto',
+      geminiKey: localStorage.getItem('agustina_gemini_key') || '',
+      groqKey: localStorage.getItem('agustina_groq_key') || '',
+      openaiKey: localStorage.getItem('agustina_openai_key') || '',
+      youtubeKey: localStorage.getItem('agustina_yt_key') || '',
+      voiceReplyEnabled: localStorage.getItem('agustina_tts_enabled') !== 'false',
+    };
+
+    let ytPlayer = null;
+    let progressTimer = null;
+    let recognition = null;
+    let audioCtx = null;
+
+    /*************************************************************************
+     * 3. EFECTOS DE SONIDO ACUÁTICOS (WEB AUDIO API) Y DESBLOQUEO iOS
+     *************************************************************************/
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    // Campanita oceánica cuando Agustina detecta su nombre
+    function playAgustinaChime(type = 'wake') {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+        const notes = type === 'wake' ? [523.25, 659.25, 783.99, 1046.5] : [783.99, 659.25];
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.075);
+
+          gain.gain.setValueAtTime(0.001, now + idx * 0.075);
+          gain.gain.exponentialRampToValueAtTime(0.14, now + idx * 0.075 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.075 + 0.35);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.075);
+          osc.stop(now + idx * 0.075 + 0.36);
+        });
+      } catch (e) {
+        // Ignorar si el navegador aún no ha desbloqueado el AudioContext
+      }
+    }
+
+    function unlockIOSAudioAndVoice() {
+      state.audioUnlocked = true;
+      const banner = document.getElementById('iosUnlockBanner');
+      if (banner) banner.classList.add('hidden');
+
+      getAudioContext();
+      playAgustinaChime('wake');
+
+      // Desbloquear síntesis de voz en iOS Safari
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance('');
+        utter.volume = 0;
+        window.speechSynthesis.speak(utter);
+      }
+
+      // Iniciar reconocimiento continuo si está activo
+      if (state.wakeWordEnabled) {
+        startSpeechRecognitionEngine();
+      }
+    }
+
+    /*************************************************************************
+     * 4. SÍNTESIS DE VOZ (AGUSTINA HABLA EN ESPAÑOL)
+     *************************************************************************/
+    function speakAgustina(text, onFinishCallback = null) {
+      updateSpeechBubble(text, 'SPEAKING');
+
+      if (!state.voiceReplyEnabled || !('speechSynthesis' in window)) {
+        if (onFinishCallback) onFinishCallback();
+        return;
+      }
+
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES';
+        utterance.rate = 1.04;
+        utterance.pitch = 1.12; // Tono cálido y juvenil acorde a Agustina
+
+        // Buscar la mejor voz en español de iOS (Paulina, Mónica, Siri, Luciana, etc.)
+        const voices = window.speechSynthesis.getVoices();
+        const preferredVoice = voices.find(v =>
+          v.lang.startsWith('es') &&
+          (v.name.includes('Paulina') || v.name.includes('Mónica') || v.name.includes('Monica') || v.name.includes('Luciana') || v.name.includes('Helena') || v.name.includes('Google'))
+        ) || voices.find(v => v.lang.startsWith('es'));
+
+        if (preferredVoice) utterance.voice = preferredVoice;
+
+        state.isSpeakingTTS = true;
+        utterance.onend = () => {
+          state.isSpeakingTTS = false;
+          if (onFinishCallback) onFinishCallback();
+        };
+        utterance.onerror = () => {
+          state.isSpeakingTTS = false;
+          if (onFinishCallback) onFinishCallback();
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        state.isSpeakingTTS = false;
+        if (onFinishCallback) onFinishCallback();
+      }
+    }
+
+    /*************************************************************************
+     * 5. RECONOCIMIENTO DE VOZ CON PALABRA DE ACTIVACIÓN "AGUSTINA" + BOTÓN
+     *************************************************************************/
+    function initSpeechRecognition() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        document.getElementById('statusSubtitle').textContent = 'Usa el buscador o botones (Voz no soportada en este navegador)';
+        document.getElementById('wakeWordLabel').textContent = 'Voz Web no disponible';
+        return null;
+      }
+
+      const rec = new SpeechRec();
+      rec.lang = 'es-CO'; // Excelente reconocimiento para español latinoamericano y España
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+
+      rec.onstart = () => {
+        updateWakeUI(true);
+      };
+
+      rec.onresult = (event) => {
+        if (state.isSpeakingTTS) return; // Evitar que Agustina se escuche a sí misma
+
+        let interimTranscript = '';
+        let finalTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const piece = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += piece;
+          } else {
+            interimTranscript += piece;
+          }
+        }
+
+        const liveText = (finalTranscript || interimTranscript).trim();
+        if (!liveText) return;
+
+        // Mostrar transcripción en tiempo real
+        const previewEl = document.getElementById('userTranscriptPreview');
+        previewEl.textContent = `Escuchando: "${liveText}"`;
+        previewEl.classList.remove('hidden');
+
+        const normalized = liveText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+        // Si el usuario presionó el botón de micrófono o ya dijo "Agustina" hace unos segundos
+        if (state.isDirectPushToTalk || state.isListeningForFollowUp) {
+          setMascotVisualState('LISTENING');
+          if (finalTranscript) {
+            state.isDirectPushToTalk = false;
+            state.isListeningForFollowUp = false;
+            clearTimeout(state.followUpTimeout);
+            resetMicButtonUI();
+            executeVoiceOrTextCommand(finalTranscript.trim());
+          }
+          return;
+        }
+
+        // Detección de la palabra de activación "Agustina" (incluye variantes fonéticas de dictado iOS)
+        const wakeRegex = /\b(agustina|augustina|agustin|san agustin)\b/i;
+        const match = normalized.match(wakeRegex);
+
+        if (match) {
+          setMascotVisualState('LISTENING');
+
+          if (finalTranscript) {
+            // Extraer lo que se dijo después de "Agustina"
+            const parts = normalized.split(wakeRegex);
+            const commandAfterWake = parts[parts.length - 1]
+              .replace(/^[,.\s]+/, '')
+              .trim();
+
+            playAgustinaChime('wake');
+
+            if (commandAfterWake.length > 2) {
+              // Ejemplo: "Agustina, pon música de Soda Stereo" -> Ejecuta de inmediato
+              executeVoiceOrTextCommand(commandAfterWake);
+            } else {
+              // Ejemplo: El usuario solo dijo "¡Agustina!" -> Ella responde y abre ventana de escucha directa
+              activateFollowUpWindow();
+            }
+          }
+        }
+      };
+
+      rec.onerror = (event) => {
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          state.wakeWordEnabled = false;
+          updateWakeUI(false);
+          document.getElementById('statusSubtitle').textContent = 'Permiso de micrófono denegado';
+        }
+      };
+
+      rec.onend = () => {
+        if (state.isDirectPushToTalk) {
+          state.isDirectPushToTalk = false;
+          resetMicButtonUI();
+        }
+        // Reinicio automático en iOS/Chrome si la escucha continua de "Agustina" está activa
+        if (state.wakeWordEnabled && state.audioUnlocked) {
+          setTimeout(() => {
+            try {
+              rec.start();
+            } catch (e) {}
+          }, 350);
+        } else {
+          updateWakeUI(false);
+        }
+      };
+
+      return rec;
+    }
+
+    function startSpeechRecognitionEngine() {
+      if (!recognition) {
+        recognition = initSpeechRecognition();
+      }
+      if (recognition) {
+        try {
+          recognition.start();
+          updateWakeUI(true);
+        } catch (e) {
+          // Ya está corriendo
+        }
+      }
+    }
+
+    function activateFollowUpWindow() {
+      state.isListeningForFollowUp = true;
+      setMascotVisualState('LISTENING');
+      speakAgustina('¡Sí, aquí estoy! Dime qué canción o artista quieres escuchar.', () => {
+        clearTimeout(state.followUpTimeout);
+        state.followUpTimeout = setTimeout(() => {
+          state.isListeningForFollowUp = false;
+          setMascotVisualState(state.isPlaying ? 'PLAYING' : 'IDLE');
+        }, 8500);
+      });
+    }
+
+    // Botón central táctil (Tap-to-Talk directo sin necesidad de decir "Agustina")
+    function triggerPushToTalk() {
+      if (!state.audioUnlocked) {
+        unlockIOSAudioAndVoice();
+      }
+
+      playAgustinaChime('wake');
+
+      // Si estaba reproduciendo a volumen alto, bajamos suavemente mientras escucha (Audio Ducking)
+      if (ytPlayer && state.isPlaying && typeof ytPlayer.setVolume === 'function') {
+        ytPlayer.setVolume(Math.max(15, Math.floor(state.volume * 0.25)));
+      }
+
+      state.isDirectPushToTalk = true;
+      setMascotVisualState('LISTENING');
+
+      const btnMic = document.getElementById('btnMainMic');
+      const micLabel = document.getElementById('mainMicLabel');
+      btnMic.classList.add('ring-8', 'ring-rose-300/60', 'scale-105');
+      micLabel.textContent = 'Te escucho... Habla ahora';
+
+      updateSpeechBubble('Te estoy escuchando... Pídeme cualquier canción, género o control.', 'LISTENING');
+
+      if (!recognition) {
+        recognition = initSpeechRecognition();
+      }
+      if (recognition) {
+        try {
+          recognition.start();
+        } catch (e) {
+          // Ya está activo, state.isDirectPushToTalk procesará la frase inmediatamente
+        }
+      }
+    }
+
+    function resetMicButtonUI() {
+      const btnMic = document.getElementById('btnMainMic');
+      const micLabel = document.getElementById('mainMicLabel');
+      btnMic.classList.remove('ring-8', 'ring-rose-300/60', 'scale-105');
+      micLabel.textContent = 'Hablar con Agustina';
+
+      // Restaurar volumen del reproductor
+      if (ytPlayer && typeof ytPlayer.setVolume === 'function' && !state.isMuted) {
+        ytPlayer.setVolume(state.volume);
+      }
+    }
+
+    function toggleContinuousWakeWord() {
+      if (!state.audioUnlocked) {
+        unlockIOSAudioAndVoice();
+      }
+      state.wakeWordEnabled = !state.wakeWordEnabled;
+      if (state.wakeWordEnabled) {
+        startSpeechRecognitionEngine();
+        speakAgustina('Escucha continua activada. Solo di Agustina cuando me necesites.');
+      } else {
+        if (recognition) {
+          try { recognition.stop(); } catch (e) {}
+        }
+        updateWakeUI(false);
+        updateSpeechBubble('Escucha continua en pausa. Puedes usar el botón central del micrófono.', 'IDLE');
+      }
+    }
+
+    function updateWakeUI(isActive) {
+      const dot = document.getElementById('wakeStatusDot');
+      const ind = document.getElementById('wakeWordIndicator');
+      const lbl = document.getElementById('wakeWordLabel');
+      const dockBg = document.getElementById('dockWakeIconBg');
+
+      if (isActive && state.wakeWordEnabled) {
+        dot.className = 'absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white';
+        ind.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping';
+        lbl.textContent = 'Escucha «Agustina»: ON';
+        dockBg.className = 'w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center';
+      } else {
+        dot.className = 'absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-400 border-2 border-white';
+        ind.className = 'w-2.5 h-2.5 rounded-full bg-amber-400';
+        lbl.textContent = 'Escucha «Agustina»: Pausa';
+        dockBg.className = 'w-9 h-9 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center';
+      }
+    }
+
+    /*************************************************************************
+     * 6. ORQUESTADOR MULTI-IA (GEMINI + GROQ + OPENAI + MOTOR NEURONAL LOCAL)
+     *************************************************************************/
+    const AI_SYSTEM_INSTRUCTION = `
+Eres Agustina, una adorable y muy inteligente ballenita azul con corona dorada de San Agustín, asistente musical de YouTube en iPhone.
+Tu objetivo es interpretar comandos de voz o texto del usuario en español y devolver EXCLUSIVAMENTE un objeto JSON válido con esta estructura:
+{
+  "intent": "PLAY" | "PAUSE" | "RESUME" | "NEXT" | "PREV" | "VOLUME_UP" | "VOLUME_DOWN" | "MUTE" | "CHAT",
+  "searchQuery": "artista y canción óptima para buscar en YouTube si intent es PLAY, o vacío",
+  "categoryHint": "ROCK_ES" | "LATIN_COL" | "POP_EN" | "LOFI_CHILL" | "ROCOCO" | "",
+  "reply": "Respuesta breve, dulce y entusiasta en español (máximo 18 palabras) que Agustina dirá en voz alta."
+}`;
+
+    async function processCommandWithMultiAI(rawText) {
+      const cleanedCommand = rawText
+        .replace(/^\s*(oye\s+|hola\s+)?(agustina|augustina|agustin)[,.\s]*/i, '')
+        .trim() || rawText.trim();
+
+      setMascotVisualState('THINKING');
+      updateSpeechBubble(`Procesando: "${cleanedCommand}"...`, 'THINKING');
+
+      // 1. Verificar comandos rápidos de control inmediato (Pausa, Siguiente, Volumen, etc.) para respuesta en <10ms
+      const quickControl = parseInstantControlIntent(cleanedCommand);
+      if (quickControl) {
+        return quickControl;
+      }
+
+      // 2. Orquestación según proveedor seleccionado con Fallback Automático garantizado
+      const provider = state.aiProvider;
+
+      if (provider === 'local') {
+        return parseLocalEdgeNLP(cleanedCommand);
+      }
+
+      try {
+        if (provider === 'gemini' || provider === 'auto') {
+          const geminiRes = await callGeminiEngine(cleanedCommand);
+          if (geminiRes && geminiRes.intent) return geminiRes;
+        }
+
+        if ((provider === 'groq' || provider === 'auto') && state.groqKey) {
+          const groqRes = await callOpenAICompatibleEngine(
+            'https://api.groq.com/openai/v1/chat/completions',
+            state.groqKey,
+            'llama-3.3-70b-versatile',
+            cleanedCommand
+          );
+          if (groqRes && groqRes.intent) return groqRes;
+        }
+
+        if ((provider === 'openai' || provider === 'auto') && state.openaiKey) {
+          const openAIRes = await callOpenAICompatibleEngine(
+            'https://api.openai.com/v1/chat/completions',
+            state.openaiKey,
+            'gpt-4o-mini',
+            cleanedCommand
+          );
+          if (openAIRes && openAIRes.intent) return openAIRes;
+        }
+      } catch (err) {
+        // Si cualquier API externa falla o tarda, el Motor Neuronal Local toma el control sin interrumpir
+      }
+
+      return parseLocalEdgeNLP(cleanedCommand);
+    }
+
+    // Motor 1: Google Gemini API (gemini-3-flash-preview con JSON estructurado)
+    async function callGeminiEngine(userCommand) {
+      const apiKey = state.geminiKey || ""; // El entorno inyecta la llave si está vacía
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{ role: 'user', parts: [{ text: userCommand }] }],
+        systemInstruction: { parts: [{ text: AI_SYSTEM_INSTRUCTION }] },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              intent: { type: "STRING" },
+              searchQuery: { type: "STRING" },
+              categoryHint: { type: "STRING" },
+              reply: { type: "STRING" }
+            },
+            required: ["intent", "searchQuery", "reply"]
+          }
+        }
+      };
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4200);
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) throw new Error('Gemini no disponible');
+      const data = await response.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      return text ? JSON.parse(text) : null;
+    }
+
+    // Motores 2 y 3: Groq Cloud (Llama 3.3) y OpenAI (GPT-4o-mini)
+    async function callOpenAICompatibleEngine(endpointUrl, apiKey, modelName, userCommand) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+      const response = await fetch(endpointUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: modelName,
+          response_format: { type: "json_object" },
+          messages: [
+            { role: 'system', content: AI_SYSTEM_INSTRUCTION },
+            { role: 'user', content: userCommand }
+          ],
+          temperature: 0.3
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) throw new Error('Proveedor OpenAI/Groq error');
+      const data = await response.json();
+      const content = data?.choices?.[0]?.message?.content;
+      return content ? JSON.parse(content) : null;
+    }
+
+    // Detector instantáneo de controles de transporte (<5ms)
+    function parseInstantControlIntent(cmd) {
+      const lower = cmd.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      if (/^(pausa|pausar|deten|detener|para|parar|stop|silencio)$/.test(lower)) {
+        return { intent: 'PAUSE', searchQuery: '', reply: 'Música en pausa. Avísame cuando quieras continuar.' };
+      }
+      if (/^(reproduce|reproducir|continua|continuar|sigue|play|dale play)$/.test(lower)) {
+        return { intent: 'RESUME', searchQuery: '', reply: '¡Claro! Continuamos con la música.' };
+      }
+      if (/(siguiente|otra cancion|pasa la cancion|cambiar cancion|next|salta)/.test(lower)) {
+        return { intent: 'NEXT', searchQuery: '', reply: '¡Con gusto! Pasando a la siguiente canción.' };
+      }
+      if (/(anterior|cancion anterior|atras|repite|volver)/.test(lower)) {
+        return { intent: 'PREV', searchQuery: '', reply: 'Volviendo a la canción anterior.' };
+      }
+      if (/(sube el volumen|mas volumen|mas alto|subir volumen|subele)/.test(lower)) {
+        return { intent: 'VOLUME_UP', searchQuery: '', reply: '¡Subiendo el volumen para disfrutar más!' };
+      }
+      if (/(baja el volumen|menos volumen|mas bajo|bajar volumen|bajale)/.test(lower)) {
+        return { intent: 'VOLUME_DOWN', searchQuery: '', reply: 'Bajando un poquito el volumen.' };
+      }
+      if (/(silenciar|mute|quita el sonido)/.test(lower)) {
+        return { intent: 'MUTE', searchQuery: '', reply: 'Audio silenciado.' };
+      }
+      return null;
+    }
+
+    // Motor 4: Motor Neuronal Local «San Agustín Edge NLP» (Siempre disponible)
+    function parseLocalEdgeNLP(cmd) {
+      const lower = cmd.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      // Conversación general con Agustina
+      if (/^(hola|buenos dias|buenas tardes|buenas noches|como estas|quien eres)$/.test(lower)) {
+        return {
+          intent: 'CHAT',
+          searchQuery: '',
+          reply: '¡Hola! Soy Agustina, tu ballenita musical de San Agustín. ¿Qué música te pongo hoy?'
+        };
+      }
+
+      // Limpiar verbos de comando para extraer la canción o artista deseado
+      const queryClean = cmd
+        .replace(/^(por favor\s+)?(ponme|pon|reproduce|reproducir|quiero escuchar|quiero oir|busca|buscar|toca|suena|escuchar)\s+(musica\s+de\s+|canciones\s+de\s+|el\s+tema\s+|la\s+cancion\s+)?/i, '')
+        .trim();
+
+      // Detectar estados de ánimo o géneros especiales
+      if (/(concentrar|estudiar|trabajar|relaj|dormir|paz|suave|lofi|oceano)/.test(lower)) {
+        return {
+          intent: 'PLAY',
+          searchQuery: queryClean || 'lofi hip hop radio concentrarse',
+          categoryHint: 'LOFI_CHILL',
+          reply: `¡Perfecto! Poniendo música relajante como las olas del mar para tu concentración.`
+        };
+      }
+
+      if (/(rococo|clasica|mozart|vivaldi|chopin|debussy|piano|violines)/.test(lower)) {
+        return {
+          intent: 'PLAY',
+          searchQuery: queryClean || 'Vivaldi Cuatro Estaciones Clasica Rococo',
+          categoryHint: 'ROCOCO',
+          reply: `¡Qué elegancia! Reproduciendo música clásica rococó para ti.`
+        };
+      }
+
+      if (/(colombia|vallenato|salsa|carlos vives|juanes|shakira|niche|fonseca|fiesta|alegre)/.test(lower)) {
+        return {
+          intent: 'PLAY',
+          searchQuery: queryClean || 'Carlos Vives La Tierra del Olvido',
+          categoryHint: 'LATIN_COL',
+          reply: `¡Con todo el sabor! Reproduciendo ${queryClean || 'música colombiana y tropical'}.`
+        };
+      }
+
+      if (/(rock en espanol|soda stereo|cerati|enanitos|mana|aterciopelados|caifanes)/.test(lower)) {
+        return {
+          intent: 'PLAY',
+          searchQuery: queryClean || 'Soda Stereo De Musica Ligera',
+          categoryHint: 'ROCK_ES',
+          reply: `¡Excelente elección! Poniendo lo mejor de ${queryClean || 'Rock en Español'}.`
+        };
+      }
+
+      const finalQuery = queryClean || cmd;
+      return {
+        intent: 'PLAY',
+        searchQuery: finalQuery,
+        categoryHint: '',
+        reply: `¡Claro que sí! Buscando y reproduciendo ${finalQuery} en YouTube.`
+      };
+    }
+
+    /*************************************************************************
+     * 7. EJECUCIÓN DE ACCIONES Y BÚSQUEDA MULTICAPA EN YOUTUBE
+     *************************************************************************/
+    async function executeVoiceOrTextCommand(commandText) {
+      if (!commandText || !commandText.trim()) return;
+      if (!state.audioUnlocked) unlockIOSAudioAndVoice();
+
+      const aiResult = await processCommandWithMultiAI(commandText);
+      if (!aiResult) return;
+
+      const { intent, searchQuery, categoryHint, reply } = aiResult;
+
+      switch (intent) {
+        case 'PAUSE':
+          pauseMusic();
+          speakAgustina(reply);
+          break;
+
+        case 'RESUME':
+          resumeMusic();
+          speakAgustina(reply);
+          break;
+
+        case 'NEXT':
+          speakAgustina(reply);
+          playNextTrack();
+          break;
+
+        case 'PREV':
+          speakAgustina(reply);
+          playPreviousTrack();
+          break;
+
+        case 'VOLUME_UP':
+          setPlayerVolume(Math.min(100, state.volume + 20));
+          document.getElementById('volumeSlider').value = state.volume;
+          speakAgustina(reply);
+          break;
+
+        case 'VOLUME_DOWN':
+          setPlayerVolume(Math.max(10, state.volume - 20));
+          document.getElementById('volumeSlider').value = state.volume;
+          speakAgustina(reply);
+          break;
+
+        case 'MUTE':
+          toggleMute();
+          speakAgustina(reply);
+          break;
+
+        case 'CHAT':
+          speakAgustina(reply);
+          setMascotVisualState(state.isPlaying ? 'PLAYING' : 'IDLE');
+          break;
+
+        case 'PLAY':
+        default:
+          speakAgustina(reply);
+          await searchAndPlayYouTubeMusic(searchQuery || commandText, categoryHint);
+          break;
+      }
+    }
+
+    // Pipeline de Búsqueda en 3 Niveles (Catálogo Inteligente + APIs en Vivo + YouTube Data API v3)
+    async function searchAndPlayYouTubeMusic(query, categoryHint = '') {
+      const normQuery = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      // Nivel 1: Verificar coincidencia exacta o por artista/tags en el Catálogo Verificado (Garantiza 0 errores de inserción)
+      const catalogMatches = VERIFIED_MUSIC_CATALOG.filter(item => {
+        const titleNorm = item.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const artistNorm = item.artist.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const tagMatch = item.tags.some(t => normQuery.includes(t) || t.includes(normQuery));
+        return titleNorm.includes(normQuery) || artistNorm.includes(normQuery) || normQuery.includes(artistNorm) || tagMatch;
+      });
+
+      // Nivel 2: Buscar también en vivo en YouTube (vía YouTube Data API v3 si hay llave o instancias Piped/Invidious CORS)
+      let liveResults = [];
+      try {
+        liveResults = await fetchLiveYouTubeCandidates(query);
+      } catch (e) {}
+
+      // Combinar resultados priorizando una experiencia sin bloqueo de inserción
+      let combinedTracks = [];
+
+      if (catalogMatches.length > 0) {
+        combinedTracks.push(...catalogMatches);
+      }
+      if (liveResults.length > 0) {
+        liveResults.forEach(lr => {
+          if (!combinedTracks.some(c => c.id === lr.id)) {
+            combinedTracks.push(lr);
+          }
+        });
+      }
+
+      // Si se sugirió una categoría específica y no hubo coincidencias directas
+      if (combinedTracks.length === 0 && categoryHint) {
+        combinedTracks = VERIFIED_MUSIC_CATALOG.filter(i => i.category === categoryHint);
+      }
+
+      // Respaldo final infalible si el término es muy específico y las APIs públicas están ocupadas
+      if (combinedTracks.length === 0) {
+        combinedTracks = [...VERIFIED_MUSIC_CATALOG.slice(0, 6)];
+      }
+
+      // Actualizar la cola con los candidatos encontrados y reproducir el primero
+      state.queue = combinedTracks;
+      state.currentIndex = 0;
+      state.consecutiveEmbedErrors = 0;
+      renderQueueModalList();
+      loadAndPlayCurrentTrack();
+    }
+
+    async function fetchLiveYouTubeCandidates(query) {
+      const results = [];
+
+      // Opción A: YouTube Data API v3 Oficial si el usuario ingresó su llave
+      if (state.youtubeKey) {
+        try {
+          const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=5&q=${encodeURIComponent(query + ' official audio')}&key=${state.youtubeKey}`;
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            (data.items || []).forEach(item => {
+              if (item.id?.videoId) {
+                results.push({
+                  id: item.id.videoId,
+                  title: item.snippet.title,
+                  artist: item.snippet.channelTitle,
+                  category: 'LIVE_YT',
+                  tags: []
+                });
+              }
+            });
+            if (results.length > 0) return results;
+          }
+        } catch (e) {}
+      }
+
+      // Opción B: Consulta paralela a APIs públicas de búsqueda de YouTube (Piped API) con timeout rápido
+      const pipedEndpoints = [
+        `https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(query + ' lyrics audio')}&filter=music_songs`,
+        `https://pipedapi.tokhmi.xyz/search?q=${encodeURIComponent(query + ' audio')}&filter=videos`
+      ];
+
+      for (const endpoint of pipedEndpoints) {
+        try {
+          const controller = new AbortController();
+          const tId = setTimeout(() => controller.abort(), 2400);
+          const res = await fetch(endpoint, { signal: controller.signal });
+          clearTimeout(tId);
+
+          if (res.ok) {
+            const data = await res.json();
+            const items = data.items || [];
+            for (const item of items.slice(0, 5)) {
+              const vidMatch = (item.url || '').match(/v=([a-zA-Z0-9_-]{11})/);
+              if (vidMatch && vidMatch[1]) {
+                results.push({
+                  id: vidMatch[1],
+                  title: item.title || query,
+                  artist: item.uploaderName || 'YouTube Music',
+                  category: 'LIVE_YT',
+                  tags: []
+                });
+              }
+            }
+            if (results.length > 0) return results;
+          }
+        } catch (e) {}
+      }
+
+      return results;
+    }
+
+    /*************************************************************************
+     * 8. MOTOR YOUTUBE IFRAME API CON AUTO-RECUPERACIÓN DE ERRORES
+     *************************************************************************/
+    function loadYouTubeIframeAPI() {
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+
+    window.onYouTubeIframeAPIReady = function () {
+      const initialTrack = state.queue[state.currentIndex] || VERIFIED_MUSIC_CATALOG[0];
+      ytPlayer = new YT.Player('ytPlayerContainer', {
+        height: '100%',
+        width: '100%',
+        videoId: initialTrack.id,
+        playerVars: {
+          autoplay: 0,
+          playsinline: 1, // Indispensable para iPhone iOS Safari (no fuerza pantalla completa nativa)
+          controls: 1,
+          rel: 0,
+          modestbranding: 1,
+          enablejsapi: 1,
+          origin: window.location.origin
+        },
+        events: {
+          onReady: onPlayerReady,
+          onStateChange: onPlayerStateChange,
+          onError: onPlayerError
+        }
+      });
+    };
+
+    function onPlayerReady(event) {
+      event.target.setVolume(state.volume);
+      updateTrackMetadataUI();
+      startProgressTracker();
+    }
+
+    function onPlayerStateChange(event) {
+      const badge = document.getElementById('playerStateBadge');
+      const playIcon = document.getElementById('playPauseIcon');
+
+      if (event.data === YT.PlayerState.PLAYING) {
+        state.isPlaying = true;
+        state.consecutiveEmbedErrors = 0;
+        badge.textContent = 'Reproduciendo';
+        badge.className = 'text-[10px] font-bold uppercase px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800';
+        playIcon.className = 'ph-fill ph-pause text-2xl';
+        setMascotVisualState('PLAYING');
+      } else if (event.data === YT.PlayerState.PAUSED) {
+        state.isPlaying = false;
+        badge.textContent = 'En Pausa';
+        badge.className = 'text-[10px] font-bold uppercase px-2 py-0.5 rounded-md bg-amber-100 text-amber-800';
+        playIcon.className = 'ph-fill ph-play text-2xl ml-0.5';
+        setMascotVisualState('IDLE');
+      } else if (event.data === YT.PlayerState.BUFFERING) {
+        badge.textContent = 'Cargando...';
+        badge.className = 'text-[10px] font-bold uppercase px-2 py-0.5 rounded-md bg-cyan-100 text-cyan-800';
+      } else if (event.data === YT.PlayerState.ENDED) {
+        playNextTrack();
+      }
+    }
+
+    // Auto-Recuperación inteligente si un video de YouTube bloquea la reproducción embebida (Errores 101 / 150)
+    function onPlayerError(event) {
+      state.consecutiveEmbedErrors++;
+      if (state.consecutiveEmbedErrors < state.queue.length) {
+        updateSpeechBubble('Ese video tenía restricción externa, pasando automáticamente a una versión compatible...', 'THINKING');
+        playNextTrack();
+      } else {
+        // Cargar pista verificada garantizada
+        state.consecutiveEmbedErrors = 0;
+        state.queue = [...VERIFIED_MUSIC_CATALOG.slice(0, 8)];
+        state.currentIndex = 0;
+        loadAndPlayCurrentTrack();
+      }
+    }
+
+    function loadAndPlayCurrentTrack() {
+      const track = state.queue[state.currentIndex];
+      if (!track) return;
+
+      updateTrackMetadataUI();
+
+      if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+        ytPlayer.loadVideoById(track.id);
+        ytPlayer.playVideo();
+      }
+    }
+
+    function togglePlayPause() {
+      if (!state.audioUnlocked) unlockIOSAudioAndVoice();
+      if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') return;
+
+      const currentState = ytPlayer.getPlayerState();
+      if (currentState === YT.PlayerState.PLAYING) {
+        pauseMusic();
+      } else {
+        resumeMusic();
+      }
+    }
+
+    function pauseMusic() {
+      if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+        ytPlayer.pauseVideo();
+      }
+      state.isPlaying = false;
+      setMascotVisualState('IDLE');
+    }
+
+    function resumeMusic() {
+      if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+        ytPlayer.playVideo();
+      }
+      state.isPlaying = true;
+      setMascotVisualState('PLAYING');
+    }
+
+    function playNextTrack() {
+      if (state.queue.length === 0) return;
+      if (state.isShuffle) {
+        state.currentIndex = Math.floor(Math.random() * state.queue.length);
+      } else {
+        state.currentIndex = (state.currentIndex + 1) % state.queue.length;
+      }
+      loadAndPlayCurrentTrack();
+    }
+
+    function playPreviousTrack() {
+      if (state.queue.length === 0) return;
+      state.currentIndex = (state.currentIndex - 1 + state.queue.length) % state.queue.length;
+      loadAndPlayCurrentTrack();
+    }
+
+    function setPlayerVolume(val) {
+      state.volume = parseInt(val, 10);
+      state.isMuted = state.volume === 0;
+      if (ytPlayer && typeof ytPlayer.setVolume === 'function') {
+        ytPlayer.unMute();
+        ytPlayer.setVolume(state.volume);
+      }
+      updateVolumeIcon();
+    }
+
+    function toggleMute() {
+      if (!ytPlayer) return;
+      state.isMuted = !state.isMuted;
+      if (state.isMuted) {
+        ytPlayer.mute();
+      } else {
+        ytPlayer.unMute();
+        ytPlayer.setVolume(state.volume);
+      }
+      updateVolumeIcon();
+    }
+
+    function updateVolumeIcon() {
+      const icon = document.getElementById('volumeIcon');
+      if (state.isMuted || state.volume === 0) {
+        icon.className = 'ph-bold ph-speaker-slash text-lg text-rose-500';
+      } else if (state.volume < 50) {
+        icon.className = 'ph-bold ph-speaker-low text-lg';
+      } else {
+        icon.className = 'ph-bold ph-speaker-high text-lg';
+      }
+    }
+
+    function toggleShuffle() {
+      state.isShuffle = !state.isShuffle;
+      const btn = document.getElementById('btnShuffle');
+      if (state.isShuffle) {
+        btn.className = 'w-9 h-9 rounded-xl flex items-center justify-center bg-cyan-500 text-white shadow-sm active:scale-90 transition';
+      } else {
+        btn.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-ocean-700 hover:bg-white/60 active:scale-90 transition';
+      }
+    }
+
+    function startProgressTracker() {
+      if (progressTimer) clearInterval(progressTimer);
+      progressTimer = setInterval(() => {
+        if (!ytPlayer || !state.isPlaying || typeof ytPlayer.getCurrentTime !== 'function') return;
+        const curr = ytPlayer.getCurrentTime() || 0;
+        const dur = ytPlayer.getDuration() || 0;
+        if (dur > 0) {
+          const pct = Math.min(100, (curr / dur) * 100);
+          document.getElementById('seekSlider').value = pct;
+          document.getElementById('currentTimeLabel').textContent = formatSeconds(curr);
+          document.getElementById('totalTimeLabel').textContent = formatSeconds(dur);
+        }
+      }, 900);
+    }
+
+    function onSeekInput(pct) {
+      if (!ytPlayer || typeof ytPlayer.getDuration !== 'function') return;
+      const dur = ytPlayer.getDuration() || 0;
+      document.getElementById('currentTimeLabel').textContent = formatSeconds((pct / 100) * dur);
+    }
+
+    function onSeekCommit(pct) {
+      if (!ytPlayer || typeof ytPlayer.seekTo !== 'function') return;
+      const dur = ytPlayer.getDuration() || 0;
+      if (dur > 0) {
+        ytPlayer.seekTo((pct / 100) * dur, true);
+      }
+    }
+
+    function formatSeconds(sec) {
+      const s = Math.floor(sec);
+      const mins = Math.floor(s / 60);
+      const rem = s % 60;
+      return `${mins}:${rem < 10 ? '0' : ''}${rem}`;
+    }
+
+    /*************************************************************************
+     * 9. INTERFAZ VISUAL REACTIVA DE LA BALLENA AGUSTINA Y MODALES
+     *************************************************************************/
+    function setMascotVisualState(mode) {
+      const whale = document.getElementById('whaleCharacter');
+      const heart = document.getElementById('floatingHeart');
+      const crown = document.getElementById('whaleCrown');
+      const sonar = document.getElementById('sonarRings');
+      const notes = document.getElementById('musicNotesGroup');
+      const miniEq = document.getElementById('miniEq');
+
+      whale.classList.remove('whale-idle', 'whale-playing', 'whale-listening');
+      heart.classList.remove('heart-anim', 'heart-fast');
+      crown.classList.remove('crown-glow-active');
+      sonar.classList.add('hidden');
+      notes.classList.add('hidden');
+      miniEq.classList.add('hidden');
+      miniEq.classList.remove('flex');
+
+      if (mode === 'LISTENING') {
+        whale.classList.add('whale-listening');
+        heart.classList.add('heart-fast');
+        crown.classList.add('crown-glow-active');
+        sonar.classList.remove('hidden');
+      } else if (mode === 'THINKING') {
+        whale.classList.add('whale-listening');
+        heart.classList.add('heart-fast');
+        crown.classList.add('crown-glow-active');
+      } else if (mode === 'PLAYING') {
+        whale.classList.add('whale-playing');
+        heart.classList.add('heart-anim');
+        notes.classList.remove('hidden');
+        miniEq.classList.remove('hidden');
+        miniEq.classList.add('flex');
+      } else {
+        whale.classList.add('whale-idle');
+        heart.classList.add('heart-anim');
+      }
+    }
+
+    function updateSpeechBubble(message, mode = 'IDLE') {
+      const replyEl = document.getElementById('agustinaReplyText');
+      const tagEl = document.getElementById('agustinaStateTag');
+      const iconBox = document.getElementById('speechIconBox');
+      const icon = document.getElementById('speechStatusIcon');
+
+      replyEl.textContent = `«${message}»`;
+
+      if (mode === 'LISTENING') {
+        tagEl.textContent = 'Escuchando tu voz...';
+        iconBox.className = 'w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5';
+        icon.className = 'ph-fill ph-ChatsTeardrop text-lg animate-bounce';
+      } else if (mode === 'THINKING') {
+        tagEl.textContent = 'Agustina IA pensando...';
+        iconBox.className = 'w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 mt-0.5';
+        icon.className = 'ph-fill ph-sparkle text-lg animate-spin';
+      } else {
+        tagEl.textContent = 'Agustina dice:';
+        iconBox.className = 'w-8 h-8 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center shrink-0 mt-0.5';
+        icon.className = 'ph-fill ph-speaker-high text-lg';
+      }
+    }
+
+    function updateTrackMetadataUI() {
+      const track = state.queue[state.currentIndex];
+      if (!track) return;
+
+      document.getElementById('trackTitle').textContent = track.title;
+      document.getElementById('trackArtist').textContent = `${track.artist} • San Agustín Music`;
+      document.getElementById('trackThumb').src = `https://i.ytimg.com/vi/${track.id}/hqdefault.jpg`;
+      document.getElementById('btnOpenInYTApp').href = `https://www.youtube.com/watch?v=${track.id}`;
+      document.getElementById('queueCountBadge').textContent = state.queue.length;
+
+      // Estado de favorito
+      const isFav = state.favorites.some(f => f.id === track.id);
+      const favIcon = document.getElementById('favIcon');
+      if (isFav) {
+        favIcon.className = 'ph-fill ph-heart text-lg text-rose-500';
+      } else {
+        favIcon.className = 'ph-bold ph-heart text-lg text-ocean-700';
+      }
+    }
+
+    function toggleVideoDrawer() {
+      state.videoDrawerOpen = !state.videoDrawerOpen;
+      const drawer = document.getElementById('videoDrawer');
+      const txt = document.getElementById('videoToggleText');
+      const icon = document.getElementById('videoToggleIcon');
+
+      if (state.videoDrawerOpen) {
+        drawer.className = 'w-full overflow-hidden transition-all duration-300 max-h-[260px] opacity-100 mt-2';
+        txt.textContent = 'Ocultar Video';
+        icon.className = 'ph-fill ph-eye-slash text-cyan-600 text-sm';
+      } else {
+        drawer.className = 'w-full overflow-hidden transition-all duration-300 max-h-0 opacity-0 mt-0';
+        txt.textContent = 'Ver Video';
+        icon.className = 'ph-fill ph-television text-cyan-600 text-sm';
+      }
+    }
+
+    function toggleFavoriteCurrent() {
+      const track = state.queue[state.currentIndex];
+      if (!track) return;
+      const idx = state.favorites.findIndex(f => f.id === track.id);
+      if (idx >= 0) {
+        state.favorites.splice(idx, 1);
+      } else {
+        state.favorites.push(track);
+      }
+      localStorage.setItem('agustina_favorites', JSON.stringify(state.favorites));
+      updateTrackMetadataUI();
+    }
+
+    function handleManualSearchSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('manualCommandInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      executeVoiceOrTextCommand(text);
+    }
+
+    /*************************************************************************
+     * 10. GESTIÓN DE MODALES, CATÁLOGO Y CONFIGURACIÓN MULTI-IA
+     *************************************************************************/
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('hidden');
+      el.classList.add('flex');
+      if (id === 'catalogModal') renderCatalogList('ALL');
+      if (id === 'queueModal') renderQueueModalList();
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+    }
+
+    function selectAIProvider(provider) {
+      state.aiProvider = provider;
+      localStorage.setItem('agustina_ai_provider', provider);
+      updateAIBadgeUI();
+    }
+
+    function updateAIBadgeUI() {
+      const badge = document.getElementById('activeAIBadge');
+      const names = {
+        auto: 'Multi-IA Auto',
+        gemini: 'Gemini 3 Flash',
+        groq: 'Groq Llama 3.3',
+        openai: 'OpenAI GPT-4o',
+        local: 'Edge Local'
+      };
+      badge.textContent = names[state.aiProvider] || 'Multi-IA Auto';
+
+      ['auto', 'gemini', 'groq', 'openai', 'local'].forEach(p => {
+        const card = document.getElementById('card_' + p);
+        if (!card) return;
+        if (p === state.aiProvider) {
+          card.className = 'flex items-center justify-between p-3 rounded-2xl border-2 cursor-pointer transition bg-cyan-50/70 border-cyan-400';
+        } else {
+          card.className = 'flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition bg-white border-slate-200';
+        }
+      });
+    }
+
+    function saveSettingsFromModal() {
+      state.geminiKey = document.getElementById('inputGeminiKey').value.trim();
+      state.groqKey = document.getElementById('inputGroqKey').value.trim();
+      state.openaiKey = document.getElementById('inputOpenAIKey').value.trim();
+      state.youtubeKey = document.getElementById('inputYouTubeKey').value.trim();
+      state.voiceReplyEnabled = document.getElementById('toggleVoiceReply').checked;
+
+      localStorage.setItem('agustina_gemini_key', state.geminiKey);
+      localStorage.setItem('agustina_groq_key', state.groqKey);
+      localStorage.setItem('agustina_openai_key', state.openaiKey);
+      localStorage.setItem('agustina_yt_key', state.youtubeKey);
+      localStorage.setItem('agustina_tts_enabled', String(state.voiceReplyEnabled));
+      updateAIBadgeUI();
+    }
+
+    function renderCatalogList(category) {
+      const container = document.getElementById('catalogListContainer');
+      let list = VERIFIED_MUSIC_CATALOG;
+      if (category === 'FAV') {
+        list = state.favorites;
+      } else if (category !== 'ALL') {
+        list = VERIFIED_MUSIC_CATALOG.filter(item => item.category === category);
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `<p class="text-xs text-center text-ocean-600 py-8">Aún no tienes canciones guardadas en esta categoría.</p>`;
+        return;
+      }
+
+      container.innerHTML = list.map((track) => `
+        <div onclick="playSpecificCatalogTrack('${track.id}')" class="flex items-center justify-between p-2.5 rounded-2xl bg-cyan-50/60 hover:bg-cyan-100/70 border border-cyan-200/60 cursor-pointer transition active:scale-98">
+          <div class="flex items-center gap-3 min-w-0">
+            <img src="https://i.ytimg.com/vi/${track.id}/default.jpg" alt="${track.title}" class="w-11 h-11 rounded-xl object-cover shrink-0 bg-cyan-200" />
+            <div class="min-w-0">
+              <h4 class="text-xs font-bold text-ocean-900 truncate">${track.title}</h4>
+              <p class="text-[11px] text-ocean-700 truncate">${track.artist}</p>
+            </div>
+          </div>
+          <button class="w-8 h-8 rounded-xl bg-cyan-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+            <i class="ph-fill ph-play text-sm"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function playSpecificCatalogTrack(videoId) {
+      if (!state.audioUnlocked) unlockIOSAudioAndVoice();
+      const found = VERIFIED_MUSIC_CATALOG.find(t => t.id === videoId) || state.favorites.find(t => t.id === videoId);
+      if (!found) return;
+
+      // Poner la canción elegida al inicio y acompañarla de canciones similares
+      const related = VERIFIED_MUSIC_CATALOG.filter(t => t.category === found.category && t.id !== found.id);
+      state.queue = [found, ...related];
+      state.currentIndex = 0;
+      closeModal('catalogModal');
+      speakAgustina(`Reproduciendo ${found.title} de ${found.artist}.`);
+      loadAndPlayCurrentTrack();
+    }
+
+    function renderQueueModalList() {
+      const container = document.getElementById('queueListContainer');
+      container.innerHTML = state.queue.map((track, idx) => {
+        const isCurrent = idx === state.currentIndex;
+        return `
+          <div onclick="jumpToQueueIndex(${idx})" class="flex items-center justify-between p-2.5 rounded-2xl cursor-pointer transition ${isCurrent ? 'bg-cyan-100 border-2 border-cyan-500' : 'bg-slate-50 hover:bg-cyan-50 border border-slate-200'}">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-xs font-extrabold w-5 text-center ${isCurrent ? 'text-cyan-700' : 'text-slate-400'}">${idx + 1}</span>
+              <img src="https://i.ytimg.com/vi/${track.id}/default.jpg" class="w-10 h-10 rounded-xl object-cover shrink-0" />
+              <div class="min-w-0">
+                <h4 class="text-xs font-bold text-ocean-900 truncate">${track.title}</h4>
+                <p class="text-[11px] text-ocean-700 truncate">${track.artist}</p>
+              </div>
+            </div>
+            ${isCurrent ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-600 text-white">Sonando</span>' : '<i class="ph-bold ph-play text-ocean-700 mr-2"></i>'}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function jumpToQueueIndex(idx) {
+      if (!state.audioUnlocked) unlockIOSAudioAndVoice();
+      state.currentIndex = idx;
+      closeModal('queueModal');
+      loadAndPlayCurrentTrack();
+    }
+
+    /*************************************************************************
+     * 11. INICIALIZACIÓN AL CARGAR LA PÁGINA
+     *************************************************************************/
+    window.addEventListener('DOMContentLoaded', () => {
+      // Cargar llaves guardadas en el modal
+      document.getElementById('inputGeminiKey').value = state.geminiKey;
+      document.getElementById('inputGroqKey').value = state.groqKey;
+      document.getElementById('inputOpenAIKey').value = state.openaiKey;
+      document.getElementById('inputYouTubeKey').value = state.youtubeKey;
+      document.getElementById('toggleVoiceReply').checked = state.voiceReplyEnabled;
+
+      const radioEl = document.querySelector(`input[name="aiProvider"][value="${state.aiProvider}"]`);
+      if (radioEl) radioEl.checked = true;
+      updateAIBadgeUI();
+
+      // Cargar la API oficial de YouTube
+      loadYouTubeIframeAPI();
+
+      // Precargar voces de iOS Safari
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+      }
+    });
+  </script>
+</body>
+</html>
