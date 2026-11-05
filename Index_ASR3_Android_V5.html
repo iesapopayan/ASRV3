@@ -1,0 +1,3515 @@
+<!DOCTYPE html>
+<html lang="es-CO" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#07111e" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Agustina Académica v3.6 • I.E. San Agustín (Popayán)</title>
+
+  <!-- Google Fonts: Inter & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS (Opcional, respaldado al 100% por el motor CSS nativo inferior para iPhone y Android) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ==========================================================================
+       MOTOR GRÁFICO CSS NATIVO BLINDADO PARA ANDROID, IPHONE (iOS SAFARI) Y PC
+       Garantiza que la interfaz luzca idéntica aunque falle o se bloquee Tailwind CDN
+       ========================================================================== */
+    :root {
+      --bg-deep: #060b14;
+      --bg-panel: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-alt: #131c2e;
+      --emerald-400: #34d399;
+      --emerald-500: #10b981;
+      --emerald-600: #059669;
+      --teal-700: #0f766e;
+      --amber-300: #fcd34d;
+      --amber-400: #fbbf24;
+      --amber-500: #f59e0b;
+      --rose-400: #fb7185;
+      --rose-500: #f43f5e;
+      --cyan-300: #67e8f9;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-subtle: rgba(148, 163, 184, 0.18);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Reset estricto de botones en iPhone (iOS Safari) y Android */
+    button, input, select {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    /* Contenedor Principal Adaptativo (Mobile-First + PC Card) */
+    .app-viewport {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100dvh;
+      background: radial-gradient(circle at 50% 0%, #0d2821 0%, #060b14 70%);
+    }
+
+    .app-shell {
+      position: relative;
+      width: 100%;
+      max-width: 460px;
+      height: 100dvh;
+      background-color: var(--bg-panel);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+    }
+
+    @media (min-width: 640px) {
+      .app-shell {
+        height: 94dvh;
+        border-radius: 26px;
+        border: 1px solid rgba(52, 211, 153, 0.22);
+      }
+    }
+
+    /* Encabezado Institucional */
+    .app-header {
+      background: linear-gradient(135deg, #0f172a 0%, #062c22 55%, #0f172a 100%);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.24);
+      padding: max(10px, env(safe-area-inset-top)) 14px 10px 14px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .header-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-avatar-wrap {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    .brand-avatar-core {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #10b981, #047857);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(167, 243, 208, 0.35);
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+      overflow: hidden;
+    }
+
+    .co-badge {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      padding: 1px 5px;
+      font-size: 9px;
+      font-weight: 700;
+      border-radius: 6px;
+      background-color: #0f172a;
+      border: 1px solid #334155;
+      color: var(--amber-300);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    .brand-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .version-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      background-color: rgba(30, 41, 59, 0.92);
+      border: 1px solid rgba(71, 85, 105, 0.75);
+      color: #e2e8f0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.12s ease, background-color 0.15s ease;
+      position: relative;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.93);
+    }
+
+    .btn-stop-speech {
+      padding: 6px 10px;
+      border-radius: 11px;
+      background: rgba(244, 63, 94, 0.22);
+      border: 1px solid rgba(244, 63, 94, 0.45);
+      color: #fda4af;
+      font-size: 11px;
+      font-weight: 600;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Barra de Píldoras de Estado */
+    .header-status-row {
+      margin-top: 8px;
+      padding-top: 7px;
+      border-top: 1px solid rgba(51, 65, 85, 0.65);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .pills-scroll {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .status-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid rgba(71, 85, 105, 0.8);
+      background-color: rgba(30, 41, 59, 0.9);
+      color: #e2e8f0;
+    }
+
+    .status-pill.amber {
+      background-color: rgba(245, 158, 11, 0.18);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: var(--amber-300);
+    }
+
+    .status-pill.emerald {
+      background-color: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.45);
+      color: #6ee7b7;
+    }
+
+    .status-pill.cyan {
+      color: var(--cyan-300);
+    }
+
+    /* ==========================================================================
+       ESCENARIO DE LA MASCOTA DE AGUSTINA ACADÉMICA (NUEVO)
+       ========================================================================== */
+    .mascot-stage-bar {
+      background: linear-gradient(180deg, rgba(6, 44, 34, 0.65) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.22);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .mascot-card-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .mascot-portrait-frame {
+      position: relative;
+      width: 62px;
+      height: 62px;
+      border-radius: 18px;
+      background: radial-gradient(circle at 50% 35%, rgba(16, 185, 129, 0.35), rgba(15, 23, 42, 0.95));
+      border: 2px solid rgba(52, 211, 153, 0.5);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .mascot-portrait-frame.speaking {
+      border-color: #10b981;
+      box-shadow: 0 0 22px rgba(16, 185, 129, 0.65);
+      animation: mascotBounce 0.9s ease-in-out infinite;
+    }
+
+    .mascot-portrait-frame.listening {
+      border-color: #f43f5e;
+      box-shadow: 0 0 22px rgba(244, 63, 94, 0.6);
+    }
+
+    .mascot-portrait-frame.thinking {
+      border-color: #f59e0b;
+      box-shadow: 0 0 22px rgba(245, 158, 11, 0.6);
+    }
+
+    @keyframes mascotBounce {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-3px) scale(1.03); }
+    }
+
+    @keyframes mascotMouthTalk {
+      0%, 100% { transform: scaleY(0.35); }
+      50% { transform: scaleY(1.25); }
+    }
+
+    .mascot-talking-mouth {
+      transform-origin: center;
+    }
+
+    .mascot-portrait-frame.speaking .mascot-talking-mouth {
+      animation: mascotMouthTalk 0.26s ease-in-out infinite;
+    }
+
+    .mascot-custom-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+
+    .mascot-change-btn {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: #fcd34d;
+      font-size: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mascot-speech-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .mascot-name-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #6ee7b7;
+    }
+
+    .mascot-status-bubble {
+      font-size: 11px;
+      color: #e2e8f0;
+      line-height: 1.35;
+      margin-top: 2px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Banner de Permiso de Micrófono */
+    .mic-onboarding-banner {
+      background: linear-gradient(90deg, rgba(69, 26, 3, 0.9) 0%, rgba(15, 23, 42, 0.96) 60%, rgba(6, 78, 59, 0.85) 100%);
+      border-bottom: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 8px 12px;
+      flex-shrink: 0;
+    }
+
+    .mic-banner-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .btn-allow-mic {
+      flex-shrink: 0;
+      padding: 7px 12px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+      color: #090d16;
+      font-weight: 700;
+      font-size: 11.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Barra de Chips de Consulta Rápida */
+    .quick-chips-bar {
+      background-color: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+      padding: 7px 12px;
+      flex-shrink: 0;
+    }
+
+    .quick-chips-scroll {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .chip-btn {
+      flex-shrink: 0;
+      font-size: 11.5px;
+      font-weight: 500;
+      background-color: rgba(30, 41, 59, 0.95);
+      color: #e2e8f0;
+      border: 1px solid rgba(71, 85, 105, 0.85);
+      border-radius: 11px;
+      padding: 5px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .chip-btn:hover, .chip-btn:active {
+      background-color: rgba(6, 78, 59, 0.75);
+      border-color: rgba(16, 185, 129, 0.5);
+      color: #a7f3d0;
+    }
+
+    /* Área Central de Conversación */
+    .chat-main-area {
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: linear-gradient(180deg, #0f172a 0%, #090e1a 100%);
+    }
+
+    .msg-row-agustina {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+    }
+
+    .msg-row-user {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .msg-avatar-mini {
+      width: 32px;
+      height: 32px;
+      border-radius: 11px;
+      background-color: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #34d399;
+      flex-shrink: 0;
+      margin-top: 2px;
+      overflow: hidden;
+    }
+
+    .msg-bubble-agustina {
+      flex: 1;
+      min-width: 0;
+      background-color: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(71, 85, 105, 0.75);
+      border-radius: 16px;
+      border-top-left-radius: 4px;
+      padding: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .msg-bubble-user {
+      max-width: 86%;
+      background: linear-gradient(135deg, #059669 0%, #0f766e 100%);
+      color: #ffffff;
+      border-radius: 16px;
+      border-bottom-right-radius: 4px;
+      padding: 10px 13px;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-listen-again {
+      font-size: 11px;
+      color: #6ee7b7;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background-color: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* Footer Ergonómico con Safe-Area para iPhone y Android */
+    .app-footer {
+      background-color: #070b14;
+      border-top: 1px solid rgba(51, 65, 85, 0.85);
+      padding: 8px 12px calc(10px + env(safe-area-inset-bottom)) 12px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .ptt-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .ptt-btn-circle {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      border-radius: 9999px;
+      background: linear-gradient(180deg, #10b981 0%, #059669 55%, #0f766e 100%);
+      color: #ffffff;
+      border: 4px solid #1e293b;
+      box-shadow: 0 8px 25px rgba(5, 150, 105, 0.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+    }
+
+    .text-query-form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-manual-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .input-manual-field {
+      width: 100%;
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-size: 13px;
+      border-radius: 12px;
+      padding: 9px 32px 9px 12px;
+      border: 1px solid #1e293b;
+    }
+
+    .input-manual-field:focus {
+      border-color: #10b981;
+    }
+
+    .btn-send-text {
+      padding: 9px 14px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Desactivar menú contextual y selección de texto en el botón Push-To-Talk */
+    .ptt-touch-shield {
+      touch-action: none !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      -webkit-touch-callout: none !important;
+    }
+
+    /* Animaciones de ondas vocales de Agustina */
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      70% { transform: scale(1.35); opacity: 0; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    @keyframes waveBar {
+      0%, 100% { height: 5px; }
+      50% { height: 20px; }
+    }
+
+    .animate-pulse-ring {
+      animation: pulseRing 1.6s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    }
+
+    .wave-box {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 8px;
+      background-color: rgba(6, 11, 20, 0.8);
+      border: 1px solid rgba(51, 65, 85, 0.75);
+      flex-shrink: 0;
+    }
+
+    .wave-bar {
+      width: 3.5px;
+      height: 5px;
+      border-radius: 9999px;
+      background-color: #475569;
+      transition: height 0.15s ease, background-color 0.2s ease;
+    }
+
+    .state-listening .wave-bar {
+      background-color: #f43f5e;
+      animation: waveBar 0.55s ease-in-out infinite;
+    }
+
+    .state-thinking .wave-bar {
+      background-color: #f59e0b;
+      animation: waveBar 0.85s ease-in-out infinite;
+    }
+
+    .state-speaking .wave-bar {
+      background-color: #10b981;
+      animation: waveBar 0.45s ease-in-out infinite;
+    }
+
+    .wave-bar:nth-child(1) { animation-delay: 0.05s; }
+    .wave-bar:nth-child(2) { animation-delay: 0.18s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.08s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.28s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.12s; }
+
+    /* Scrollbar limpio */
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.22);
+      border-radius: 9999px;
+    }
+
+    /* Botón PTT Activo */
+    .ptt-active {
+      transform: scale(0.94);
+      background: linear-gradient(180deg, #f43f5e 0%, #e11d48 60%, #be123c 100%) !important;
+      box-shadow: 0 0 32px rgba(244, 63, 94, 0.75), inset 0 0 12px rgba(255, 255, 255, 0.35) !important;
+    }
+
+    .ptt-needs-permission {
+      box-shadow: 0 0 22px rgba(245, 158, 11, 0.45);
+    }
+
+    /* Modal de Configuración */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background-color: rgba(6, 11, 20, 0.85);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 430px;
+      max-height: 88dvh;
+      background-color: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 22px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    }
+  </style>
+</head>
+
+<body class="app-viewport select-none">
+
+  <!-- Input oculto para subir o elegir la imagen personalizada de la mascota desde el celular o PC -->
+  <input
+    id="inputMascotFile"
+    type="file"
+    accept="image/*"
+    class="hidden"
+    onchange="cargarImagenMascotaDesdeArchivo(event)"
+  />
+
+  <!-- Contenedor Principal Mobile-First (iPhone, Android y Escritorio Windows) -->
+  <div class="app-shell">
+
+    <!-- Barra Superior Institucional -->
+    <header class="app-header">
+      <div class="header-top-row">
+        <!-- Identidad Agustina + I.E. San Agustín -->
+        <div class="brand-group">
+          <!-- Avatar Estado Agustina -->
+          <div class="brand-avatar-wrap">
+            <div id="avatarRing" class="hidden" style="position:absolute; inset:-4px; border-radius:999px; pointer-events:none;"></div>
+            <div id="avatarCore" class="brand-avatar-core">
+              <i id="avatarIcon" class="fa-solid fa-graduation-cap text-white text-lg"></i>
+            </div>
+            <!-- Bandera Colombia Badge -->
+            <span class="co-badge" title="Voz Regional Colombiana">
+              <span>🇨🇴</span>
+              <span id="localeBadgeText">CO</span>
+            </span>
+          </div>
+
+          <div style="min-width:0;">
+            <div class="brand-title-row">
+              <h1 class="brand-title">Agustina Académica</h1>
+              <span class="version-pill">v3.6</span>
+            </div>
+            <p class="brand-subtitle">
+              <span id="micDotIndicator" style="width:8px; height:8px; border-radius:999px; background:#fbbf24; display:inline-block;"></span>
+              <span>I.E. San Agustín • Popayán</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Acciones Rápidas: Silenciar Voz / Cambiar Mascota / Ajustes Multi-IA -->
+        <div class="header-actions">
+          <button
+            id="btnStopSpeech"
+            onclick="detenerVozInmediatamente()"
+            class="hidden btn-stop-speech"
+            title="Interrumpir lectura de voz"
+          >
+            <i class="fa-solid fa-volume-xmark"></i>
+            <span>Callar</span>
+          </button>
+
+          <button
+            id="btnToggleVoiceMute"
+            onclick="alternarRespuestaHablada()"
+            class="icon-btn"
+            style="color:#34d399;"
+            title="Activar/Desactivar lectura automática en voz alta"
+          >
+            <i id="iconVoiceMute" class="fa-solid fa-volume-high text-sm"></i>
+          </button>
+
+          <button
+            onclick="abrirModalConfiguracion()"
+            class="icon-btn"
+            title="Configurar Motores IA, Mascota y Voz Colombiana"
+          >
+            <i class="fa-solid fa-sliders text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Estado Multi-IA y Visualizador de Ondas -->
+      <div class="header-status-row">
+        <div class="pills-scroll custom-scroll">
+          <button
+            id="micStatusPill"
+            onclick="solicitarPermisoMicrofonoPersistente(true)"
+            class="status-pill amber"
+            title="Estado del micrófono para toda la sesión"
+          >
+            <i id="micStatusIcon" class="fa-solid fa-microphone-slash" style="font-size:10px;"></i>
+            <span id="micStatusText">Activar Mic (1 Clic)</span>
+          </button>
+
+          <span id="activeEnginePill" class="status-pill emerald">
+            <i class="fa-solid fa-network-wired" style="font-size:10px;"></i>
+            <span id="activeEngineText">Cascada 4-IA Activa</span>
+          </span>
+
+          <button
+            id="triggerModePill"
+            onclick="alternarModoDisparoPTT()"
+            class="status-pill cyan"
+            title="Cambiar entre Mantener Presionado o Tocar para Hablar"
+          >
+            <i class="fa-solid fa-hand-pointer" style="font-size:10px;"></i>
+            <span id="triggerModeText">Modo: Mantener</span>
+          </button>
+        </div>
+
+        <!-- Ecualizador de Estado de Agustina -->
+        <div id="waveContainer" class="wave-box">
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <span id="statusStateLabel" style="margin-left:5px; font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase;">
+            Lista
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ESCENARIO INTERACTIVO DE LA MASCOTA OFICIAL DE AGUSTINA ACADÉMICA -->
+    <section class="mascot-stage-bar" aria-label="Mascota Oficial Agustina Académica">
+      <div class="mascot-card-left">
+        <!-- Marco animado de la Mascota (Soporta SVG interactivo + Imagen personalizada subida o ./mascota.png) -->
+        <div
+          id="mascotPortraitFrame"
+          onclick="hablarSaludoMascota()"
+          class="mascot-portrait-frame"
+          title="Toca a la mascota para escucharla o presiona el ícono de cámara para cargar tu imagen de mascota"
+          style="cursor:pointer;"
+        >
+          <!-- Imagen personalizada de la mascota (se activa automáticamente si existe mascota.png o si el usuario elige su imagen) -->
+          <img
+            id="customMascotImg"
+            src="mascota.png"
+            alt="Mascota Agustina"
+            class="mascot-custom-img hidden"
+            onload="mostrarMascotaPersonalizadaCargada()"
+            onerror="ocultarMascotaPersonalizadaSiFalla()"
+          />
+
+          <!-- Ilustración Vectorial Animada de la Mascota Agustina (I.E. San Agustín) -->
+          <svg id="defaultMascotSvg" viewBox="0 0 120 120" width="58" height="58" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="gradCap" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#065f46" />
+                <stop offset="100%" stop-color="#047857" />
+              </linearGradient>
+              <linearGradient id="gradBody" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#10b981" />
+                <stop offset="100%" stop-color="#059669" />
+              </linearGradient>
+            </defs>
+            <!-- Aura académica brillante -->
+            <circle cx="60" cy="64" r="46" fill="rgba(16, 185, 129, 0.15)" />
+            <!-- Cuerpo Búho/Estudiante Agustiniano -->
+            <ellipse cx="60" cy="74" rx="34" ry="32" fill="url(#gradBody)" stroke="#34d399" stroke-width="2" />
+            <!-- Pecho crema -->
+            <ellipse cx="60" cy="79" rx="22" ry="22" fill="#ecfdf5" />
+            <!-- Bufanda Institucional Verde y Oro -->
+            <path d="M34 62 Q60 72 86 62 L83 70 Q60 79 37 70 Z" fill="#f59e0b" />
+            <rect x="66" y="65" width="8" height="16" rx="3" fill="#d97706" />
+            <!-- Ojos Grandes Expresivos con Gafas Académicas -->
+            <circle cx="46" cy="50" r="13" fill="#ffffff" stroke="#fbbf24" stroke-width="2.5" />
+            <circle cx="74" cy="50" r="13" fill="#ffffff" stroke="#fbbf24" stroke-width="2.5" />
+            <line x1="59" y1="50" x2="61" y2="50" stroke="#fbbf24" stroke-width="2.5" />
+            <!-- Pupilas -->
+            <circle cx="47" cy="50" r="6" fill="#0f172a" />
+            <circle cx="73" cy="50" r="6" fill="#0f172a" />
+            <circle cx="49" cy="48" r="2" fill="#ffffff" />
+            <circle cx="75" cy="48" r="2" fill="#ffffff" />
+            <!-- Pico / Boca animada al hablar -->
+            <polygon class="mascot-talking-mouth" points="55,57 65,57 60,65" fill="#f59e0b" stroke="#b45309" stroke-width="1" />
+            <!-- Birrete de Graduación I.E. San Agustín -->
+            <polygon points="60,12 22,26 60,38 98,26" fill="url(#gradCap)" stroke="#34d399" stroke-width="1.5" />
+            <rect x="42" y="33" width="36" height="7" rx="3" fill="#064e3b" />
+            <!-- Borla Dorada -->
+            <path d="M60 25 L88 30 L88 43" stroke="#fbbf24" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            <circle cx="88" cy="44" r="3" fill="#fbbf24" />
+          </svg>
+
+          <!-- Botón para cargar la foto/imagen de la mascota del usuario -->
+          <button
+            type="button"
+            onclick="event.stopPropagation(); abrirSelectorImagenMascota();"
+            class="mascot-change-btn"
+            title="Cargar la imagen de tu mascota desde el celular o computador"
+          >
+            <i class="fa-solid fa-camera"></i>
+          </button>
+        </div>
+
+        <!-- Estado interactivo de la Mascota -->
+        <div class="mascot-speech-info">
+          <div class="mascot-name-tag">
+            <span>Mascota Agustina • I.E. San Agustín</span>
+            <button
+              type="button"
+              onclick="abrirSelectorImagenMascota()"
+              style="font-size:10px; font-weight:600; color:#fcd34d; background:rgba(245,158,11,0.16); border:1px solid rgba(245,158,11,0.35); padding:1px 6px; border-radius:6px;"
+            >
+              <i class="fa-solid fa-image"></i> Poner imagen mascota
+            </button>
+          </div>
+          <p id="mascotStatusPhrase" class="mascot-status-bubble">
+            ¡Hola! Soy tu mascota académica en Popayán. Mantén presionado el botón verde para preguntarme lo que quieras.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Banner de Activación de Micrófono de Un Solo Clic -->
+    <div id="micOnboardingBanner" class="mic-onboarding-banner">
+      <div class="mic-banner-inner">
+        <div style="display:flex; align-items:flex-start; gap:8px; min-width:0;">
+          <div style="width:28px; height:28px; border-radius:8px; background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.4); display:flex; align-items:center; justify-content:center; color:#fcd34d; flex-shrink:0;">
+            <i class="fa-solid fa-shield-halved" style="font-size:12px;"></i>
+          </div>
+          <div style="min-width:0;">
+            <p style="font-size:11.5px; font-weight:700; color:#fde68a; line-height:1.25;">
+              Paso único: Activa tu micrófono con 1 solo toque
+            </p>
+            <p style="font-size:10.5px; color:#cbd5e1; line-height:1.3; margin-top:2px;">
+              El permiso quedará guardado toda la sesión en Android, iPhone y Windows.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onclick="solicitarPermisoMicrofonoPersistente(true)"
+          class="btn-allow-mic"
+        >
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Permitir Mic</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Chips de Consultas Rápidas -->
+    <div class="quick-chips-bar">
+      <div class="quick-chips-scroll custom-scroll">
+        <span style="font-size:10px; font-weight:700; text-transform:uppercase; color:#94a3b8; flex-shrink:0; margin-right:2px;">
+          <i class="fa-solid fa-bolt" style="color:#fbbf24;"></i> 1-Clic:
+        </span>
+        <button onclick="ejecutarConsultaSugerida('¿Qué es la célula, cuáles son sus partes principales y cómo se clasifica?')" class="chip-btn">
+          <i class="fa-solid fa-dna" style="color:#34d399;"></i>
+          <span>¿Qué es la célula?</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('Explícame el Teorema de Pitágoras con su fórmula y un ejemplo numérico paso a paso')" class="chip-btn">
+          <i class="fa-solid fa-square-root-variable" style="color:#fbbf24;"></i>
+          <span>Teorema de Pitágoras</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('¿Cómo se prepara el pandebono tradicional colombiano en casa?')" class="chip-btn">
+          <i class="fa-solid fa-utensils" style="color:#fb923c;"></i>
+          <span>Receta de Pandebono</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('¿Cómo se conecta un puente H L298N con Arduino para controlar dos motores DC?')" class="chip-btn">
+          <i class="fa-solid fa-microchip" style="color:#22d3ee;"></i>
+          <span>Puente H L298N</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('¿Qué son los agujeros negros y cómo se forman en el universo?')" class="chip-btn">
+          <i class="fa-solid fa-meteor" style="color:#f472b6;"></i>
+          <span>Agujeros Negros</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('¿Cuál es la misión, visión y valores de la Institución Educativa San Agustín de Popayán?')" class="chip-btn">
+          <i class="fa-solid fa-school" style="color:#34d399;"></i>
+          <span>I.E. San Agustín</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Área Central de Conversación Universal -->
+    <main id="chatContainer" class="chat-main-area custom-scroll">
+      <!-- Mensaje de Bienvenida Inicial de Agustina -->
+      <div class="msg-row-agustina">
+        <div class="msg-avatar-mini">
+          <i class="fa-solid fa-robot" style="font-size:14px;"></i>
+        </div>
+        <div class="msg-bubble-agustina">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
+            <span style="font-size:11px; font-weight:700; color:#34d399; text-transform:uppercase;">
+              Agustina Académica v3.6 • Voz Android Activa
+            </span>
+            <button
+              onclick="hablarTextoConAgustina('Agustina Académica versión tres punto seis lista. El reconocimiento de voz en Android ahora tiene acceso directo y exclusivo al micrófono.')"
+              class="btn-listen-again"
+              title="Escuchar bienvenida corta"
+            >
+              <i class="fa-solid fa-volume-high" style="font-size:10px;"></i>
+              <span>Escuchar</span>
+            </button>
+          </div>
+          <p style="font-size:13.5px; color:#f1f5f9; line-height:1.5;">
+            ¡Bienvenido a <strong style="color:#6ee7b7;">Agustina Académica v3.6</strong> de la <strong style="color:#ffffff;">I.E. San Agustín</strong>! Optimizada con <strong>acceso exclusivo de micrófono para Android</strong> y respuesta directa desde la primera frase.
+          </p>
+          <p style="font-size:12px; color:#cbd5e1; margin-top:6px; line-height:1.45;">
+            <i class="fa-solid fa-camera" style="color:#fbbf24; margin-right:4px;"></i>
+            <strong>Personaliza tu mascota:</strong> Toca el botón <em>"Poner imagen mascota"</em> arriba para elegir la imagen de la mascota desde tu galería o colócala como <code>mascota.png</code> en tu repositorio.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Burbuja Flotante de Transcripción y Nivel de Voz en Vivo -->
+    <div id="liveTranscriptOverlay" class="hidden" style="padding:0 12px 8px 12px; z-index:25;">
+      <div style="background:rgba(76, 5, 25, 0.96); border:1px solid rgba(244, 63, 94, 0.55); border-radius:16px; padding:10px 12px; box-shadow:0 10px 30px rgba(0,0,0,0.6);">
+        <div style="display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:#fecdd3; margin-bottom:6px;">
+          <span style="font-weight:700; display:flex; align-items:center; gap:6px;">
+            <span style="width:9px; height:9px; border-radius:999px; background:#f43f5e; display:inline-block;"></span>
+            <span id="liveOverlayActionLabel">Escuchando tu voz... (Suelta para responder)</span>
+          </span>
+          <span id="pttTimerText" style="font-family:monospace; font-size:11px; background:rgba(136,19,55,0.8); padding:2px 6px; border-radius:6px;">0.0s</span>
+        </div>
+
+        <div style="width:100%; height:6px; background:#4c0519; border-radius:999px; overflow:hidden; margin-bottom:6px;">
+          <div id="micVolumeMeterBar" style="height:100%; width:8%; background:linear-gradient(90deg, #34d399, #fbbf24, #f43f5e); transition:width 0.08s ease;"></div>
+        </div>
+
+        <p id="liveTranscriptText" style="font-size:13px; color:#ffffff; font-weight:500; font-style:italic; min-height:20px;">
+          Habla ahora con confianza...
+        </p>
+      </div>
+    </div>
+
+    <!-- Panel Inferior Ergonómico (Android / iPhone / Windows): Push-to-Talk + Entrada de Texto -->
+    <footer class="app-footer">
+      <div class="ptt-zone">
+        <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+          <div id="pttPulseRing" class="hidden animate-pulse-ring" style="position:absolute; width:88px; height:88px; border-radius:9999px; background:rgba(244, 63, 94, 0.4); pointer-events:none;"></div>
+
+          <button
+            id="btnPushToTalk"
+            type="button"
+            aria-label="Botón de voz de Agustina"
+            class="ptt-touch-shield ptt-btn-circle"
+          >
+            <i id="pttIcon" class="fa-solid fa-microphone" style="font-size:22px; margin-bottom:2px; pointer-events:none;"></i>
+            <span id="pttShortLabel" style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#d1fae5; pointer-events:none;">
+              Activar Mic
+            </span>
+          </button>
+        </div>
+
+        <p id="pttInstructionText" style="font-size:11px; font-weight:500; color:#cbd5e1; text-align:center; margin-top:5px;">
+          Haz 1 clic para activar el micrófono • <span style="color:#34d399; font-weight:700;">Luego mantén presionado para hablar</span>
+        </p>
+      </div>
+
+      <!-- Barra de Entrada Escrita Secundaria -->
+      <form id="textQueryForm" onsubmit="manejarEnvioTextoManual(event)" class="text-query-form">
+        <div class="input-manual-wrap">
+          <input
+            id="inputManualQuery"
+            type="text"
+            autocomplete="off"
+            placeholder="Pregunta sobre cualquier tema (académico o libre)..."
+            class="input-manual-field"
+          />
+          <button
+            type="button"
+            onclick="limpiarConversacion()"
+            style="position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#64748b; font-size:12px;"
+            title="Limpiar historial de chat"
+          >
+            <i class="fa-solid fa-broom"></i>
+          </button>
+        </div>
+        <button
+          type="submit"
+          id="btnSendText"
+          class="btn-send-text"
+          title="Enviar consulta"
+        >
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </form>
+    </footer>
+
+    <!-- Modal de Configuración Multi-IA, Mascota y Voz Colombiana -->
+    <div id="settingsModal" class="hidden modal-backdrop">
+      <div class="modal-card">
+        <div style="padding:14px 18px; background:#090d16; border-bottom:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:32px; height:32px; border-radius:10px; background:rgba(16,185,129,0.2); border:1px solid rgba(16,185,129,0.4); display:flex; align-items:center; justify-content:center; color:#34d399;">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div>
+              <h2 style="font-weight:700; font-size:15px; color:#ffffff;">Configuración Multi-IA y Mascota</h2>
+              <p style="font-size:11px; color:#94a3b8;">I.E. San Agustín • Agustina v3.5</p>
+            </div>
+          </div>
+          <button onclick="cerrarModalConfiguracion()" class="icon-btn" style="width:32px; height:32px;">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="custom-scroll" style="padding:16px; overflow-y:auto; display:flex; flex-direction:column; gap:14px; font-size:12px;">
+
+          <!-- 0. Imagen Personalizada de la Mascota -->
+          <div style="background:rgba(30,41,59,0.6); border:1px solid #334155; border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+            <label style="font-weight:700; color:#fcd34d; display:flex; align-items:center; gap:6px; text-transform:uppercase; font-size:11px;">
+              <i class="fa-solid fa-paw"></i>
+              <span>Mascota Institucional de Agustina</span>
+            </label>
+            <p style="font-size:11px; color:#cbd5e1;">
+              Puedes subir la imagen de la mascota desde tu celular/PC (queda guardada automáticamente en el navegador) o restaurar la mascota animada por defecto:
+            </p>
+            <div style="display:flex; gap:8px;">
+              <button
+                type="button"
+                onclick="abrirSelectorImagenMascota()"
+                style="flex:1; padding:8px 10px; border-radius:10px; background:rgba(16,185,129,0.25); border:1px solid rgba(16,185,129,0.5); color:#a7f3d0; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px;"
+              >
+                <i class="fa-solid fa-upload"></i>
+                <span>Elegir Imagen de Mascota</span>
+              </button>
+              <button
+                type="button"
+                onclick="restaurarMascotaPorDefecto()"
+                style="padding:8px 10px; border-radius:10px; background:rgba(51,65,85,0.7); border:1px solid #475569; color:#e2e8f0; font-weight:600;"
+                title="Volver a la mascota vectorial animada"
+              >
+                Restaurar
+              </button>
+            </div>
+          </div>
+
+          <!-- 1. Selección de Voz Colombiana (es-CO) -->
+          <div style="background:rgba(30,41,59,0.6); border:1px solid #334155; border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <label style="font-weight:700; color:#6ee7b7; display:flex; align-items:center; gap:6px; text-transform:uppercase; font-size:11px;">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>1. Motor Vocal Colombiano (es-CO)</span>
+              </label>
+              <span id="detectedVoicesCount" class="status-pill emerald" style="font-size:10px;">
+                Detectando...
+              </span>
+            </div>
+
+            <div>
+              <label for="selectVoice" style="display:block; color:#cbd5e1; margin-bottom:4px; font-weight:500;">Voz preferida del sistema:</label>
+              <select id="selectVoice" onchange="cambiarVozSeleccionada()" style="width:100%; background:#090d16; border:1px solid #334155; border-radius:10px; padding:8px 10px; color:#f8fafc;">
+                <option value="auto">Priorizar Español Colombia (es-CO) Automático</option>
+              </select>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:11px; color:#cbd5e1; margin-bottom:4px;">
+                  <span>Velocidad:</span>
+                  <span id="valVoiceRate" style="font-family:monospace; color:#34d399;">1.02x</span>
+                </div>
+                <input id="rangeVoiceRate" type="range" min="0.8" max="1.3" step="0.02" value="1.02" oninput="actualizarSlidersVoz()" style="width:100%; accent-color:#10b981;" />
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:11px; color:#cbd5e1; margin-bottom:4px;">
+                  <span>Tono:</span>
+                  <span id="valVoicePitch" style="font-family:monospace; color:#34d399;">1.00</span>
+                </div>
+                <input id="rangeVoicePitch" type="range" min="0.8" max="1.2" step="0.05" value="1.00" oninput="actualizarSlidersVoz()" style="width:100%; accent-color:#10b981;" />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick="probarVozColombiana()"
+              style="width:100%; padding:8px 12px; border-radius:10px; background:rgba(16,185,129,0.22); border:1px solid rgba(16,185,129,0.45); color:#a7f3d0; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px;"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+              <span>Probar Voz Colombiana</span>
+            </button>
+          </div>
+
+          <!-- 2. Enrutador Multi-IA -->
+          <div style="background:rgba(30,41,59,0.6); border:1px solid #334155; border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <label style="font-weight:700; color:#67e8f9; display:flex; align-items:center; gap:6px; text-transform:uppercase; font-size:11px;">
+              <i class="fa-solid fa-microchip"></i>
+              <span>2. Orquestador de Sistemas de IA</span>
+            </label>
+
+            <div>
+              <label for="selectRoutingMode" style="display:block; color:#cbd5e1; margin-bottom:4px; font-weight:500;">Estrategia de Enrutamiento Universal:</label>
+              <select id="selectRoutingMode" onchange="guardarConfiguracionMultiIA()" style="width:100%; background:#090d16; border:1px solid #334155; border-radius:10px; padding:8px 10px; color:#f8fafc;">
+                <option value="auto">Auto • Cascada 4 Capas (Gemini 3 + Cloud LLM + Groq + Wiki ES)</option>
+                <option value="gemini">Capa 1: Gemini 3 Flash (Multimodal Voz + Texto)</option>
+                <option value="pollinations">Capa 2: Cloud LLM Libre (OpenAI Pollinations Zero-Config)</option>
+                <option value="groq">Capa 3: Groq Cloud • Llama 3.3 70B + Whisper</option>
+                <option value="wiki">Capa 4: Wikipedia en Español en Vivo + Enciclopedia Científica</option>
+              </select>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div>
+                <span style="display:block; color:#e2e8f0; font-weight:500;">Búsqueda en Tiempo Real (Google Search)</span>
+                <span style="font-size:10.5px; color:#94a3b8;">Enriquece respuestas con datos verificados</span>
+              </div>
+              <input id="chkSearchGrounding" type="checkbox" checked onchange="guardarConfiguracionMultiIA()" style="width:18px; height:18px; accent-color:#10b981; -webkit-appearance:checkbox; appearance:checkbox;" />
+            </div>
+
+            <div style="padding-top:8px; border-top:1px solid #334155; display:flex; flex-direction:column; gap:8px;">
+              <div>
+                <label for="inputGeminiKey" style="display:block; color:#cbd5e1; margin-bottom:4px;">Clave API Gemini Opcional (<code style="color:#6ee7b7;">AIza...</code>):</label>
+                <input
+                  id="inputGeminiKey"
+                  type="password"
+                  placeholder="Dejar vacío para usar Cloud LLM gratuito"
+                  onchange="guardarConfiguracionMultiIA()"
+                  style="width:100%; background:#090d16; border:1px solid #334155; border-radius:10px; padding:8px 10px; color:#f8fafc;"
+                />
+              </div>
+              <div>
+                <label for="inputGroqKey" style="display:block; color:#cbd5e1; margin-bottom:4px;">Clave API Groq Opcional (<code style="color:#fcd34d;">gsk_...</code>):</label>
+                <input
+                  id="inputGroqKey"
+                  type="password"
+                  placeholder="Opcional: activa Whisper y Llama 3.3"
+                  onchange="guardarConfiguracionMultiIA()"
+                  style="width:100%; background:#090d16; border:1px solid #334155; border-radius:10px; padding:8px 10px; color:#f8fafc;"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Enfoque de Respuesta -->
+          <div style="background:rgba(30,41,59,0.6); border:1px solid #334155; border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+            <label style="font-weight:700; color:#fcd34d; display:flex; align-items:center; gap:6px; text-transform:uppercase; font-size:11px;">
+              <i class="fa-solid fa-chalkboard-user"></i>
+              <span>3. Estilo de Respuesta</span>
+            </label>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              <button
+                type="button"
+                id="btnModeSocratic"
+                onclick="seleccionarModoPedagogico('socratico')"
+                style="padding:10px; border-radius:12px; border:1px solid #10b981; background:rgba(16,185,129,0.2); text-align:left;"
+              >
+                <div style="font-weight:700; color:#ffffff; display:flex; align-items:center; justify-content:space-between;">
+                  <span>Explicación Completa</span>
+                  <i class="fa-solid fa-book-open" style="color:#34d399;"></i>
+                </div>
+                <p style="font-size:10px; color:#cbd5e1; margin-top:4px;">2 a 3 párrafos claros con ejemplos.</p>
+              </button>
+
+              <button
+                type="button"
+                id="btnModeConcise"
+                onclick="seleccionarModoPedagogico('conciso')"
+                style="padding:10px; border-radius:12px; border:1px solid #334155; background:rgba(15,23,42,0.6); text-align:left;"
+              >
+                <div style="font-weight:700; color:#ffffff; display:flex; align-items:center; justify-content:space-between;">
+                  <span>Resumen Ágil</span>
+                  <i class="fa-solid fa-bolt" style="color:#fbbf24;"></i>
+                </div>
+                <p style="font-size:10px; color:#cbd5e1; margin-top:4px;">Respuesta directa en 1 párrafo.</p>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="padding:12px 16px; background:#090d16; border-top:1px solid #1e293b;">
+          <button
+            type="button"
+            onclick="cerrarModalConfiguracion()"
+            style="width:100%; padding:10px; border-radius:12px; background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; font-weight:700; font-size:12.5px;"
+          >
+            Guardar y Volver a Agustina
+          </button>
+        </div>
+      </div>
+  <!-- Lógica Completa de Agustina Académica v3.6 -->
+  <script>
+    /***************************************************************************
+     * 1. ESTADO GLOBAL Y MICRÓFONO OPTIMIZADO PARA ANDROID, IPHONE Y WINDOWS
+     ***************************************************************************/
+    const apiKey = ""; // Clave inyectada automáticamente por el entorno para Gemini API
+    window.persistentMicStream = null;
+    const IS_ANDROID = /Android/i.test(navigator.userAgent || '');
+
+    const appState = {
+      status: 'IDLE', // 'IDLE' | 'LISTENING' | 'THINKING' | 'SPEAKING'
+      autoSpeak: true,
+      routingMode: 'auto', // 'auto' | 'gemini' | 'pollinations' | 'groq' | 'wiki'
+      pedagogicalMode: 'socratico', // 'socratico' | 'conciso'
+      triggerMode: 'hold', // 'hold' (Mantener presionado y soltar) | 'tap' (1 toque iniciar / 1 toque enviar)
+      useSearchGrounding: true,
+      customGeminiKey: '',
+      groqApiKey: '',
+      voiceRate: 1.02,
+      voicePitch: 1.0,
+      selectedVoiceURI: 'auto',
+      availableVoices: [],
+      // Estado de Permiso Persistente de Micrófono
+      micAuthorized: false,
+      micRequestInProgress: false,
+      audioContext: null,
+      analyserNode: null,
+      volumeAnimFrame: null,
+      maxRmsDuringHold: 0,
+      // Grabación y Transcripción de Voz en Android/PC
+      isHoldingPTT: false,
+      isConsolidatingPTT: false,
+      pttStartTime: 0,
+      pttTimerInterval: null,
+      finalTranscript: '',
+      interimTranscript: '',
+      lastRecognizedSnippet: '',
+      recognitionActive: false,
+      recognitionEndResolver: null,
+      lastSpeechError: null,
+      mediaRecorder: null,
+      recordedAudioChunks: [],
+      recordedAudioMimeType: 'audio/webm',
+      chatHistory: [],
+      recognition: null,
+      recognitionSupported: false,
+      currentAudioSource: null,
+      // Cola de oraciones para TTS sin cortes a los 15 segundos
+      ttsQueue: [],
+      ttsKeepAliveTimer: null,
+      isSpeakingQueue: false
+    };
+
+    // Enciclopedia Científica, Académica y Cultural Local de Alta Precisión
+    const ENCICLOPEDIA_CIENTIFICA_Y_CULTURAL = [
+      {
+        keywords: ['celula', 'célula', 'celulas', 'células', 'eucariota', 'procariota', 'organelos', 'citoplasma'],
+        categoria: 'Biología y Ciencias Naturales',
+        respuesta: 'La célula es la unidad morfológica, estructural y funcional fundamental de todos los seres vivos; de hecho, todo organismo vivo está constituido por una sola célula (unicelular, como las bacterias y protozoos) o por millones de ellas (pluricelular, como las plantas y los animales).\n\nTodas las células comparten tres componentes esenciales: la membrana plasmática (que la delimita y regula el paso de nutrientes y desechos), el citoplasma (medio acuoso interno donde ocurren las reacciones metabólicas y se alojan los organelos) y el material genético o ADN (que contiene las instrucciones hereditarias).\n\nSe clasifican en dos grandes tipos: las células procariotas, que son más simples y antiguas y carecen de núcleo definido (su ADN está libre en el citoplasma, como en las bacterias), y las células eucariotas, que poseen un núcleo verdadero rodeado por membrana nuclear y organelos especializados como las mitocondrias (productoras de energía ATP), los ribosomas (síntesis de proteínas) y, en el caso de las células vegetales, cloroplastos para la fotosíntesis y pared celular de celulosa.'
+      },
+      {
+        keywords: ['mitocondria', 'mitocondrias', 'atp', 'respiracion celular'],
+        categoria: 'Biología Celular',
+        respuesta: 'La mitocondria es un organelo fundamental de las células eucariotas encargado de suministrar la mayor parte de la energía necesaria para la actividad celular mediante el proceso de respiración celular aeróbica. Actúa como la central energética de la célula, oxidando glucosa, ácidos grasos y aminoácidos para sintetizar trifosfato de adenosina (ATP), la moneda energética universal de los seres vivos. Además, las mitocondrias poseen su propio ADN circular (ADN mitocondrial) y ribosomas propios, lo que respalda la teoría endosimbiótica sobre su origen evolutivo.'
+      },
+      {
+        keywords: ['fotosintesis', 'fotosíntesis', 'clorofila', 'cloroplasto'],
+        categoria: 'Biología y Botánica',
+        respuesta: 'La fotosíntesis es el proceso bioquímico mediante el cual las plantas, las algas y algunas bacterias transforman la energía de la luz solar en energía química. Ocurre dentro de los cloroplastos gracias a un pigmento verde llamado clorofila. Durante este proceso, la planta absorbe dióxido de carbono del aire y agua del suelo para producir glucosa (su alimento energético) y liberar oxígeno puro a la atmósfera, siendo la base de la vida y de la cadena alimenticia en la Tierra.'
+      },
+      {
+        keywords: ['adn', 'acido desoxirribonucleico', 'arn', 'genetica', 'genes', 'cromosoma'],
+        categoria: 'Genética y Biología Molecular',
+        respuesta: 'El ADN (ácido desoxirribonucleico) es la molécula portadora de toda la información genética necesaria para el desarrollo, funcionamiento y reproducción de los seres vivos. Tiene una estructura de doble hélice formada por nucleótidos que contienen cuatro bases nitrogenadas: adenina (A), timina (T), citosina (C) y guanina (G), donde la adenina siempre se une con la timina y la citosina con la guanina. Los segmentos específicos de ADN que codifican proteínas se denominan genes y se empaquetan dentro del núcleo celular en estructuras llamadas cromosomas.'
+      },
+      {
+        keywords: ['pitagoras', 'pitágoras', 'hipotenusa', 'cateto', 'catetos'],
+        categoria: 'Matemáticas y Geometría',
+        respuesta: 'El Teorema de Pitágoras establece que, en todo triángulo rectángulo (aquel que tiene un ángulo recto de 90 grados), el cuadrado de la longitud de la hipotenusa (el lado más largo, opuesto al ángulo recto) es igual a la suma de los cuadrados de las longitudes de los dos catetos. Su fórmula es: a al cuadrado más b al cuadrado es igual a c al cuadrado.\n\nPor ejemplo, si un triángulo rectángulo tiene un cateto de 3 centímetros y otro cateto de 4 centímetros, calculamos 3 al cuadrado (9) más 4 al cuadrado (16), lo que suma 25. Al sacar la raíz cuadrada de 25, obtenemos que la hipotenusa mide exactamente 5 centímetros.'
+      },
+      {
+        keywords: ['cuadratica', 'cuadrática', 'ecuacion de segundo grado', 'discriminante', 'bhaskara'],
+        categoria: 'Álgebra y Matemáticas',
+        respuesta: 'Una ecuación cuadrática o de segundo grado tiene la forma general a por equis al cuadrado, más b por equis, más c, igual a cero, donde a es diferente de cero. Para resolverla se aplica la fórmula general: equis es igual a menos b, más o menos la raíz cuadrada de b al cuadrado menos cuatro por a por c, todo dividido entre dos por a.\n\nPor ejemplo, en la ecuación equis al cuadrado menos 5 equis más 6 igual a cero, los coeficientes son a igual a 1, b igual a menos 5 y c igual a 6. El discriminante es 25 menos 24 igual a 1, y las dos soluciones son equis igual a 3 y equis igual a 2.'
+      },
+      {
+        keywords: ['newton', 'leyes de newton', 'inercia', 'accion y reaccion', 'fuerza igual a masa'],
+        categoria: 'Física y Mecánica Clásica',
+        respuesta: 'Las tres leyes de Newton explican el movimiento de los cuerpos en la física clásica:\n1. Primera Ley o Ley de la Inercia: Todo cuerpo permanece en reposo o en movimiento rectilíneo uniforme a menos que una fuerza externa neta actúe sobre él.\n2. Segunda Ley o Ley Fundamental de la Dinámica: La aceleración de un objeto es directamente proporcional a la fuerza neta aplicada e inversamente proporcional a su masa, expresada en la fórmula Fuerza es igual a masa por aceleración (F igual a m por a).\n3. Tercera Ley o Principio de Acción y Reacción: Cuando un cuerpo ejerce una fuerza sobre otro, este último ejerce sobre el primero una fuerza de igual magnitud y dirección, pero en sentido contrario.'
+      },
+      {
+        keywords: ['agujero negro', 'agujeros negros', 'horizonte de sucesos', 'relatividad'],
+        categoria: 'Astronomía y Astrofísica',
+        respuesta: 'Un agujero negro es una región finita del espacio en cuyo interior existe una concentración de masa tan elevada y compacta que genera un campo gravitatorio extremo del cual ninguna partícula material, ni siquiera la luz, puede escapar. El límite alrededor del agujero negro a partir del cual nada puede salir se denomina horizonte de sucesos. La mayoría de los agujeros negros estelares se forman cuando una estrella supermasiva agota su combustible nuclear y colapsa sobre sí misma tras una explosión de supernova.'
+      },
+      {
+        keywords: ['puente h', 'l298n', 'arduino', 'motor dc', 'robotica', 'robótica', 'pwm'],
+        categoria: 'Robótica y Electrónica',
+        respuesta: 'El módulo puente H L298N permite controlar el sentido de giro y la velocidad de dos motores de corriente continua (DC) con Arduino. Para conectarlo: une el motor A en las borneras OUT1 y OUT2, y el motor B en OUT3 y OUT4. Alimenta el módulo entre 7 y 12 voltios en el pin VMS y conecta el pin GND del módulo al pin GND del Arduino para compartir referencia común.\n\nLos pines IN1 e IN2 van a dos pines digitales del Arduino para definir si el motor A gira adelante o atrás, mientras que el pin ENA se conecta a un pin PWM del Arduino (usando la función analogWrite de 0 a 255) para regular la velocidad.'
+      },
+      {
+        keywords: ['pandebono', 'receta', 'arepa', 'empanada', 'cocina', 'almojabana', 'buñuelo'],
+        categoria: 'Gastronomía Colombiana',
+        respuesta: 'Para preparar pandebonos colombianos tradicionales en casa necesitas: 250 gramos de queso costeño o cuajada rallada, 125 gramos de almidón agrio de yuca, 60 gramos de harina de maíz precocida, 1 huevo batido, 2 cucharadas de azúcar, 1 cucharada de mantequilla blanda y leche tibia al ojo.\n\nMezcla primero los ingredientes secos con el queso rallado, agrega el huevo y la mantequilla, y amasa añadiendo chorritos de leche tibia hasta lograr una masa suave y moldeable que no se agriete. Forma bolitas o roscas, colócalas en una bandeja engrasada y hornea a 220 grados centígrados durante 15 a 18 minutos hasta que inflen y queden doraditos.'
+      },
+      {
+        keywords: ['san agustin', 'san agustín', 'institucion educativa', 'colegio', 'popayan', 'popayán', 'mision', 'vision', 'valores'],
+        categoria: 'Institucional (I.E. San Agustín - Popayán)',
+        respuesta: 'La Institución Educativa San Agustín, ubicada en Popayán, Cauca, es un establecimiento oficial comprometido con la formación integral de niños, niñas y jóvenes desde preescolar hasta educación media. Su misión articula la excelencia académica en ciencias, humanidades, lectura crítica, tecnología y robótica con los valores agustinianos de interioridad, búsqueda de la verdad, solidaridad, respeto y responsabilidad ciudadana.'
+      }
+    ];
+
+    /***************************************************************************
+     * 2. INICIALIZACIÓN, MASCOTA PERSONALIZADA Y PERMISOS AL ARRANCAR
+     ***************************************************************************/
+    window.onload = function () {
+      inicializarMascotaGuardada();
+      inicializarVocesColombianas();
+      inicializarReconocimientoVozPTT();
+      configurarEventosBotonPTT();
+      actualizarPillsInterfaz();
+      verificarEstadoPermisoMicrofonoInicial();
+    };
+
+    /**
+     * Gestión de la imagen de la mascota (soporta imagen guardada en localStorage,
+     * archivo subido desde el celular/PC o mascota.png en el repositorio).
+     */
+    function inicializarMascotaGuardada() {
+      try {
+        const savedMascotDataUrl = localStorage.getItem('agustina_custom_mascot_v3');
+        if (savedMascotDataUrl) {
+          aplicarImagenMascotaPersonalizada(savedMascotDataUrl);
+        }
+      } catch (e) {}
+    }
+
+    function abrirSelectorImagenMascota() {
+      const input = document.getElementById('inputMascotFile');
+      if (input) input.click();
+    }
+
+    function cargarImagenMascotaDesdeArchivo(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const dataUrl = e.target.result;
+        if (dataUrl) {
+          aplicarImagenMascotaPersonalizada(dataUrl);
+          try {
+            localStorage.setItem('agustina_custom_mascot_v3', dataUrl);
+          } catch (errStorage) {}
+          actualizarFraseMascota('¡Genial! Ya tienes la imagen oficial de nuestra mascota en pantalla.');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function aplicarImagenMascotaPersonalizada(srcUrl) {
+      const img = document.getElementById('customMascotImg');
+      const svg = document.getElementById('defaultMascotSvg');
+      const avatarCore = document.getElementById('avatarCore');
+
+      if (img && svg) {
+        img.src = srcUrl;
+        img.classList.remove('hidden');
+        svg.classList.add('hidden');
+      }
+      if (avatarCore) {
+        avatarCore.innerHTML = `<img src="${srcUrl}" alt="Mascota" style="width:100%; height:100%; object-fit:cover;" />`;
+      }
+    }
+
+    function mostrarMascotaPersonalizadaCargada() {
+      const img = document.getElementById('customMascotImg');
+      const svg = document.getElementById('defaultMascotSvg');
+      if (img && svg && img.getAttribute('src')) {
+        img.classList.remove('hidden');
+        svg.classList.add('hidden');
+      }
+    }
+
+    function ocultarMascotaPersonalizadaSiFalla() {
+      const img = document.getElementById('customMascotImg');
+      const svg = document.getElementById('defaultMascotSvg');
+      if (img && svg) {
+        img.classList.add('hidden');
+        svg.classList.remove('hidden');
+      }
+    }
+
+    function restaurarMascotaPorDefecto() {
+      try {
+        localStorage.removeItem('agustina_custom_mascot_v3');
+      } catch (e) {}
+      ocultarMascotaPersonalizadaSiFalla();
+      const avatarCore = document.getElementById('avatarCore');
+      if (avatarCore) {
+        avatarCore.innerHTML = '<i id="avatarIcon" class="fa-solid fa-graduation-cap text-white text-lg"></i>';
+      }
+      actualizarFraseMascota('Mascota animada institucional restaurada.');
+    }
+
+    function hablarSaludoMascota() {
+      const saludo = '¡Hola! Soy la mascota de Agustina Académica de la Institución Educativa San Agustín de Popayán. Pregúntame lo que quieras.';
+      actualizarFraseMascota(saludo);
+      hablarTextoConAgustina(saludo);
+    }
+
+    function actualizarFraseMascota(texto) {
+      const el = document.getElementById('mascotStatusPhrase');
+      if (el) el.textContent = texto;
+    }
+
+    async function verificarEstadoPermisoMicrofonoInicial() {
+      actualizarUIPermisoMicrofono(false);
+
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          const permStatus = await navigator.permissions.query({ name: 'microphone' });
+          if (permStatus.state === 'granted') {
+            appState.micAuthorized = true;
+            actualizarUIPermisoMicrofono(true);
+          }
+          permStatus.onchange = () => {
+            if (permStatus.state === 'granted') {
+              appState.micAuthorized = true;
+              actualizarUIPermisoMicrofono(true);
+            } else if (permStatus.state === 'denied') {
+              appState.micAuthorized = false;
+              actualizarUIPermisoMicrofono(false);
+            }
+          };
+        } catch (e) {}
+      }
+    }
+
+    /**
+     * Solicita el permiso del micrófono una sola vez y LIBERA inmediatamente el hardware
+     * de audio para que en Android el motor SpeechRecognition tenga acceso exclusivo
+     * sin bloqueos por competencia de recursos (audio-capture).
+     */
+    async function solicitarPermisoMicrofonoPersistente(anunciarConVoz = true) {
+      if (appState.micAuthorized) {
+        actualizarUIPermisoMicrofono(true);
+        if (anunciarConVoz) {
+          hablarTextoConAgustina('Tu micrófono ya está autorizado. Mantén presionado el botón verde para hablarme.');
+        }
+        return true;
+      }
+
+      if (appState.micRequestInProgress) return false;
+      appState.micRequestInProgress = true;
+
+      const micText = document.getElementById('micStatusText');
+      if (micText) micText.textContent = 'Autorizando...';
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        // CRÍTICO EN ANDROID: Liberar inmediatamente las pistas de getUserMedia tras obtener
+        // el permiso del sitio para que SpeechRecognition pueda usar el micrófono sin bloqueo.
+        stream.getTracks().forEach(track => {
+          try { track.stop(); } catch (e) {}
+        });
+        window.persistentMicStream = null;
+
+        appState.micAuthorized = true;
+        appState.micRequestInProgress = false;
+
+        actualizarUIPermisoMicrofono(true);
+
+        if (anunciarConVoz) {
+          const msg = '¡Listo! Permiso de micrófono guardado. Ahora mantén presionado el botón verde para hablar y suéltalo al terminar tu pregunta.';
+          agregarBurbujaSistema(msg);
+          hablarTextoConAgustina(msg);
+        }
+
+        return true;
+      } catch (err) {
+        appState.micRequestInProgress = false;
+        appState.micAuthorized = false;
+        actualizarUIPermisoMicrofono(false);
+
+        agregarBurbujaSistema(
+          'No se pudo autorizar el micrófono. Verifica que hayas tocado "Permitir" en el aviso del navegador o escribe tu pregunta abajo.'
+        );
+        return false;
+      }
+    }
+
+    function configurarAnalizadorAudioPersistente(stream) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!appState.audioContext) {
+          appState.audioContext = new AudioCtx();
+        }
+        if (appState.audioContext.state === 'suspended') {
+          appState.audioContext.resume();
+        }
+        const source = appState.audioContext.createMediaStreamSource(stream);
+        const analyser = appState.audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        appState.analyserNode = analyser;
+      } catch (e) {}
+    }
+
+    function actualizarUIPermisoMicrofono(autorizado) {
+      const banner = document.getElementById('micOnboardingBanner');
+      const pill = document.getElementById('micStatusPill');
+      const icon = document.getElementById('micStatusIcon');
+      const text = document.getElementById('micStatusText');
+      const dot = document.getElementById('micDotIndicator');
+      const pttShortLabel = document.getElementById('pttShortLabel');
+      const pttInstruction = document.getElementById('pttInstructionText');
+      const btnPTT = document.getElementById('btnPushToTalk');
+
+      if (autorizado) {
+        if (banner) banner.classList.add('hidden');
+        if (pill) pill.className = 'status-pill emerald';
+        if (icon) icon.className = 'fa-solid fa-microphone';
+        if (text) text.textContent = 'Mic Activo (Sesión)';
+        if (dot) dot.style.background = '#34d399';
+        if (btnPTT) btnPTT.classList.remove('ptt-needs-permission');
+
+        actualizarEtiquetasModoDisparo();
+      } else {
+        if (banner) banner.classList.remove('hidden');
+        if (pill) pill.className = 'status-pill amber';
+        if (icon) icon.className = 'fa-solid fa-microphone-slash';
+        if (text) text.textContent = 'Activar Mic (1 Clic)';
+        if (dot) dot.style.background = '#fbbf24';
+        if (pttShortLabel) pttShortLabel.textContent = 'Activar Mic';
+        if (pttInstruction) {
+          pttInstruction.innerHTML = 'Haz <span style="color:#fbbf24; font-weight:700;">1 clic simple</span> para autorizar el micrófono • <span style="color:#34d399; font-weight:600;">Durará toda la sesión</span>';
+        }
+        if (btnPTT) btnPTT.classList.add('ptt-needs-permission');
+      }
+    }
+
+    function actualizarEtiquetasModoDisparo() {
+      const pttShortLabel = document.getElementById('pttShortLabel');
+      const pttInstruction = document.getElementById('pttInstructionText');
+      const triggerModeText = document.getElementById('triggerModeText');
+
+      if (!appState.micAuthorized) return;
+
+      if (appState.triggerMode === 'hold') {
+        if (triggerModeText) triggerModeText.textContent = 'Modo: Mantener';
+        if (pttShortLabel && !appState.isHoldingPTT) pttShortLabel.textContent = 'Mantener';
+        if (pttInstruction && !appState.isHoldingPTT) {
+          pttInstruction.innerHTML = 'Mantén presionado para hablar • <span style="color:#34d399; font-weight:700;">Suelta para ejecutar respuesta</span>';
+        }
+      } else {
+        if (triggerModeText) triggerModeText.textContent = 'Modo: 1 Toque';
+        if (pttShortLabel && !appState.isHoldingPTT) pttShortLabel.textContent = 'Hablar';
+        if (pttInstruction && !appState.isHoldingPTT) {
+          pttInstruction.innerHTML = 'Toca 1 vez para empezar a hablar • <span style="color:#34d399; font-weight:700;">Toca de nuevo para enviar</span>';
+        }
+      }
+    }
+
+    function alternarModoDisparoPTT() {
+      if (appState.isHoldingPTT) {
+        finalizarCapturaYEjecutarRespuesta();
+      }
+      appState.triggerMode = appState.triggerMode === 'hold' ? 'tap' : 'hold';
+      actualizarEtiquetasModoDisparo();
+    }
+
+    /***************************************************************************
+     * 4. SISTEMA DE RECONOCIMIENTO DE VOZ EXCLUSIVO PARA ANDROID, iOS Y PC
+     ***************************************************************************/
+    function inicializarReconocimientoVozPTT() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        appState.recognitionSupported = false;
+        return;
+      }
+
+      appState.recognitionSupported = true;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'es-CO';
+      // En Android Chrome continuous=false evita que el búfer se congele y entrega resultados más rápido
+      recognition.continuous = !IS_ANDROID;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        appState.recognitionActive = true;
+        appState.lastSpeechError = null;
+      };
+
+      recognition.onresult = (event) => {
+        let interim = '';
+        let accumulatedFinal = '';
+
+        for (let i = 0; i < event.results.length; ++i) {
+          const transcriptPiece = (event.results[i][0]?.transcript || '').trim();
+          if (!transcriptPiece) continue;
+
+          if (event.results[i].isFinal) {
+            accumulatedFinal += (accumulatedFinal ? ' ' : '') + transcriptPiece;
+          } else {
+            interim += (interim ? ' ' : '') + transcriptPiece;
+          }
+        }
+
+        if (IS_ANDROID) {
+          // En Android (continuous=false), cada sesión acumula su resultado final sin perder segmentos previos
+          const currentSegmentText = (accumulatedFinal + ' ' + interim).trim();
+          const fullText = (appState.finalTranscript + ' ' + currentSegmentText).trim();
+          appState.interimTranscript = currentSegmentText;
+          if (accumulatedFinal) {
+            appState.finalTranscript = (appState.finalTranscript + ' ' + accumulatedFinal).trim();
+            appState.interimTranscript = interim;
+          }
+          if (fullText) {
+            appState.lastRecognizedSnippet = fullText;
+          }
+        } else {
+          appState.finalTranscript = accumulatedFinal;
+          appState.interimTranscript = interim;
+          const fullText = (accumulatedFinal + ' ' + interim).trim();
+          if (fullText) {
+            appState.lastRecognizedSnippet = fullText;
+          }
+        }
+
+        const textoMostrar = obtenerTextoTranscritoActual();
+        const liveEl = document.getElementById('liveTranscriptText');
+        if (textoMostrar && liveEl) {
+          liveEl.textContent = `"${textoMostrar}"`;
+        }
+      };
+
+      recognition.onerror = (event) => {
+        appState.lastSpeechError = event.error || 'unknown';
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          appState.micAuthorized = false;
+          actualizarUIPermisoMicrofono(false);
+        }
+      };
+
+      recognition.onend = () => {
+        appState.recognitionActive = false;
+
+        // Si el usuario sigue presionando el botón en Android, reiniciamos inmediatamente para frases largas
+        if (appState.isHoldingPTT && !appState.isConsolidatingPTT) {
+          try {
+            recognition.start();
+            return;
+          } catch (e) {}
+        }
+
+        // Si ya soltó el botón y estábamos esperando que Android entregara las últimas palabras, resolvemos de inmediato
+        if (typeof appState.recognitionEndResolver === 'function') {
+          const resolver = appState.recognitionEndResolver;
+          appState.recognitionEndResolver = null;
+          resolver();
+        }
+      };
+
+      appState.recognition = recognition;
+    }
+
+    function obtenerTextoTranscritoActual() {
+      const combinado = (appState.finalTranscript + ' ' + appState.interimTranscript).trim();
+      // Evitar duplicaciones si finalTranscript e interimTranscript contienen la misma frase en Android
+      if (appState.finalTranscript && appState.interimTranscript && appState.finalTranscript.endsWith(appState.interimTranscript)) {
+        return appState.finalTranscript.trim();
+      }
+      return combinado || appState.lastRecognizedSnippet.trim();
+    }
+
+    function configurarEventosBotonPTT() {
+      const btnPTT = document.getElementById('btnPushToTalk');
+
+      btnPTT.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      });
+
+      btnPTT.addEventListener('pointerdown', async (e) => {
+        e.preventDefault();
+
+        // Si aún no ha autorizado el micrófono, el primer clic solo pide el permiso y libera el hardware
+        if (!appState.micAuthorized) {
+          await solicitarPermisoMicrofonoPersistente(true);
+          return;
+        }
+
+        if (appState.triggerMode === 'tap') {
+          if (!appState.isHoldingPTT) {
+            iniciarCapturaPushToTalk();
+          } else {
+            finalizarCapturaYEjecutarRespuesta();
+          }
+          return;
+        }
+
+        if (btnPTT.setPointerCapture) {
+          try { btnPTT.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+        iniciarCapturaPushToTalk();
+      });
+
+      btnPTT.addEventListener('pointerup', (e) => {
+        e.preventDefault();
+        if (appState.triggerMode === 'tap') return;
+
+        if (btnPTT.releasePointerCapture) {
+          try { btnPTT.releasePointerCapture(e.pointerId); } catch (err) {}
+        }
+        if (appState.isHoldingPTT) {
+          finalizarCapturaYEjecutarRespuesta();
+        }
+      });
+
+      btnPTT.addEventListener('pointercancel', (e) => {
+        e.preventDefault();
+        if (appState.triggerMode === 'tap') return;
+        if (appState.isHoldingPTT) {
+          finalizarCapturaYEjecutarRespuesta();
+        }
+      });
+    }
+
+    /**
+     * Animación fluida de nivel de voz que NO bloquea el micrófono físico en Android.
+     */
+    function iniciarMedidorVolumenEnVivo() {
+      appState.maxRmsDuringHold = 0.08;
+      const bar = document.getElementById('micVolumeMeterBar');
+
+      const animarBarra = () => {
+        if (!appState.isHoldingPTT) return;
+        const tieneTexto = obtenerTextoTranscritoActual().length > 0;
+        const base = tieneTexto ? 45 : 22;
+        const variacion = Math.round(Math.sin(performance.now() / 95) * 20 + Math.random() * 25);
+        const pct = Math.min(98, Math.max(12, base + variacion));
+        if (bar) bar.style.width = `${pct}%`;
+        appState.volumeAnimFrame = requestAnimationFrame(animarBarra);
+      };
+
+      appState.volumeAnimFrame = requestAnimationFrame(animarBarra);
+    }
+
+    function iniciarCapturaPushToTalk() {
+      if (appState.isHoldingPTT || appState.isConsolidatingPTT) return;
+
+      detenerVozInmediatamente();
+
+      // Asegurarnos de que ninguna pista MediaStream previa esté bloqueando el micrófono en Android
+      if (window.persistentMicStream) {
+        try {
+          window.persistentMicStream.getTracks().forEach(t => t.stop());
+        } catch (e) {}
+        window.persistentMicStream = null;
+      }
+
+      appState.isHoldingPTT = true;
+      appState.finalTranscript = '';
+      appState.interimTranscript = '';
+      appState.lastRecognizedSnippet = '';
+      appState.lastSpeechError = null;
+      appState.pttStartTime = performance.now();
+
+      if (navigator.vibrate) {
+        try { navigator.vibrate(35); } catch (e) {}
+      }
+
+      const btnPTT = document.getElementById('btnPushToTalk');
+      btnPTT.classList.add('ptt-active');
+      document.getElementById('pttPulseRing').classList.remove('hidden');
+      document.getElementById('pttIcon').className = 'fa-solid fa-ear-listen';
+      document.getElementById('pttShortLabel').textContent = appState.triggerMode === 'hold' ? 'Soltar=Enviar' : 'Tocar=Enviar';
+
+      const actionLabel = document.getElementById('liveOverlayActionLabel');
+      if (actionLabel) {
+        actionLabel.textContent = appState.triggerMode === 'hold'
+          ? 'Escuchando tu pregunta... (Suelta al terminar)'
+          : 'Escuchando tu pregunta... (Toca al terminar)';
+      }
+
+      document.getElementById('pttInstructionText').innerHTML = appState.triggerMode === 'hold'
+        ? '<span style="color:#fb7185; font-weight:700;">Habla ahora... Suelta el botón cuando termines tu pregunta</span>'
+        : '<span style="color:#fb7185; font-weight:700;">Habla ahora... Toca el botón nuevamente para enviar</span>';
+
+      const overlay = document.getElementById('liveTranscriptOverlay');
+      overlay.classList.remove('hidden');
+      document.getElementById('liveTranscriptText').textContent = 'Habla ahora (Ej: "¿Qué es la célula?")...';
+
+      actualizarEstadoVisualAgustina('LISTENING');
+      iniciarMedidorVolumenEnVivo();
+
+      clearInterval(appState.pttTimerInterval);
+      appState.pttTimerInterval = setInterval(() => {
+        const elapsed = ((performance.now() - appState.pttStartTime) / 1000).toFixed(1);
+        document.getElementById('pttTimerText').textContent = `${elapsed}s`;
+      }, 100);
+
+      // Iniciar exclusivamente SpeechRecognition sin abrir MediaRecorder al mismo tiempo
+      if (appState.recognitionSupported && appState.recognition) {
+        try {
+          appState.recognition.start();
+        } catch (err) {
+          // Si ya estaba activo, reiniciamos limpiamente
+          try {
+            appState.recognition.stop();
+            setTimeout(() => {
+              if (appState.isHoldingPTT) {
+                try { appState.recognition.start(); } catch (e2) {}
+              }
+            }, 80);
+          } catch (e) {}
+        }
+      }
+    }
+
+    /**
+     * Se ejecuta al soltar el botón: detiene el reconocedor y espera a que Android
+     * entregue el evento final `onresult` / `onend` (hasta 1300 ms) antes de enviar a la IA.
+     */
+    async function finalizarCapturaYEjecutarRespuesta() {
+      if (!appState.isHoldingPTT) return;
+      appState.isHoldingPTT = false;
+      appState.isConsolidatingPTT = true;
+
+      clearInterval(appState.pttTimerInterval);
+      if (appState.volumeAnimFrame) {
+        cancelAnimationFrame(appState.volumeAnimFrame);
+      }
+
+      if (navigator.vibrate) {
+        try { navigator.vibrate([20, 30]); } catch (e) {}
+      }
+
+      const btnPTT = document.getElementById('btnPushToTalk');
+      btnPTT.classList.remove('ptt-active');
+      document.getElementById('pttPulseRing').classList.add('hidden');
+      document.getElementById('pttIcon').className = 'fa-solid fa-microphone';
+      actualizarEtiquetasModoDisparo();
+
+      const actionLabel = document.getElementById('liveOverlayActionLabel');
+      if (actionLabel) {
+        actionLabel.textContent = 'Procesando tu voz en Android...';
+      }
+
+      // Esperar a que SpeechRecognition cierre y entregue el último paquete de palabras en Android
+      if (appState.recognitionSupported && appState.recognition) {
+        await new Promise((resolve) => {
+          let finalizado = false;
+          const terminarEspera = () => {
+            if (finalizado) return;
+            finalizado = true;
+            appState.recognitionEndResolver = null;
+            resolve();
+          };
+
+          appState.recognitionEndResolver = terminarEspera;
+
+          // Pequeño margen de 180ms antes de llamar stop() para no cortar la última sílaba
+          setTimeout(() => {
+            try {
+              appState.recognition.stop();
+            } catch (e) {
+              terminarEspera();
+            }
+          }, 180);
+
+          // Tiempo máximo de seguridad para redes móviles (1350 ms)
+          setTimeout(terminarEspera, 1350);
+        });
+      }
+
+      appState.isConsolidatingPTT = false;
+      document.getElementById('liveTranscriptOverlay').classList.add('hidden');
+
+      const consultaCapturada = obtenerTextoTranscritoActual();
+      const inputManual = document.getElementById('inputManualQuery').value.trim();
+
+      if (consultaCapturada.length > 1) {
+        procesarConsultaConOrquestadorMultiIA(consultaCapturada, 'Voz PTT (es-CO)');
+        return;
+      }
+
+      if (inputManual.length > 1) {
+        document.getElementById('inputManualQuery').value = '';
+        procesarConsultaConOrquestadorMultiIA(inputManual, 'Disparador PTT');
+        return;
+      }
+
+      actualizarEstadoVisualAgustina('IDLE');
+      mostrarAvisoRapidoSinVoz();
+    }
+
+      const cargarVoces = () => {
+        const voices = window.speechSynthesis.getVoices() || [];
+        appState.availableVoices = voices;
+
+        const select = document.getElementById('selectVoice');
+        const currentSelection = select.value;
+        select.innerHTML = '<option value="auto">🇨🇴 Priorizar Español Colombia (es-CO) Automático</option>';
+
+        const spanishVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+
+        spanishVoices.sort((a, b) => {
+          const aCol = esVozColombiana(a) ? 1 : 0;
+          const bCol = esVozColombiana(b) ? 1 : 0;
+          if (aCol !== bCol) return bCol - aCol;
+
+          const aLatam = esVozLatinoamericana(a) ? 1 : 0;
+          const bLatam = esVozLatinoamericana(b) ? 1 : 0;
+          return bLatam - aLatam;
+        });
+
+        let countCol = 0;
+        spanishVoices.forEach(voice => {
+          const isCO = esVozColombiana(voice);
+          if (isCO) countCol++;
+          const opt = document.createElement('option');
+          opt.value = voice.voiceURI;
+          opt.textContent = `${isCO ? '🇨🇴 ' : '🌎 '}${voice.name} (${voice.lang})`;
+          select.appendChild(opt);
+        });
+
+        if (currentSelection && Array.from(select.options).some(o => o.value === currentSelection)) {
+          select.value = currentSelection;
+        }
+
+        const badge = document.getElementById('detectedVoicesCount');
+        if (countCol > 0) {
+          badge.textContent = `${countCol} voz es-CO nativa`;
+        } else if (spanishVoices.length > 0) {
+          badge.textContent = `${spanishVoices.length} voces ES listas`;
+        } else {
+          badge.textContent = 'Voz IA Activa';
+        }
+      };
+
+      cargarVoces();
+      window.speechSynthesis.onvoiceschanged = cargarVoces;
+    }
+
+    function esVozColombiana(voice) {
+      if (!voice) return false;
+      const lang = (voice.lang || '').toLowerCase();
+      const name = (voice.name || '').toLowerCase();
+      return (
+        lang.includes('es-co') ||
+        lang.includes('es_co') ||
+        name.includes('colombia') ||
+        name.includes('salome') ||
+        name.includes('gonzalo')
+      );
+    }
+
+    function esVozLatinoamericana(voice) {
+      if (!voice) return false;
+      const lang = (voice.lang || '').toLowerCase();
+      const name = (voice.name || '').toLowerCase();
+      return (
+        lang.includes('es-mx') ||
+        lang.includes('es-419') ||
+        lang.includes('es-us') ||
+        lang.includes('es-ar') ||
+        lang.includes('es-cl') ||
+        lang.includes('es-pe') ||
+        name.includes('sabina') ||
+        name.includes('paulina') ||
+        name.includes('latino') ||
+        name.includes('estados unidos')
+      );
+    }
+
+    function obtenerMejorVozColombiana() {
+      const voices = appState.availableVoices.length
+        ? appState.availableVoices
+        : (window.speechSynthesis ? window.speechSynthesis.getVoices() : []);
+
+      if (!voices || voices.length === 0) return null;
+
+      if (appState.selectedVoiceURI !== 'auto') {
+        const manual = voices.find(v => v.voiceURI === appState.selectedVoiceURI);
+        if (manual) return manual;
+      }
+
+      const colVoice = voices.find(v => esVozColombiana(v));
+      if (colVoice) return colVoice;
+
+      const latamVoice = voices.find(v => esVozLatinoamericana(v));
+      if (latamVoice) return latamVoice;
+
+      return voices.find(v => (v.lang || '').toLowerCase().startsWith('es')) || voices[0];
+    }
+
+    function limpiarTextoParaVozColombiana(texto) {
+      if (!texto) return '';
+      let limpio = texto
+        .replace(/```[\s\S]*?```/g, ' bloque de código detallado en pantalla. ')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/\*([^*]+)\*/g, '$1')
+        .replace(/^#+\s+/gm, '')
+        .replace(/\bI\.E\.\s*/gi, 'Institución Educativa ')
+        .replace(/\bICFES\b/g, 'Icfes')
+        .replace(/\bADN\b/g, 'A D N')
+        .replace(/\bARN\b/g, 'A R N')
+        .replace(/\bATP\b/g, 'A T P')
+        .replace(/\bSTEM\b/g, 'Ciencia, Tecnología, Ingeniería y Matemáticas')
+        .replace(/\bL298N\b/gi, 'ele dos noventa y ocho ene')
+        .replace(/\bPWM\b/gi, 'pe doble u eme')
+        .replace(/\bGND\b/gi, 'tierra ge ene de')
+        .replace(/([a-zA-Z0-9]+)\^2\b/g, '$1 al cuadrado')
+        .replace(/([a-zA-Z0-9]+)\^3\b/g, '$1 al cubo')
+        .replace(/²/g, ' al cuadrado ')
+        .replace(/³/g, ' al cubo ')
+        .replace(/√\s*\(?([^)]+)\)?/g, ' raíz cuadrada de $1 ')
+        .replace(/±/g, ' más o menos ')
+        .replace(/≥/g, ' mayor o igual que ')
+        .replace(/≤/g, ' menor o igual que ')
+        .replace(/!=/g, ' diferente de ')
+        .replace(/\s*\+\s*/g, ' más ')
+        .replace(/\s*=\s*/g, ' igual a ')
+        .replace(/(\d+)\s*\/\s*(\d+)/g, '$1 dividido entre $2')
+        .replace(/(\d+)\s*\*\s*(\d+)/g, '$1 por $2')
+        .replace(/^\s*[-•*]\s+/gm, '. ')
+        .replace(/\n+/g, '. ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
+      return limpio;
+    }
+
+    function dividirTextoEnOracionesParaTTS(textoFonetico) {
+      const oracionesBrutas = textoFonetico.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [textoFonetico];
+      const fragmentos = [];
+      let actual = '';
+
+      for (const oracion of oracionesBrutas) {
+        const limpia = oracion.trim();
+        if (!limpia) continue;
+
+        if ((actual + ' ' + limpia).trim().length <= 185) {
+          actual = (actual + ' ' + limpia).trim();
+        } else {
+          if (actual) fragmentos.push(actual);
+          if (limpia.length <= 185) {
+            actual = limpia;
+          } else {
+            const subPartes = limpia.split(/,\s*/);
+            let subActual = '';
+            for (const sub of subPartes) {
+              if ((subActual + ', ' + sub).trim().length <= 185) {
+                subActual = subActual ? `${subActual}, ${sub}` : sub;
+              } else {
+                if (subActual) fragmentos.push(subActual);
+                subActual = sub;
+              }
+            }
+            actual = subActual;
+          }
+        }
+      }
+      if (actual) fragmentos.push(actual);
+      return fragmentos;
+    }
+
+    function hablarTextoConAgustina(textoOriginal) {
+      detenerVozInmediatamente();
+
+      const textoFonetico = limpiarTextoParaVozColombiana(textoOriginal);
+      if (!textoFonetico || !('speechSynthesis' in window)) return;
+
+      const fragmentos = dividirTextoEnOracionesParaTTS(textoFonetico);
+      if (fragmentos.length === 0) return;
+
+      appState.ttsQueue = fragmentos;
+      appState.isSpeakingQueue = true;
+      actualizarEstadoVisualAgustina('SPEAKING');
+
+      const mejorVoz = obtenerMejorVozColombiana();
+      if (mejorVoz) {
+        document.getElementById('localeBadgeText').textContent =
+          esVozColombiana(mejorVoz) ? 'es-CO' : (mejorVoz.lang || 'ES').slice(0, 5);
+      }
+
+      clearInterval(appState.ttsKeepAliveTimer);
+      appState.ttsKeepAliveTimer = setInterval(() => {
+        if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        }
+      }, 10000);
+
+      const reproducirSiguienteFragmento = () => {
+        if (!appState.isSpeakingQueue || appState.ttsQueue.length === 0) {
+          appState.isSpeakingQueue = false;
+          clearInterval(appState.ttsKeepAliveTimer);
+          actualizarEstadoVisualAgustina('IDLE');
+          return;
+        }
+
+        const chunk = appState.ttsQueue.shift();
+        try {
+          const utterance = new SpeechSynthesisUtterance(chunk);
+          if (mejorVoz) {
+            utterance.voice = mejorVoz;
+            utterance.lang = mejorVoz.lang || 'es-CO';
+          } else {
+            utterance.lang = 'es-CO';
+          }
+
+          utterance.rate = parseFloat(appState.voiceRate) || 1.02;
+          utterance.pitch = parseFloat(appState.voicePitch) || 1.0;
+
+          utterance.onend = () => {
+            if (appState.isSpeakingQueue) {
+              reproducirSiguienteFragmento();
+            }
+          };
+
+          utterance.onerror = () => {
+            if (appState.isSpeakingQueue) {
+              reproducirSiguienteFragmento();
+            }
+          };
+
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          appState.isSpeakingQueue = false;
+          clearInterval(appState.ttsKeepAliveTimer);
+          actualizarEstadoVisualAgustina('IDLE');
+        }
+      };
+
+      reproducirSiguienteFragmento();
+    }
+
+    function detenerVozInmediatamente() {
+      appState.isSpeakingQueue = false;
+      appState.ttsQueue = [];
+      clearInterval(appState.ttsKeepAliveTimer);
+
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {}
+      }
+      if (appState.currentAudioSource) {
+        try {
+          appState.currentAudioSource.stop();
+        } catch (e) {}
+        appState.currentAudioSource = null;
+      }
+      if (appState.status === 'SPEAKING') {
+        actualizarEstadoVisualAgustina('IDLE');
+      }
+    }
+
+    function alternarRespuestaHablada() {
+      appState.autoSpeak = !appState.autoSpeak;
+      const icon = document.getElementById('iconVoiceMute');
+      const btn = document.getElementById('btnToggleVoiceMute');
+
+      if (appState.autoSpeak) {
+        icon.className = 'fa-solid fa-volume-high text-sm';
+        btn.style.color = '#34d399';
+      } else {
+        detenerVozInmediatamente();
+        icon.className = 'fa-solid fa-volume-off text-sm';
+        btn.style.color = '#94a3b8';
+      }
+    }
+
+    function probarVozColombiana() {
+      hablarTextoConAgustina(
+        'La célula es la unidad estructural y funcional básica de todos los seres vivos. Mi sistema gráfico y de voz ahora funciona perfectamente en celulares Android, iPhone y computador.'
+      );
+    }
+
+    /***************************************************************************
+     * 4. SISTEMA HÍBRIDO PUSH-TO-TALK + VENTANA DE CONSOLIDACIÓN DE 450 MS
+     ***************************************************************************/
+    function inicializarReconocimientoVozPTT() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        appState.recognitionSupported = false;
+        return;
+      }
+
+      appState.recognitionSupported = true;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'es-CO';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = (event) => {
+        let interim = '';
+        let finalChunk = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const transcriptPiece = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalChunk += transcriptPiece + ' ';
+          } else {
+            interim += transcriptPiece;
+          }
+        }
+
+        if (finalChunk) {
+          appState.finalTranscript += finalChunk;
+        }
+        appState.interimTranscript = interim;
+
+        const textoActual = (appState.finalTranscript + ' ' + appState.interimTranscript).trim();
+        if (textoActual) {
+          appState.lastRecognizedSnippet = textoActual;
+        }
+        const liveEl = document.getElementById('liveTranscriptText');
+        if (textoActual && liveEl) {
+          liveEl.textContent = `"${textoActual}"`;
+        }
+      };
+
+      recognition.onerror = () => {};
+
+      recognition.onend = () => {
+        if (appState.isHoldingPTT) {
+          try {
+            recognition.start();
+          } catch (e) {}
+        }
+      };
+
+      appState.recognition = recognition;
+    }
+
+    function configurarEventosBotonPTT() {
+      const btnPTT = document.getElementById('btnPushToTalk');
+
+      btnPTT.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      });
+
+      btnPTT.addEventListener('pointerdown', async (e) => {
+        e.preventDefault();
+
+        if (!appState.micAuthorized || !window.persistentMicStream || !window.persistentMicStream.active) {
+          await solicitarPermisoMicrofonoPersistente(true);
+          return;
+        }
+
+        if (appState.triggerMode === 'tap') {
+          if (!appState.isHoldingPTT) {
+            iniciarCapturaPushToTalk();
+          } else {
+            finalizarCapturaYEjecutarRespuesta();
+          }
+          return;
+        }
+
+        if (btnPTT.setPointerCapture) {
+          try { btnPTT.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+        iniciarCapturaPushToTalk();
+      });
+
+      btnPTT.addEventListener('pointerup', (e) => {
+        e.preventDefault();
+        if (appState.triggerMode === 'tap') return;
+
+        if (btnPTT.releasePointerCapture) {
+          try { btnPTT.releasePointerCapture(e.pointerId); } catch (err) {}
+        }
+        if (appState.isHoldingPTT) {
+          finalizarCapturaYEjecutarRespuesta();
+        }
+      });
+
+      btnPTT.addEventListener('pointercancel', (e) => {
+        e.preventDefault();
+        if (appState.triggerMode === 'tap') return;
+        if (appState.isHoldingPTT) {
+          finalizarCapturaYEjecutarRespuesta();
+        }
+      });
+    }
+
+    function iniciarMedidorVolumenEnVivo() {
+      appState.maxRmsDuringHold = 0;
+      const bar = document.getElementById('micVolumeMeterBar');
+
+      if (!appState.analyserNode) return;
+      const bufferLength = appState.analyserNode.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      const actualizarNivel = () => {
+        if (!appState.isHoldingPTT) return;
+        appState.analyserNode.getByteTimeDomainData(dataArray);
+
+        let sumSquares = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          const normalized = (dataArray[i] - 128) / 128;
+          sumSquares += normalized * normalized;
+        }
+        const rms = Math.sqrt(sumSquares / bufferLength);
+        if (rms > appState.maxRmsDuringHold) {
+          appState.maxRmsDuringHold = rms;
+        }
+
+        const pct = Math.min(100, Math.max(8, Math.round(rms * 380)));
+        if (bar) bar.style.width = `${pct}%`;
+
+        appState.volumeAnimFrame = requestAnimationFrame(actualizarNivel);
+      };
+
+      appState.volumeAnimFrame = requestAnimationFrame(actualizarNivel);
+    }
+
+    function iniciarGrabadorAudioMultimodal() {
+      appState.recordedAudioChunks = [];
+      if (!window.persistentMicStream || !window.persistentMicStream.active || !('MediaRecorder' in window)) {
+        return;
+      }
+
+      try {
+        const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+        let chosenMime = '';
+        for (const m of mimeTypes) {
+          if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) {
+            chosenMime = m;
+            break;
+          }
+        }
+
+        const recorder = chosenMime
+          ? new MediaRecorder(window.persistentMicStream, { mimeType: chosenMime })
+          : new MediaRecorder(window.persistentMicStream);
+
+        appState.recordedAudioMimeType = (recorder.mimeType || 'audio/webm').split(';')[0];
+
+        recorder.ondataavailable = (ev) => {
+          if (ev.data && ev.data.size > 0) {
+            appState.recordedAudioChunks.push(ev.data);
+          }
+        };
+
+        recorder.start(150);
+        appState.mediaRecorder = recorder;
+      } catch (e) {
+        appState.mediaRecorder = null;
+      }
+    }
+
+    function iniciarCapturaPushToTalk() {
+      if (appState.isHoldingPTT || appState.isConsolidatingPTT) return;
+
+      detenerVozInmediatamente();
+
+      appState.isHoldingPTT = true;
+      appState.finalTranscript = '';
+      appState.interimTranscript = '';
+      appState.lastRecognizedSnippet = '';
+      appState.pttStartTime = performance.now();
+
+      if (navigator.vibrate) {
+        try { navigator.vibrate(35); } catch (e) {}
+      }
+
+      const btnPTT = document.getElementById('btnPushToTalk');
+      btnPTT.classList.add('ptt-active');
+      document.getElementById('pttPulseRing').classList.remove('hidden');
+      document.getElementById('pttIcon').className = 'fa-solid fa-ear-listen';
+      document.getElementById('pttShortLabel').textContent = appState.triggerMode === 'hold' ? 'Soltar=Enviar' : 'Tocar=Enviar';
+
+      const actionLabel = document.getElementById('liveOverlayActionLabel');
+      if (actionLabel) {
+        actionLabel.textContent = appState.triggerMode === 'hold'
+          ? 'Escuchando tu pregunta... (Suelta al terminar)'
+          : 'Escuchando tu pregunta... (Toca al terminar)';
+      }
+
+      document.getElementById('pttInstructionText').innerHTML = appState.triggerMode === 'hold'
+        ? '<span style="color:#fb7185; font-weight:700;">Habla ahora... Suelta el botón cuando termines tu pregunta</span>'
+        : '<span style="color:#fb7185; font-weight:700;">Habla ahora... Toca el botón nuevamente para enviar</span>';
+
+      const overlay = document.getElementById('liveTranscriptOverlay');
+      overlay.classList.remove('hidden');
+      document.getElementById('liveTranscriptText').textContent = 'Escuchando tu voz en vivo...';
+
+      actualizarEstadoVisualAgustina('LISTENING');
+
+      iniciarMedidorVolumenEnVivo();
+      iniciarGrabadorAudioMultimodal();
+
+      clearInterval(appState.pttTimerInterval);
+      appState.pttTimerInterval = setInterval(() => {
+        const elapsed = ((performance.now() - appState.pttStartTime) / 1000).toFixed(1);
+        document.getElementById('pttTimerText').textContent = `${elapsed}s`;
+      }, 100);
+
+      if (appState.recognitionSupported && appState.recognition) {
+        try {
+          appState.recognition.start();
+        } catch (err) {}
+      }
+    }
+
+    function finalizarCapturaYEjecutarRespuesta() {
+      if (!appState.isHoldingPTT) return;
+      appState.isHoldingPTT = false;
+      appState.isConsolidatingPTT = true;
+
+      clearInterval(appState.pttTimerInterval);
+      if (appState.volumeAnimFrame) {
+        cancelAnimationFrame(appState.volumeAnimFrame);
+      }
+
+      if (navigator.vibrate) {
+        try { navigator.vibrate([20, 30]); } catch (e) {}
+      }
+
+      const duracionHoldMs = performance.now() - appState.pttStartTime;
+
+      const btnPTT = document.getElementById('btnPushToTalk');
+      btnPTT.classList.remove('ptt-active');
+      document.getElementById('pttPulseRing').classList.add('hidden');
+      document.getElementById('pttIcon').className = 'fa-solid fa-microphone';
+      actualizarEtiquetasModoDisparo();
+
+      const actionLabel = document.getElementById('liveOverlayActionLabel');
+      if (actionLabel) {
+        actionLabel.textContent = 'Consolidando últimas palabras pronunciadas...';
+      }
+
+      setTimeout(() => {
+        if (appState.recognitionSupported && appState.recognition) {
+          try {
+            appState.recognition.stop();
+          } catch (e) {}
+        }
+      }, 220);
+
+      const detenerRecorderPromise = new Promise((resolve) => {
+        if (appState.mediaRecorder && appState.mediaRecorder.state !== 'inactive') {
+          appState.mediaRecorder.onstop = () => resolve();
+          try {
+            appState.mediaRecorder.stop();
+          } catch (e) {
+            resolve();
+          }
+        } else {
+          resolve();
+        }
+      });
+
+      setTimeout(async () => {
+        await detenerRecorderPromise;
+        appState.isConsolidatingPTT = false;
+        document.getElementById('liveTranscriptOverlay').classList.add('hidden');
+
+        const consultaCapturada = (
+          appState.finalTranscript + ' ' + appState.interimTranscript
+        ).trim() || appState.lastRecognizedSnippet.trim();
+
+        const inputManual = document.getElementById('inputManualQuery').value.trim();
+
+        if (consultaCapturada.length > 1) {
+          procesarConsultaConOrquestadorMultiIA(consultaCapturada, 'Voz PTT (es-CO)');
+          return;
+        }
+
+        if (appState.recordedAudioChunks.length > 0 && duracionHoldMs > 600 && appState.maxRmsDuringHold > 0.011) {
+          const audioBlob = new Blob(appState.recordedAudioChunks, { type: appState.recordedAudioMimeType || 'audio/webm' });
+          if (audioBlob.size > 700) {
+            await procesarAudioGrabadoSinTranscripcionLocal(audioBlob);
+            return;
+          }
+        }
+
+        if (inputManual.length > 1) {
+          document.getElementById('inputManualQuery').value = '';
+          procesarConsultaConOrquestadorMultiIA(inputManual, 'Disparador PTT');
+          return;
+        }
+
+        actualizarEstadoVisualAgustina('IDLE');
+        mostrarAvisoRapidoSinVoz();
+      }, 450);
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const dataUrl = reader.result || '';
+          const base64 = String(dataUrl).split(',')[1] || '';
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function procesarAudioGrabadoSinTranscripcionLocal(audioBlob) {
+      actualizarEstadoVisualAgustina('THINKING');
+      const inicioTiempo = performance.now();
+
+      if (appState.groqApiKey && appState.groqApiKey.trim() !== '') {
+        try {
+          const formData = new FormData();
+          formData.append('file', audioBlob, 'consulta.webm');
+          formData.append('model', 'whisper-large-v3-turbo');
+          formData.append('language', 'es');
+
+          const respWhisper = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${appState.groqApiKey.trim()}` },
+            body: formData
+          });
+
+          if (respWhisper.ok) {
+            const dataWhisper = await respWhisper.json();
+            if (dataWhisper.text && dataWhisper.text.trim().length > 1) {
+              actualizarEstadoVisualAgustina('IDLE');
+              await procesarConsultaConOrquestadorMultiIA(dataWhisper.text.trim(), 'Voz Whisper PTT');
+              return;
+            }
+          }
+        } catch (e) {}
+      }
+
+      const clasificacion = {
+        id: 'UNIVERSAL_AUDIO',
+        nombre: 'Comprensión de Voz Multimodal',
+        icono: 'fa-headphones',
+        color: '#6ee7b7',
+        instruccionEspecializada: 'Responde directamente a la pregunta hablada en el audio sin introducciones ni saludos.'
+      };
+
+      const loadingId = agregarBurbujaCargandoOrquestador(clasificacion);
+
+      try {
+        const base64Audio = await blobToBase64(audioBlob);
+        const activeGeminiKey = (appState.customGeminiKey && appState.customGeminiKey.trim() !== '')
+          ? appState.customGeminiKey.trim()
+          : apiKey;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeGeminiKey}`;
+
+        const systemPrompt = `${construirSystemPromptColombiano(clasificacion)}
+FORMATO OBLIGATORIO PARA AUDIO:
+En la primera línea escribe únicamente la transcripción exacta de lo que preguntó el usuario usando este formato:
+[PREGUNTA: lo que dijo el usuario]
+En la siguiente línea empieza inmediatamente con la respuesta directa, científica, académica o cultural completa, SIN decir "¡Claro que sí!" ni "Hola".`;
+
+        const payload = {
+          contents: [
+            ...appState.chatHistory.slice(-4),
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: 'Escucha el audio adjunto. Primero transcribe exactamente lo que preguntó el usuario en formato [PREGUNTA: ...] y luego responde directamente a esa pregunta específica sin saludos ni introducciones.'
+                },
+                {
+                  inlineData: {
+                    mimeType: appState.recordedAudioMimeType || 'audio/webm',
+                    data: base64Audio
+                  }
+                }
+              ]
+            }
+          ],
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
+          generationConfig: {
+            maxOutputTokens: 2048,
+            temperature: 0.4
+          }
+        };
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        const rawText = result?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('\n').trim() || '';
+        eliminarElementoPorId(loadingId);
+
+        if (!rawText) {
+          throw new Error('Audio no transcrito por Gemini');
+        }
+
+        let preguntaTranscrita = 'Consulta por voz';
+        let respuestaDirecta = rawText;
+
+        const matchPregunta = rawText.match(/\[PREGUNTA:\s*([^\]]+)\]/i);
+        if (matchPregunta && matchPregunta[1]) {
+          preguntaTranscrita = matchPregunta[1].trim();
+          respuestaDirecta = rawText.replace(/\[PREGUNTA:\s*[^\]]+\]\s*/i, '').trim();
+        }
+
+        agregarBurbujaUsuario(preguntaTranscrita, 'Audio Multimodal PTT');
+
+        if (respuestaDirecta.length < 40 && preguntaTranscrita !== 'Consulta por voz') {
+          await ejecutarCascadaParaPreguntaYaMostrada(preguntaTranscrita);
+          return;
+        }
+
+        respuestaDirecta = limpiarMuletillasIniciales(respuestaDirecta);
+        const categoriaReal = clasificarConsultaUniversal(preguntaTranscrita);
+        const latenciaMs = Math.round(performance.now() - inicioTiempo);
+
+        appState.chatHistory.push(
+          { role: 'user', parts: [{ text: preguntaTranscrita }] },
+          { role: 'model', parts: [{ text: respuestaDirecta }] }
+        );
+
+        agregarBurbujaAgustina({
+          texto: respuestaDirecta,
+          categoria: categoriaReal,
+          motor: 'Gemini 3 Flash Audio Directo',
+          latencia: latenciaMs,
+          fuentes: []
+        });
+
+        if (appState.autoSpeak) {
+          hablarTextoConAgustina(respuestaDirecta);
+        } else {
+          actualizarEstadoVisualAgustina('IDLE');
+        }
+      } catch (err) {
+        eliminarElementoPorId(loadingId);
+        actualizarEstadoVisualAgustina('IDLE');
+        agregarBurbujaSistema(
+          'Tu micrófono grabó el audio, pero este navegador móvil no transcribió las palabras localmente. Puedes usar el teclado inferior o tocar los botones de ejemplo arriba.'
+        );
+      }
+    }
+
+    function mostrarAvisoRapidoSinVoz() {
+      if (!appState.recognitionSupported) {
+        agregarBurbujaSistema(
+          'Este navegador no incluye reconocimiento de voz nativo. Ábrelo en Google Chrome para Android o escribe tu pregunta en la barra inferior.'
+        );
+        return;
+      }
+      if (appState.lastSpeechError === 'network') {
+        agregarBurbujaSistema(
+          'El servicio de voz de Android requiere conexión a internet activa. Verifica tus datos o Wi-Fi e inténtalo de nuevo.'
+        );
+        return;
+      }
+      agregarBurbujaSistema(
+        'No alcancé a escuchar palabras. Mantén presionado el botón verde durante toda tu pregunta (o cambia arriba a "Modo: 1 Toque") y habla cerca del micrófono.'
+      );
+    }
+
+    /***************************************************************************
+     * 5. ORQUESTADOR MULTI-IA REAL DE 4 CAPAS (PROHIBIDO RESPUESTAS GENÉRICAS)
+     ***************************************************************************/
+    function clasificarConsultaUniversal(query) {
+      const q = query.toLowerCase();
+
+      if (/(san agust[ií]n|instituci[oó]n educativa|rector|manual de convivencia|agustiniano)/i.test(q)) {
+        return {
+          id: 'INSTITUCIONAL',
+          nombre: 'Institucional (I.E. San Agustín)',
+          icono: 'fa-school',
+          color: '#6ee7b7',
+          instruccionEspecializada:
+            'Explica directamente la información de la Institución Educativa San Agustín en Popayán, Cauca.'
+        };
+      }
+
+      if (/(arduino|puente h|l298n|sensor|ultrasonico|servo|robot|c[oó]digo|python|javascript|circuito|voltaje|resistencia|led|microcontrolador|programaci[oó]n|computador|algoritmo)/i.test(q)) {
+        return {
+          id: 'ROBOTICA',
+          nombre: 'Robótica, Tecnología e Informática',
+          icono: 'fa-microchip',
+          color: '#67e8f9',
+          instruccionEspecializada:
+            'Explica directamente los pasos técnicos, conexiones o funcionamiento electrónico/informático.'
+        };
+      }
+
+      if (/(c[eé]lula|mitocondria|adn|arn|fotos[ií]ntesis|biolog[ií]a|qu[ií]mica|f[ií]sica|ecuaci[oó]n|matem[aá]tica|pit[aá]goras|derivada|integral|tri[aá]ngulo|fracci[oó]n|ra[ií]z|polinomio|energ[ií]a|velocidad|fuerza|geometr[ií]a|[aá]tomo|tabla peri[oó]dica|agujero negro|planeta|universo)/i.test(q)) {
+        return {
+          id: 'STEM',
+          nombre: 'Ciencias Naturales y Matemáticas (STEM)',
+          icono: 'fa-dna',
+          color: '#fcd34d',
+          instruccionEspecializada:
+            'Empieza en la primera oración con la definición científica o matemática exacta, sus partes, clasificación o fórmula explicada con claridad.'
+        };
+      }
+
+      if (/(icfes|saber 11|filosof[ií]a|historia|geograf[ií]a|literatura|ensayo|gram[aá]tica|ingl[eé]s|lectura cr[ií]tica|sociales|constituci[oó]n|revoluci[oó]n|bol[ií]var)/i.test(q)) {
+        return {
+          id: 'HUMANIDADES',
+          nombre: 'Humanidades, Historia e ICFES',
+          icono: 'fa-book-open-reader',
+          color: '#d8b4fe',
+          instruccionEspecializada:
+            'Explica directamente el hecho histórico, concepto filosófico, literario o análisis crítico.'
+        };
+      }
+
+      return {
+        id: 'TEMA_LIBRE',
+        nombre: 'Cultura General y Conocimiento Universal',
+        icono: 'fa-earth-americas',
+        color: '#f9a8d4',
+        instruccionEspecializada:
+          'Responde directamente al tema consultado (gastronomía, recetas, deportes, música, cine, salud, curiosidades o vida diaria) con datos reales, precisos y completos.'
+      };
+    }
+
+    function construirSystemPromptColombiano(clasificacion) {
+      const extensionInstruccion = appState.pedagogicalMode === 'socratico'
+        ? 'Desarrolla la explicación en 2 a 3 párrafos bien estructurados, claros y completos.'
+        : 'Desarrolla la explicación directa y concisa en 1 párrafo sustancioso (4 a 6 oraciones con toda la información clave).';
+
+      return `Eres Agustina Académica v3.5 (I.E. San Agustín, Popayán, Colombia), una enciclopedia y tutora inteligente de voz sobre CUALQUIER tema académico o no académico.
+REGLAS ESTRICTAS E INQUEBRANTABLES:
+1. PROHIBIDO usar saludos, muletillas o frases introductorias como "¡Claro que sí!", "Con mucho gusto", "Hola, soy Agustina", "Qué buena pregunta" o "Te cuento que...".
+2. Empieza SIEMPRE en la primera palabra definiendo o respondiendo directamente lo que el usuario preguntó con datos reales, concretos y completos (Ejemplo: si pregunta "¿Qué es la célula?", tu primera frase DEBE ser: "La célula es la unidad estructural, morfológica y funcional básica de todos los seres vivos...").
+3. NUNCA digas que vas a responder sin dar la respuesta completa ahí mismo.
+4. ${clasificacion.instruccionEspecializada} ${extensionInstruccion}
+5. Como tu respuesta será leída en voz alta por un sintetizador en español de Colombia, no uses código LaTeX ($, \\frac, \\sqrt); escribe las fórmulas en palabras naturales.`;
+    }
+
+    function limpiarMuletillasIniciales(texto) {
+      if (!texto) return '';
+      let limpio = texto.trim();
+      limpio = limpio.replace(/^(¡?claro que s[ií]!?[.,\s]*|¡?con mucho gusto!?[.,\s]*|¡?hola!?[^.\n]*[.\n]+\s*|¡?qu[eé] buena pregunta!?[.,\s]*|por supuesto[.,\s]*)+/i, '');
+      if (limpio.length > 0) {
+        limpio = limpio.charAt(0).toUpperCase() + limpio.slice(1);
+      }
+      return limpio;
+    }
+
+    async function procesarConsultaConOrquestadorMultiIA(consulta, origenEntrada = 'Voz PTT') {
+      if (!consulta || appState.status === 'THINKING') return;
+
+      agregarBurbujaUsuario(consulta, origenEntrada);
+      await ejecutarCascadaParaPreguntaYaMostrada(consulta);
+    }
+
+    async function ejecutarCascadaParaPreguntaYaMostrada(consulta) {
+      actualizarEstadoVisualAgustina('THINKING');
+
+      const clasificacion = clasificarConsultaUniversal(consulta);
+      const systemPrompt = construirSystemPromptColombiano(clasificacion);
+      const inicioTiempo = performance.now();
+      const loadingId = agregarBurbujaCargandoOrquestador(clasificacion);
+
+      let resultadoIA = null;
+
+      try {
+        if (appState.routingMode === 'wiki') {
+          resultadoIA = await consultarWikipediaYEnciclopediaEnVivo(consulta);
+        } else if (appState.routingMode === 'pollinations') {
+          resultadoIA = await llamarMotorPollinationsCloudLLM(consulta, systemPrompt);
+        } else if (appState.routingMode === 'groq' && appState.groqApiKey.trim() !== '') {
+          resultadoIA = await llamarMotorGroqLlama(consulta, systemPrompt);
+        } else if (appState.routingMode === 'gemini') {
+          resultadoIA = await llamarMotorGeminiConBackoff(consulta, systemPrompt);
+        } else {
+          try {
+            resultadoIA = await llamarMotorGeminiConBackoff(consulta, systemPrompt);
+          } catch (errCapa1) {
+            if (appState.groqApiKey && appState.groqApiKey.trim() !== '') {
+              try {
+                resultadoIA = await llamarMotorGroqLlama(consulta, systemPrompt);
+              } catch (errGroq) {
+                resultadoIA = null;
+              }
+            }
+
+            if (!resultadoIA) {
+              try {
+                resultadoIA = await llamarMotorPollinationsCloudLLM(consulta, systemPrompt);
+              } catch (errCapa3) {
+                resultadoIA = null;
+              }
+            }
+
+            if (!resultadoIA) {
+              resultadoIA = await consultarWikipediaYEnciclopediaEnVivo(consulta);
+            }
+          }
+        }
+      } catch (errGlobal) {
+        try {
+          resultadoIA = await llamarMotorPollinationsCloudLLM(consulta, systemPrompt);
+        } catch (e2) {
+          resultadoIA = await consultarWikipediaYEnciclopediaEnVivo(consulta);
+        }
+      }
+
+      const latenciaMs = Math.round(performance.now() - inicioTiempo);
+      eliminarElementoPorId(loadingId);
+
+      const textoFinalLimpio = limpiarMuletillasIniciales(resultadoIA.texto);
+      const primeraOracion = textoFinalLimpio.split('.')[0] + '.';
+      actualizarFraseMascota(primeraOracion);
+
+      appState.chatHistory.push(
+        { role: 'user', parts: [{ text: consulta }] },
+        { role: 'model', parts: [{ text: textoFinalLimpio }] }
+      );
+      if (appState.chatHistory.length > 10) {
+        appState.chatHistory = appState.chatHistory.slice(-10);
+      }
+
+      agregarBurbujaAgustina({
+        texto: textoFinalLimpio,
+        categoria: clasificacion,
+        motor: resultadoIA.motor,
+        latencia: latenciaMs,
+        fuentes: resultadoIA.fuentes || []
+      });
+
+      if (appState.autoSpeak) {
+        hablarTextoConAgustina(textoFinalLimpio);
+      } else {
+        actualizarEstadoVisualAgustina('IDLE');
+      }
+    }
+
+    async function llamarMotorGeminiConBackoff(userQuery, systemPrompt) {
+      const activeGeminiKey = (appState.customGeminiKey && appState.customGeminiKey.trim() !== '')
+        ? appState.customGeminiKey.trim()
+        : apiKey;
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeGeminiKey}`;
+
+      const contents = [
+        ...appState.chatHistory.slice(-6),
+        {
+          role: 'user',
+          parts: [{
+            text: `Pregunta del usuario: "${userQuery}"\nResponde directamente a esta pregunta desde la primera palabra, sin saludos ni introducciones:`
+          }]
+        }
+      ];
+
+      const construirPayload = (usarSearch) => {
+        const p = {
+          contents: contents,
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
+          generationConfig: {
+            maxOutputTokens: 2048,
+            temperature: 0.35
+          }
+        };
+        if (usarSearch) {
+          p.tools = [{ google_search: {} }];
+        }
+        return p;
+      };
+
+      const intentosConfig = appState.useSearchGrounding ? [true, false] : [false];
+      let lastError = null;
+
+      for (const usarSearch of intentosConfig) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(construirPayload(usarSearch))
+          });
+
+          if (!response.ok) {
+            throw new Error(`Gemini HTTP ${response.status}`);
+          }
+
+          const result = await response.json();
+          const candidate = result.candidates?.[0];
+          const parts = candidate?.content?.parts || [];
+          const text = parts.map(p => p.text || '').join('\n').trim();
+
+          if (!text || text.length < 25) {
+            throw new Error('Respuesta insuficiente de Gemini');
+          }
+
+          let sources = [];
+          const groundingMetadata = candidate?.groundingMetadata;
+          if (groundingMetadata && groundingMetadata.groundingAttributions) {
+            sources = groundingMetadata.groundingAttributions
+              .map(attr => ({
+                uri: attr.web?.uri,
+                title: attr.web?.title
+              }))
+              .filter(s => s.uri && s.title)
+              .slice(0, 3);
+          }
+
+          return {
+            texto: text,
+            motor: usarSearch ? 'Gemini 3 Flash + Search' : 'Gemini 3 Flash',
+            fuentes: sources
+          };
+        } catch (err) {
+          lastError = err;
+        }
+      }
+
+      throw lastError || new Error('Gemini no disponible');
+    }
+
+    async function llamarMotorPollinationsCloudLLM(userQuery, systemPrompt) {
+      const messages = [
+        { role: 'system', content: systemPrompt },
+        {
+          role: 'user',
+          content: `Responde de forma directa, completa y sin saludos iniciales la siguiente consulta: ${userQuery}`
+        }
+      ];
+
+      try {
+        const response = await fetch('https://text.pollinations.ai/openai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'openai',
+            messages: messages,
+            temperature: 0.4
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const text = data?.choices?.[0]?.message?.content?.trim();
+          if (text && text.length > 25) {
+            return {
+              texto: text,
+              motor: 'Cloud IA Universal (OpenAI)',
+              fuentes: []
+            };
+          }
+        }
+      } catch (e) {}
+
+      const promptDirecto = `Responde en español, empezando directamente con la definición o respuesta sin saludos ni introducciones: ${userQuery}`;
+      const urlGet = `https://text.pollinations.ai/${encodeURIComponent(promptDirecto)}?model=openai`;
+      const respGet = await fetch(urlGet);
+      if (!respGet.ok) {
+        throw new Error('Pollinations Cloud LLM no disponible');
+      }
+      const textGet = (await respGet.text()).trim();
+      if (!textGet || textGet.length < 25) {
+        throw new Error('Respuesta vacía de Cloud LLM');
+      }
+
+      return {
+        texto: textGet,
+        motor: 'Cloud IA Universal',
+        fuentes: []
+      };
+    }
+
+    async function llamarMotorGroqLlama(userQuery, systemPrompt) {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${appState.groqApiKey.trim()}`
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userQuery }
+          ],
+          temperature: 0.4,
+          max_tokens: 1024
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Groq Error ${response.status}`);
+      }
+
+      const data = await response.json();
+      const text = data.choices?.[0]?.message?.content?.trim();
+      if (!text) throw new Error('Groq sin contenido');
+
+      return {
+        texto: text,
+        motor: 'Groq • Llama 3.3 70B',
+        fuentes: []
+      };
+    }
+
+    async function consultarWikipediaYEnciclopediaEnVivo(userQuery) {
+      const qNormalizada = userQuery
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+
+      const resultadoMatematico = intentarResolverExpresionMatematica(qNormalizada);
+      if (resultadoMatematico) {
+        return {
+          texto: resultadoMatematico,
+          motor: 'Motor Matemático Agustina',
+          fuentes: []
+        };
+      }
+
+      for (const item of ENCICLOPEDIA_CIENTIFICA_Y_CULTURAL) {
+        const coincide = item.keywords.some(kw => {
+          const kwNorm = kw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          return qNormalizada.includes(kwNorm);
+        });
+        if (coincide) {
+          return {
+            texto: item.respuesta,
+            motor: `Enciclopedia Agustina (${item.categoria})`,
+            fuentes: []
+          };
+        }
+      }
+
+      const terminoBusqueda = extraerTerminoClaveParaWikipedia(userQuery);
+      if (terminoBusqueda) {
+        try {
+          const searchUrl = `https://es.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(terminoBusqueda)}&utf8=&format=json&origin=*`;
+          const searchResp = await fetch(searchUrl);
+          if (searchResp.ok) {
+            const searchData = await searchResp.json();
+            const primerResultado = searchData?.query?.search?.[0];
+
+            if (primerResultado && primerResultado.title) {
+              const tituloPagina = primerResultado.title;
+              const summaryUrl = `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(tituloPagina)}`;
+              const sumResp = await fetch(summaryUrl);
+
+              if (sumResp.ok) {
+                const sumData = await sumResp.json();
+                if (sumData.extract && sumData.extract.length > 40) {
+                  return {
+                    texto: sumData.extract,
+                    motor: 'Wikipedia Enciclopedia ES',
+                    fuentes: [{
+                      uri: sumData.content_urls?.desktop?.page || `https://es.wikipedia.org/wiki/${encodeURIComponent(tituloPagina)}`,
+                      title: `Wikipedia: ${tituloPagina}`
+                    }]
+                  };
+                }
+              }
+            }
+          }
+        } catch (errWiki) {}
+      }
+
+      return {
+        texto: `En este momento el dispositivo no tiene conexión a los servidores de IA ni a Wikipedia para consultar "${userQuery}" en línea. Sin embargo, tengo disponibles sin conexión los módulos completos de Biología (la célula, ADN, mitocondria, fotosíntesis), Matemáticas (Pitágoras, ecuaciones cuadráticas, cálculo aritmético), Física (leyes de Newton, agujeros negros), Robótica (Arduino y puente H L298N), Gastronomía colombiana e información de la I.E. San Agustín.`,
+        motor: 'Modo Offline sin Internet',
+        fuentes: []
+      };
+    }
+
+    function extraerTerminoClaveParaWikipedia(pregunta) {
+      let limpia = pregunta
+        .replace(/[¿?¡!.,;:"]/g, ' ')
+        .replace(/\b(agustina|por favor|dime|explicame|explícame|cuentame|cuéntame|hablame|háblame|que es|qué es|que son|qué son|cual es|cuál es|cuales son|cuáles son|como funciona|cómo funciona|definicion de|definición de|acerca de|sobre|un|una|unos|unas|el|la|los|las|del|de la)\b/gi, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
+      return limpia || pregunta.replace(/[¿?¡!]/g, '').trim();
+    }
+
+    function intentarResolverExpresionMatematica(q) {
+      let expr = q
+        .replace(/cuanto es|calcula|resuelve/g, '')
+        .replace(/mas/g, '+')
+        .replace(/menos/g, '-')
+        .replace(/por|multiplicado por/g, '*')
+        .replace(/dividido entre|dividido por|entre/g, '/')
+        .replace(/[^0-9+\-*/().\s]/g, '')
+        .trim();
+
+      if (/^\d+(\.\d+)?(\s*[+\-*/]\s*\d+(\.\d+)?)+$/.test(expr)) {
+        try {
+          const resultado = Function(`"use strict"; return (${expr})`)();
+          if (typeof resultado === 'number' && isFinite(resultado)) {
+            return `El resultado del cálculo matemático ${expr} es exactamente ${Number(resultado.toFixed(4))}.`;
+          }
+        } catch (e) {}
+      }
+      return null;
+    }
+
+    /***************************************************************************
+     * 6. RENDERIZADO DE LA INTERFAZ DE CONVERSACIÓN Y TELEMETRÍA
+     ***************************************************************************/
+    function agregarBurbujaUsuario(texto, origenEntrada) {
+      const container = document.getElementById('chatContainer');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'msg-row-user';
+
+      wrapper.innerHTML = `
+        <div class="msg-bubble-user">
+          <div style="display:flex; align-items:center; justify-content:flex-end; gap:5px; font-size:10px; color:#d1fae5; margin-bottom:3px;">
+            <i class="fa-solid fa-microphone-lines"></i>
+            <span>Tú • ${escaparHTML(origenEntrada)}</span>
+          </div>
+          <p style="font-size:13.5px; line-height:1.45; word-break:break-word;">${escaparHTML(texto)}</p>
+        </div>
+      `;
+
+      container.appendChild(wrapper);
+      desplazarChatAlFinal();
+    }
+
+    function agregarBurbujaCargandoOrquestador(clasificacion) {
+      const container = document.getElementById('chatContainer');
+      const id = 'loading-' + Date.now();
+      const wrapper = document.createElement('div');
+      wrapper.id = id;
+      wrapper.className = 'msg-row-agustina';
+
+      wrapper.innerHTML = `
+        <div class="msg-avatar-mini" style="color:#fbbf24; border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.18);">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size:13px;"></i>
+        </div>
+        <div class="msg-bubble-agustina" style="font-size:12px; color:#cbd5e1;">
+          <div style="display:flex; align-items:center; gap:6px; font-weight:700; color:#fcd34d; margin-bottom:3px;">
+            <i class="fa-solid ${clasificacion.icono}"></i>
+            <span>Enrutando a: ${clasificacion.nombre}</span>
+          </div>
+          <p style="font-size:11px; color:#94a3b8;">Consultando sistemas de IA y preparando voz colombiana...</p>
+        </div>
+      `;
+
+      container.appendChild(wrapper);
+      desplazarChatAlFinal();
+      return id;
+    }
+
+    function agregarBurbujaAgustina({ texto, categoria, motor, latencia, fuentes }) {
+      const container = document.getElementById('chatContainer');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'msg-row-agustina';
+
+      const textoFormateadoHTML = formatearTextoAcademicoHTML(texto);
+      const textoSeguroParaBoton = encodeURIComponent(texto);
+
+      let fuentesHTML = '';
+      if (fuentes && fuentes.length > 0) {
+        const links = fuentes
+          .map(f => `<a href="${escaparHTML(f.uri)}" target="_blank" rel="noopener noreferrer" style="text-decoration:underline; color:#6ee7b7;">${escaparHTML(f.title)}</a>`)
+          .join(' • ');
+        fuentesHTML = `
+          <div style="margin-top:8px; padding-top:6px; border-top:1px solid rgba(71,85,105,0.5); font-size:10px; color:#94a3b8;">
+            <i class="fa-brands fa-google" style="color:#34d399; margin-right:3px;"></i>
+            <span>Fuentes:</span> ${links}
+          </div>
+        `;
+      }
+
+      wrapper.innerHTML = `
+        <div class="msg-avatar-mini">
+          <i class="fa-solid ${categoria.icono}" style="font-size:13px;"></i>
+        </div>
+        <div class="msg-bubble-agustina">
+          <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(71,85,105,0.55);">
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:5px; font-size:10px;">
+              <span style="font-weight:700; color:${categoria.color || '#6ee7b7'};">
+                ${categoria.nombre}
+              </span>
+              <span style="color:#64748b;">•</span>
+              <span style="padding:2px 6px; border-radius:5px; background:#090d16; border:1px solid #334155; color:#cbd5e1; font-family:monospace;">
+                ${escaparHTML(motor)} (${latencia} ms)
+              </span>
+            </div>
+
+            <button
+              onclick="hablarTextoCodificado('${textoSeguroParaBoton}')"
+              class="btn-listen-again"
+              title="Volver a escuchar con voz colombiana"
+            >
+              <i class="fa-solid fa-volume-high" style="font-size:10px;"></i>
+              <span>Escuchar</span>
+            </button>
+          </div>
+
+          <div style="font-size:13.5px; color:#f1f5f9; line-height:1.55; display:flex; flex-direction:column; gap:8px;">
+            ${textoFormateadoHTML}
+          </div>
+
+          ${fuentesHTML}
+        </div>
+      `;
+
+      container.appendChild(wrapper);
+      desplazarChatAlFinal();
+    }
+
+    function agregarBurbujaSistema(mensaje) {
+      const container = document.getElementById('chatContainer');
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex';
+      wrapper.style.justifyContent = 'center';
+      wrapper.innerHTML = `
+        <div style="background:rgba(30,41,59,0.85); border:1px solid rgba(245,158,11,0.35); color:#fde68a; font-size:11.5px; border-radius:12px; padding:8px 12px; max-width:92%; text-align:center;">
+          <i class="fa-solid fa-circle-info" style="margin-right:4px; color:#fbbf24;"></i>
+          ${escaparHTML(mensaje)}
+        </div>
+      `;
+      container.appendChild(wrapper);
+      desplazarChatAlFinal();
+    }
+
+    function hablarTextoCodificado(encoded) {
+      try {
+        const decoded = decodeURIComponent(encoded);
+        hablarTextoConAgustina(decoded);
+      } catch (e) {}
+    }
+
+    function formatearTextoAcademicoHTML(texto) {
+      if (!texto) return '';
+      let safe = escaparHTML(texto);
+      safe = safe.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#6ee7b7; font-weight:600;">$1</strong>');
+      safe = safe.replace(/\*([^*]+)\*/g, '<em style="color:#fde68a;">$1</em>');
+      const paragraphs = safe.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`);
+      return paragraphs.join('');
+    }
+
+    function escaparHTML(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function eliminarElementoPorId(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function desplazarChatAlFinal() {
+      const container = document.getElementById('chatContainer');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    /***************************************************************************
+     * 7. ESTADOS VISUALES, ANIMACIÓN DE MASCOTA Y CONTROLES DE INTERFAZ
+     ***************************************************************************/
+    function actualizarEstadoVisualAgustina(nuevoEstado) {
+      appState.status = nuevoEstado;
+      const waveContainer = document.getElementById('waveContainer');
+      const statusLabel = document.getElementById('statusStateLabel');
+      const btnStopSpeech = document.getElementById('btnStopSpeech');
+      const mascotFrame = document.getElementById('mascotPortraitFrame');
+
+      waveContainer.classList.remove('state-listening', 'state-thinking', 'state-speaking');
+      if (mascotFrame) {
+        mascotFrame.classList.remove('listening', 'thinking', 'speaking');
+      }
+      btnStopSpeech.classList.add('hidden');
+      btnStopSpeech.classList.remove('flex');
+
+      if (nuevoEstado === 'LISTENING') {
+        waveContainer.classList.add('state-listening');
+        if (mascotFrame) mascotFrame.classList.add('listening');
+        statusLabel.textContent = 'Escuchando';
+        statusLabel.style.color = '#fb7185';
+        actualizarFraseMascota('Estoy escuchando con atención tu pregunta...');
+      } else if (nuevoEstado === 'THINKING') {
+        waveContainer.classList.add('state-thinking');
+        if (mascotFrame) mascotFrame.classList.add('thinking');
+        statusLabel.textContent = 'Pensando IA';
+        statusLabel.style.color = '#fbbf24';
+        actualizarFraseMascota('Consultando motores de IA para darte una respuesta directa...');
+      } else if (nuevoEstado === 'SPEAKING') {
+        waveContainer.classList.add('state-speaking');
+        if (mascotFrame) mascotFrame.classList.add('speaking');
+        statusLabel.textContent = 'Hablando';
+        statusLabel.style.color = '#34d399';
+        btnStopSpeech.classList.remove('hidden');
+        btnStopSpeech.classList.add('flex');
+      } else {
+        statusLabel.textContent = 'Lista';
+        statusLabel.style.color = '#94a3b8';
+      }
+    }
+
+    function ejecutarConsultaSugerida(pregunta) {
+      detenerVozInmediatamente();
+      procesarConsultaConOrquestadorMultiIA(pregunta, 'Tema Rápido');
+    }
+
+    function manejarEnvioTextoManual(event) {
+      event.preventDefault();
+      const input = document.getElementById('inputManualQuery');
+      const query = input.value.trim();
+      if (!query) return;
+      input.value = '';
+      detenerVozInmediatamente();
+      procesarConsultaConOrquestadorMultiIA(query, 'Teclado');
+    }
+
+    function limpiarConversacion() {
+      detenerVozInmediatamente();
+      appState.chatHistory = [];
+      const container = document.getElementById('chatContainer');
+      container.innerHTML = '';
+      agregarBurbujaSistema('Historial reiniciado. Puedes preguntarme sobre cualquier tema académico o libre.');
+    }
+
+    function abrirModalConfiguracion() {
+      document.getElementById('settingsModal').classList.remove('hidden');
+    }
+
+    function cerrarModalConfiguracion() {
+      document.getElementById('settingsModal').classList.add('hidden');
+    }
+
+    function cambiarVozSeleccionada() {
+      appState.selectedVoiceURI = document.getElementById('selectVoice').value;
+    }
+
+    function actualizarSlidersVoz() {
+      const rate = document.getElementById('rangeVoiceRate').value;
+      const pitch = document.getElementById('rangeVoicePitch').value;
+      appState.voiceRate = parseFloat(rate);
+      appState.voicePitch = parseFloat(pitch);
+      document.getElementById('valVoiceRate').textContent = `${parseFloat(rate).toFixed(2)}x`;
+      document.getElementById('valVoicePitch').textContent = parseFloat(pitch).toFixed(2);
+    }
+
+    function guardarConfiguracionMultiIA() {
+      appState.routingMode = document.getElementById('selectRoutingMode').value;
+      appState.useSearchGrounding = document.getElementById('chkSearchGrounding').checked;
+      const geminiInput = document.getElementById('inputGeminiKey');
+      if (geminiInput) appState.customGeminiKey = geminiInput.value;
+      appState.groqApiKey = document.getElementById('inputGroqKey').value;
+      actualizarPillsInterfaz();
+    }
+
+    function seleccionarModoPedagogico(modo) {
+      appState.pedagogicalMode = modo;
+      const btnSoc = document.getElementById('btnModeSocratic');
+      const btnCon = document.getElementById('btnModeConcise');
+
+      if (modo === 'socratico') {
+        btnSoc.style.borderColor = '#10b981';
+        btnSoc.style.background = 'rgba(16,185,129,0.2)';
+        btnCon.style.borderColor = '#334155';
+        btnCon.style.background = 'rgba(15,23,42,0.6)';
+      } else {
+        btnCon.style.borderColor = '#10b981';
+        btnCon.style.background = 'rgba(16,185,129,0.2)';
+        btnSoc.style.borderColor = '#334155';
+        btnSoc.style.background = 'rgba(15,23,42,0.6)';
+      }
+      actualizarPillsInterfaz();
+    }
+
+    function actualizarPillsInterfaz() {
+      const mapNombres = {
+        auto: 'Cascada 4-IA Activa',
+        gemini: 'Gemini 3 Flash',
+        pollinations: 'Cloud IA Libre',
+        groq: 'Groq Llama-3.3',
+        wiki: 'Wikipedia ES + Local'
+      };
+      const el = document.getElementById('activeEngineText');
+      if (el) el.textContent = mapNombres[appState.routingMode] || 'Cascada 4-IA Activa';
+    }
+  </script>
+</body>
+</html>
