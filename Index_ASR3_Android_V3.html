@@ -1,0 +1,2493 @@
+<!DOCTYPE html>
+<html lang="es-CO" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Agustina Académica v3.0 • I.E. San Agustín (Popayán)</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', ' system-ui', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            agustin: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#16a34a',
+              600: '#15803d',
+              700: '#166534',
+              800: '#14532d',
+              900: '#052e16',
+              gold: '#f59e0b',
+              accent: '#10b981'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Reset y optimización estricta para pantallas táctiles Android */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100dvh;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #090d16;
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Desactivar menú contextual y selección de texto en el botón Push-To-Talk de Android */
+    .ptt-touch-shield {
+      touch-action: none !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      -webkit-touch-callout: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+    }
+
+    /* Animaciones de ondas vocales de Agustina */
+    @keyframes pulseRing {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+      }
+      70% {
+        transform: scale(1.35);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    @keyframes waveBar {
+      0%, 100% {
+        height: 6px;
+      }
+      50% {
+        height: 24px;
+      }
+    }
+
+    .animate-pulse-ring {
+      animation: pulseRing 1.6s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    }
+
+    .wave-bar {
+      width: 4px;
+      height: 6px;
+      border-radius: 9999px;
+      transition: height 0.15s ease, background-color 0.2s ease;
+    }
+
+    .state-listening .wave-bar {
+      background-color: #f43f5e;
+      animation: waveBar 0.55s ease-in-out infinite;
+    }
+
+    .state-thinking .wave-bar {
+      background-color: #f59e0b;
+      animation: waveBar 0.85s ease-in-out infinite;
+    }
+
+    .state-speaking .wave-bar {
+      background-color: #10b981;
+      animation: waveBar 0.45s ease-in-out infinite;
+    }
+
+    .wave-bar:nth-child(1) { animation-delay: 0.05s; }
+    .wave-bar:nth-child(2) { animation-delay: 0.18s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.08s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.28s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.12s; }
+    .wave-bar:nth-child(6) { animation-delay: 0.22s; }
+    .wave-bar:nth-child(7) { animation-delay: 0.04s; }
+
+    /* Scrollbar sutil y limpio */
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 9999px;
+    }
+
+    /* Botón PTT Activo */
+    .ptt-active {
+      transform: scale(0.94);
+      box-shadow: 0 0 35px rgba(244, 63, 94, 0.65), inset 0 0 15px rgba(255, 255, 255, 0.35) !important;
+    }
+
+    /* Botón PTT pendiente de permiso (1 clic simple) */
+    .ptt-needs-permission {
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.45);
+    }
+  </style>
+</head>
+
+<body class="flex justify-center items-center bg-slate-950 h-[100dvh] w-full select-none">
+
+  <!-- Contenedor Principal Mobile-First y Escritorio Windows -->
+  <div class="relative w-full max-w-md h-[100dvh] sm:h-[94dvh] sm:rounded-3xl bg-slate-900 sm:border sm:border-slate-800/90 shadow-2xl flex flex-col overflow-hidden">
+
+    <!-- Barra Superior Institucional -->
+    <header class="bg-gradient-to-r from-slate-900 via-emerald-950/80 to-slate-900 border-b border-emerald-500/20 px-4 pt-3 pb-2.5 shrink-0 z-20">
+      <div class="flex items-center justify-between gap-2">
+        <!-- Identidad Agustina + I.E. San Agustín -->
+        <div class="flex items-center gap-3 min-w-0">
+          <!-- Avatar Estado Agustina -->
+          <div class="relative shrink-0">
+            <div id="avatarRing" class="
+              absolute -inset-1 rounded-full bg-emerald-500/30 opacity-0 pointer-events-none
+            "></div>
+            <div id="avatarCore" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-800 flex items-center justify-center shadow-lg shadow-emerald-950/60 border border-emerald-300/30">
+              <i id="avatarIcon" class="fa-solid fa-graduation-cap text-white text-lg"></i>
+            </div>
+            <!-- Bandera Colombia Badge -->
+            <span class="absolute -bottom-1 -right-1 px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-slate-900 border border-slate-700 text-amber-300 shadow flex items-center gap-0.5" title="Voz Regional Colombiana">
+              <span>🇨🇴</span>
+              <span id="localeBadgeText">CO</span>
+            </span>
+          </div>
+
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <h1 class="font-display font-bold text-base sm:text-lg text-white tracking-tight truncate">
+                Agustina Académica
+              </h1>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                v3.0
+              </span>
+            </div>
+            <p class="text-xs text-slate-300/90 truncate flex items-center gap-1.5">
+              <span id="micDotIndicator" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+              <span>I.E. San Agustín • Respuesta Directa Multi-IA</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Acciones Rápidas: Silenciar Voz / Ajustes Multi-IA -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button
+            id="btnStopSpeech"
+            onclick="detenerVozInmediatamente()"
+            class="hidden px-2.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 text-xs font-semibold items-center gap-1.5 transition active:scale-95"
+            title="Interrumpir lectura de voz"
+          >
+            <i class="fa-solid fa-volume-xmark animate-bounce"></i>
+            <span>Callar</span>
+          </button>
+
+          <button
+            id="btnToggleVoiceMute"
+            onclick="alternarRespuestaHablada()"
+            class="w-9 h-9 rounded-xl bg-slate-800/90 hover:bg-slate-700/80 border border-slate-700/80 text-emerald-400 flex items-center justify-center transition active:scale-95"
+            title="Activar/Desactivar lectura automática en voz alta"
+          >
+            <i id="iconVoiceMute" class="fa-solid fa-volume-high text-sm"></i>
+          </button>
+
+          <button
+            onclick="abrirModalConfiguracion()"
+            class="w-9 h-9 rounded-xl bg-slate-800/90 hover:bg-slate-700/80 border border-slate-700/80 text-slate-200 flex items-center justify-center transition active:scale-95 relative"
+            title="Configurar Motores IA y Voz Colombiana"
+          >
+            <i class="fa-solid fa-sliders text-sm"></i>
+            <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-slate-900"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Estado Multi-IA, Estado de Micrófono Persistente y Visualizador de Ondas -->
+      <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2 text-[11px]">
+        <div class="flex items-center gap-1.5 overflow-x-auto custom-scroll py-0.5">
+          <!-- Indicador de Permiso de Micrófono Persistente -->
+          <button
+            id="micStatusPill"
+            onclick="solicitarPermisoMicrofonoPersistente(true)"
+            class="px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-semibold whitespace-nowrap flex items-center gap-1 hover:bg-amber-500/30 transition"
+            title="Estado del micrófono para toda la sesión"
+          >
+            <i id="micStatusIcon" class="fa-solid fa-microphone-slash text-[10px]"></i>
+            <span id="micStatusText">Activar Mic (1 Clic)</span>
+          </button>
+
+          <span id="activeEnginePill" class="px-2 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-emerald-300 font-medium whitespace-nowrap flex items-center gap-1">
+            <i class="fa-solid fa-network-wired text-[10px]"></i>
+            <span id="activeEngineText">Multi-IA Universal</span>
+          </span>
+
+          <button
+            id="triggerModePill"
+            onclick="alternarModoDisparoPTT()"
+            class="px-2 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-cyan-300 font-medium whitespace-nowrap flex items-center gap-1 hover:bg-slate-700 transition"
+            title="Cambiar entre Mantener Presionado o Tocar para Hablar"
+          >
+            <i class="fa-solid fa-hand-pointer text-[10px]"></i>
+            <span id="triggerModeText">Modo: Mantener</span>
+          </button>
+        </div>
+
+        <!-- Ecualizador de Estado de Agustina -->
+        <div id="waveContainer" class="flex items-center gap-1 h-6 px-2 rounded-lg bg-slate-950/70 border border-slate-800/80 shrink-0">
+          <div class="wave-bar bg-slate-600"></div>
+          <div class="wave-bar bg-slate-600"></div>
+          <div class="wave-bar bg-slate-600"></div>
+          <div class="wave-bar bg-slate-600"></div>
+          <div class="wave-bar bg-slate-600"></div>
+          <span id="statusStateLabel" class="ml-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+            Lista
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Banner de Activación de Micrófono de Un Solo Clic (Evita conflicto de botones en Windows y Android) -->
+    <div id="micOnboardingBanner" class="bg-gradient-to-r from-amber-950/90 via-slate-900 to-emerald-950/90 border-b border-amber-500/40 px-3.5 py-2.5 shrink-0 z-20">
+      <div class="flex items-center justify-between gap-2.5">
+        <div class="flex items-start gap-2 min-w-0">
+          <div class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 shrink-0 mt-0.5">
+            <i class="fa-solid fa-shield-halved text-xs"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-amber-200 leading-tight">
+              Paso único: Activa tu micrófono con 1 solo clic
+            </p>
+            <p class="text-[11px] text-slate-300 leading-snug mt-0.5">
+              Así el permiso de Windows/Android quedará guardado toda la sesión y podrás mantener presionado el botón de hablar sin interrupciones.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onclick="solicitarPermisoMicrofonoPersistente(true)"
+          class="shrink-0 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-950/50 transition active:scale-95 flex items-center gap-1.5"
+        >
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Permitir Mic</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Chips de Consultas Rápidas: Académicas + Cultura General y Tema Libre -->
+    <div class="bg-slate-900/95 border-b border-slate-800/80 px-3 py-2 shrink-0">
+      <div class="flex items-center gap-1.5 overflow-x-auto custom-scroll pb-0.5">
+        <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 shrink-0 mr-1">
+          <i class="fa-solid fa-bolt text-amber-400 mr-0.5"></i> Prueba 1-Clic:
+        </span>
+        <button onclick="ejecutarConsultaSugerida('¿Qué es la célula, cuáles son sus partes principales y cómo se clasifica?')" class="shrink-0 text-xs bg-slate-800/90 hover:bg-emerald-950/80 text-slate-200 hover:text-emerald-300 border border-slate-700/80 hover:border-emerald-500/40 rounded-xl px-2.5 py-1.5 transition active:scale-95 flex items-center gap-1.5">
+          <i class="fa-solid fa-dna text-emerald-400 text-[11px]"></i>
+          <span>¿Qué es la célula?</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('Explícame el Teorema de Pitágoras con su fórmula y un ejemplo numérico paso a paso')" class="shrink-0 text-xs bg-slate-800/90 hover:bg-emerald-950/80 text-slate-200 hover:text-emerald-300 border border-slate-700/80 hover:border-emerald-500/40 rounded-xl px-2.5 py-1.5 transition active:scale-95 flex items-center gap-1.5">
+          <i class="fa-solid fa-square-root-variable text-amber-400 text-[11px]"></i>
+          <span>Teorema de Pitágoras</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('¿Cómo se prepara el pandebono tradicional colombiano en casa?')" class="shrink-0 text-xs bg-slate-800/90 hover:bg-emerald-950/80 text-slate-200 hover:text-emerald-300 border border-slate-700/80 hover:border-emerald-500/40 rounded-xl px-2.5 py-1.5 transition active:scale-95 flex items-center gap-1.5">
+          <i class="fa-solid fa-utensils text-orange-400 text-[11px]"></i>
+          <span>Receta de Pandebono</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('¿Cómo se conecta un puente H L298N con Arduino para controlar dos motores DC?')" class="shrink-0 text-xs bg-slate-800/90 hover:bg-emerald-950/80 text-slate-200 hover:text-emerald-300 border border-slate-700/80 hover:border-emerald-500/40 rounded-xl px-2.5 py-1.5 transition active:scale-95 flex items-center gap-1.5">
+          <i class="fa-solid fa-microchip text-cyan-400 text-[11px]"></i>
+          <span>Puente H L298N</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('¿Qué son los agujeros negros y cómo se forman en el universo?')" class="shrink-0 text-xs bg-slate-800/90 hover:bg-emerald-950/80 text-slate-200 hover:text-emerald-300 border border-slate-700/80 hover:border-emerald-500/40 rounded-xl px-2.5 py-1.5 transition active:scale-95 flex items-center gap-1.5">
+          <i class="fa-solid fa-meteor text-pink-400 text-[11px]"></i>
+          <span>Agujeros Negros</span>
+        </button>
+        <button onclick="ejecutarConsultaSugerida('¿Cuál es la misión, visión y valores de la Institución Educativa San Agustín de Popayán?')" class="shrink-0 text-xs bg-slate-800/90 hover:bg-emerald-950/80 text-slate-200 hover:text-emerald-300 border border-slate-700/80 hover:border-emerald-500/40 rounded-xl px-2.5 py-1.5 transition active:scale-95 flex items-center gap-1.5">
+          <i class="fa-solid fa-school text-emerald-400 text-[11px]"></i>
+          <span>I.E. San Agustín</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Área Central de Conversación Universal (Académica + Tema Libre) -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto custom-scroll px-3.5 py-4 space-y-4 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950">
+      <!-- Mensaje de Bienvenida Inicial de Agustina -->
+      <div class="flex items-start gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+          <i class="fa-solid fa-robot text-sm"></i>
+        </div>
+        <div class="flex-1 bg-slate-800/85 border border-slate-700/80 rounded-2xl rounded-tl-sm p-3.5 shadow-lg">
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-1">
+              <span>Agustina Académica v3.0</span>
+              <span class="text-slate-500">•</span>
+              <span class="text-amber-300 font-normal">Respuesta Directa + 4 Capas IA</span>
+            </span>
+            <button
+              onclick="hablarTextoConAgustina('Agustina Académica versión tres punto cero lista. Pregúntame sobre la célula, matemáticas, historia, cocina o cualquier tema: iré directo a la explicación sin rodeos.')"
+              class="text-xs text-slate-400 hover:text-emerald-400 px-2 py-0.5 rounded-lg bg-slate-900/60 border border-slate-700/60 transition flex items-center gap-1"
+              title="Escuchar bienvenida corta"
+            >
+              <i class="fa-solid fa-volume-high text-[10px]"></i>
+              <span>Escuchar</span>
+            </button>
+          </div>
+          <p class="text-sm text-slate-100 leading-relaxed">
+            ¡Bienvenido a <strong class="text-emerald-300">Agustina Académica v3.0</strong> de la <strong class="text-white">I.E. San Agustín (Popayán)</strong>! Ahora respondo <strong>directo al grano desde la primera frase</strong>, sin saludos repetitivos ni introducciones vacías, sobre cualquier tema académico o libre.
+          </p>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            <i class="fa-solid fa-bolt text-amber-400 mr-1"></i>
+            <strong>Cómo usar:</strong> Haz <strong>1 clic en "Permitir Mic"</strong> al inicio. Luego <strong>mantén presionado el botón verde mientras hablas y suéltalo al terminar</strong> (o toca uno de los botones de arriba como <em>"¿Qué es la célula?"</em> para probar al instante).
+          </p>
+          <div class="mt-2.5 pt-2 border-t border-slate-700/60 flex flex-wrap items-center gap-1.5 text-[10px] text-slate-400">
+            <span class="px-2 py-0.5 rounded-md bg-slate-900/80 border border-slate-700 text-emerald-300">
+              <i class="fa-solid fa-check-double mr-1"></i>Sin Muletillas ni Relleno
+            </span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-900/80 border border-slate-700 text-cyan-300">
+              <i class="fa-solid fa-layer-group mr-1"></i>4 Capas IA + Wikipedia ES
+            </span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-900/80 border border-slate-700 text-amber-300">
+              <i class="fa-solid fa-volume-high mr-1"></i>Lectura Completa sin Cortes
+            </span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Burbuja Flotante de Transcripción y Nivel de Voz en Vivo -->
+    <div id="liveTranscriptOverlay" class="hidden px-4 pb-2 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent z-20">
+      <div class="bg-rose-950/95 border border-rose-500/50 rounded-2xl p-3 shadow-2xl backdrop-blur-md">
+        <div class="flex items-center justify-between text-xs text-rose-200 mb-1.5">
+          <span class="font-bold flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+            <span id="liveOverlayActionLabel">Escuchando tu voz... (Suelta para responder)</span>
+          </span>
+          <span id="pttTimerText" class="font-mono text-[11px] bg-rose-900/80 px-2 py-0.5 rounded-md border border-rose-400/30">0.0s</span>
+        </div>
+
+        <!-- Barra de Nivel de Audio Real del Micrófono Persistente -->
+        <div class="w-full h-1.5 bg-rose-950 rounded-full overflow-hidden mb-2 border border-rose-800/60">
+          <div id="micVolumeMeterBar" class="h-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 transition-all duration-75" style="width: 8%;"></div>
+        </div>
+
+        <p id="liveTranscriptText" class="text-sm text-white font-medium italic min-h-[1.5rem]">
+          Habla ahora con confianza...
+        </p>
+      </div>
+    </div>
+
+    <!-- Panel Inferior Ergónomico Windows/Android: Push-to-Talk + Entrada de Texto -->
+    <footer class="bg-slate-950 border-t border-slate-800/90 px-3.5 pt-2.5 pb-3.5 shrink-0 z-20">
+
+      <!-- Zona Principal Push-To-Talk -->
+      <div class="flex flex-col items-center justify-center mb-2.5">
+        <div class="relative flex items-center justify-center my-1">
+          <!-- Anillo de Pulso al presionar -->
+          <div id="pttPulseRing" class="hidden absolute w-24 h-24 rounded-full bg-rose-500/40 animate-pulse-ring pointer-events-none"></div>
+
+          <!-- Botón Circular Push-To-Talk Optimizado para Windows y Android -->
+          <button
+            id="btnPushToTalk"
+            type="button"
+            aria-label="Botón de voz de Agustina"
+            class="ptt-touch-shield relative w-20 h-20 rounded-full bg-gradient-to-b from-emerald-500 via-emerald-600 to-teal-700 hover:from-emerald-400 hover:to-teal-600 text-white shadow-xl shadow-emerald-950/80 border-4 border-slate-800 flex flex-col items-center justify-center transition-all duration-150 focus:outline-none"
+          >
+            <i id="pttIcon" class="fa-solid fa-microphone text-2xl mb-0.5 pointer-events-none"></i>
+            <span id="pttShortLabel" class="text-[9px] font-bold uppercase tracking-wider text-emerald-100 pointer-events-none">
+              Activar Mic
+            </span>
+          </button>
+        </div>
+
+        <p id="pttInstructionText" class="text-[11px] font-medium text-slate-300 text-center mt-1">
+          Haz 1 clic para activar el micrófono • <span class="text-emerald-400 font-semibold">Luego mantén presionado para hablar</span>
+        </p>
+      </div>
+
+      <!-- Barra de Entrada Escrita Secundaria -->
+      <form id="textQueryForm" onsubmit="manejarEnvioTextoManual(event)" class="flex items-center gap-2">
+        <div class="relative flex-1">
+          <input
+            id="inputManualQuery"
+            type="text"
+            autocomplete="off"
+            placeholder="Pregunta sobre cualquier tema (académico o libre)..."
+            class="w-full bg-slate-900 text-slate-100 placeholder-slate-500 text-xs sm:text-sm rounded-xl pl-3.5 pr-9 py-2.5 border border-slate-800 focus:border-emerald-500/70 focus:outline-none transition"
+          />
+          <button
+            type="button"
+            onclick="limpiarConversacion()"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs"
+            title="Limpiar historial de chat"
+          >
+            <i class="fa-solid fa-broom"></i>
+          </button>
+        </div>
+        <button
+          type="submit"
+          id="btnSendText"
+          class="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold shadow-md transition active:scale-95 flex items-center justify-center shrink-0"
+          title="Enviar consulta"
+        >
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </form>
+    </footer>
+
+    <!-- Modal / Drawer de Configuración Multi-IA y Voz Colombiana -->
+    <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="w-full max-w-md bg-slate-900 border-t sm:border border-slate-700/80 rounded-t-3xl sm:rounded-3xl max-h-[90dvh] flex flex-col shadow-2xl overflow-hidden">
+        <!-- Encabezado del Modal -->
+        <div class="px-5 py-4 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div>
+              <h2 class="font-display font-bold text-base text-white">Arquitectura Multi-IA y Voz</h2>
+              <p class="text-[11px] text-slate-400">I.E. San Agustín • Configuración de Agustina 2.5</p>
+            </div>
+          </div>
+          <button onclick="cerrarModalConfiguracion()" class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Cuerpo del Modal -->
+        <div class="p-5 overflow-y-auto custom-scroll space-y-5 text-xs">
+
+          <!-- 1. Selección de Voz Colombiana (es-CO) -->
+          <div class="bg-slate-800/50 border border-slate-700/70 rounded-2xl p-3.5 space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="font-bold text-emerald-300 flex items-center gap-1.5 text-xs uppercase tracking-wider">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>1. Motor Vocal Colombiano (es-CO)</span>
+              </label>
+              <span id="detectedVoicesCount" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                Detectando...
+              </span>
+            </div>
+
+            <div>
+              <label for="selectVoice" class="block text-slate-300 mb-1 font-medium">Voz preferida del sistema Android / Windows:</label>
+              <select id="selectVoice" onchange="cambiarVozSeleccionada()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 focus:border-emerald-500 focus:outline-none">
+                <option value="auto">Priorizar Español Colombia (es-CO) Automático</option>
+              </select>
+              <p class="text-[11px] text-slate-400 mt-1">
+                Prioriza voces nativas <code class="text-amber-300">es-CO</code> (Google Español de Colombia, Microsoft Salome/Gonzalo, Sabina).
+              </p>
+            </div>
+
+            <!-- Controles de Velocidad y Tono -->
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+                  <span>Velocidad (Rate):</span>
+                  <span id="valVoiceRate" class="font-mono text-emerald-400">1.02x</span>
+                </div>
+                <input id="rangeVoiceRate" type="range" min="0.8" max="1.3" step="0.02" value="1.02" oninput="actualizarSlidersVoz()" class="w-full accent-emerald-500 cursor-pointer" />
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+                  <span>Tono (Pitch):</span>
+                  <span id="valVoicePitch" class="font-mono text-emerald-400">1.00</span>
+                </div>
+                <input id="rangeVoicePitch" type="range" min="0.8" max="1.2" step="0.05" value="1.00" oninput="actualizarSlidersVoz()" class="w-full accent-emerald-500 cursor-pointer" />
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 pt-1">
+              <button
+                type="button"
+                onclick="probarVozColombiana()"
+                class="flex-1 py-2 px-3 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-200 font-semibold flex items-center justify-center gap-1.5 transition active:scale-95"
+              >
+                <i class="fa-solid fa-volume-high"></i>
+                <span>Probar Voz Colombiana</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Enrutador Multi-IA -->
+          <div class="bg-slate-800/50 border border-slate-700/70 rounded-2xl p-3.5 space-y-3">
+            <label class="font-bold text-cyan-300 flex items-center gap-1.5 text-xs uppercase tracking-wider">
+              <i class="fa-solid fa-microchip"></i>
+              <span>2. Orquestador de Sistemas de IA</span>
+            </label>
+
+            <div>
+              <label for="selectRoutingMode" class="block text-slate-300 mb-1 font-medium">Estrategia de Enrutamiento Universal:</label>
+              <select id="selectRoutingMode" onchange="guardarConfiguracionMultiIA()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 focus:border-emerald-500 focus:outline-none">
+                <option value="auto">Auto • Cascada 4 Capas (Gemini 3 + Cloud LLM + Groq + Wiki ES)</option>
+                <option value="gemini">Capa 1: Gemini 3 Flash (Multimodal Voz + Texto)</option>
+                <option value="pollinations">Capa 2: Cloud LLM Libre (OpenAI Pollinations Zero-Config)</option>
+                <option value="groq">Capa 3: Groq Cloud • Llama 3.3 70B + Whisper</option>
+                <option value="wiki">Capa 4: Wikipedia en Español en Vivo + Enciclopedia Científica</option>
+              </select>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <div>
+                <span class="block text-slate-200 font-medium">Búsqueda en Tiempo Real (Google Search)</span>
+                <span class="text-[11px] text-slate-400">Enriquece respuestas con datos verificados de la web</span>
+              </div>
+              <input id="chkSearchGrounding" type="checkbox" checked onchange="guardarConfiguracionMultiIA()" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" />
+            </div>
+
+            <!-- API Key Opcional para Gemini y Groq -->
+            <div class="pt-2 border-t border-slate-700/60 space-y-2">
+              <div>
+                <label for="inputGeminiKey" class="block text-slate-300 mb-1 font-medium">
+                  Clave API Gemini Opcional (<code class="text-emerald-300">AIza...</code> si usas la app fuera de este entorno):
+                </label>
+                <input
+                  id="inputGeminiKey"
+                  type="password"
+                  placeholder="Dejar vacío para usar clave integrada o Cloud LLM gratuito"
+                  onchange="guardarConfiguracionMultiIA()"
+                  class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label for="inputGroqKey" class="block text-slate-300 mb-1 font-medium">
+                  Clave API Groq Opcional (<code class="text-amber-300">gsk_...</code> para Llama 3.3 + Whisper):
+                </label>
+                <input
+                  id="inputGroqKey"
+                  type="password"
+                  placeholder="Opcional: activa transcripción Whisper y Llama 3.3"
+                  onchange="guardarConfiguracionMultiIA()"
+                  class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Enfoque de Respuesta -->
+          <div class="bg-slate-800/50 border border-slate-700/70 rounded-2xl p-3.5 space-y-3">
+            <label class="font-bold text-amber-300 flex items-center gap-1.5 text-xs uppercase tracking-wider">
+              <i class="fa-solid fa-chalkboard-user"></i>
+              <span>3. Estilo de Respuesta de Agustina</span>
+            </label>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                id="btnModeSocratic"
+                onclick="seleccionarModoPedagogico('socratico')"
+                class="p-2.5 rounded-xl border border-emerald-500 bg-emerald-500/20 text-left transition"
+              >
+                <div class="font-bold text-white flex items-center justify-between">
+                  <span>Explicación Completa</span>
+                  <i class="fa-solid fa-book-open text-emerald-400"></i>
+                </div>
+                <p class="text-[10px] text-slate-300 mt-1">Desarrolla de 2 a 3 párrafos claros con ejemplos.</p>
+              </button>
+
+              <button
+                type="button"
+                id="btnModeConcise"
+                onclick="seleccionarModoPedagogico('conciso')"
+                class="p-2.5 rounded-xl border border-slate-700 bg-slate-900/60 text-left transition"
+              >
+                <div class="font-bold text-white flex items-center justify-between">
+                  <span>Resumen Ágil</span>
+                  <i class="fa-solid fa-bolt text-amber-400"></i>
+                </div>
+                <p class="text-[10px] text-slate-300 mt-1">Respuesta directa y sustanciosa en 1 párrafo.</p>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Pie del Modal -->
+        <div class="px-5 py-3.5 bg-slate-950/90 border-t border-slate-800 flex justify-end">
+          <button
+            type="button"
+            onclick="cerrarModalConfiguracion()"
+            class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition active:scale-95"
+          >
+            Guardar y Volver a Agustina
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Lógica Completa de Agustina Académica v3.0 -->
+  <script>
+    /***************************************************************************
+     * 1. ESTADO GLOBAL Y MICRÓFONO PERSISTENTE DE SESIÓN (WINDOWS + ANDROID)
+     ***************************************************************************/
+    const apiKey = ""; // Clave inyectada automáticamente por el entorno para Gemini API
+    window.persistentMicStream = null;
+
+    const appState = {
+      status: 'IDLE', // 'IDLE' | 'LISTENING' | 'THINKING' | 'SPEAKING'
+      autoSpeak: true,
+      routingMode: 'auto', // 'auto' | 'gemini' | 'pollinations' | 'groq' | 'wiki'
+      pedagogicalMode: 'socratico', // 'socratico' | 'conciso'
+      triggerMode: 'hold', // 'hold' (Mantener presionado y soltar) | 'tap' (1 toque iniciar / 1 toque enviar)
+      useSearchGrounding: true,
+      customGeminiKey: '',
+      groqApiKey: '',
+      voiceRate: 1.02,
+      voicePitch: 1.0,
+      selectedVoiceURI: 'auto',
+      availableVoices: [],
+      // Estado de Permiso Persistente de Micrófono
+      micAuthorized: false,
+      micRequestInProgress: false,
+      audioContext: null,
+      analyserNode: null,
+      volumeAnimFrame: null,
+      maxRmsDuringHold: 0,
+      // Grabación Híbrida (SpeechRecognition + MediaRecorder Multimodal)
+      isHoldingPTT: false,
+      isConsolidatingPTT: false,
+      pttStartTime: 0,
+      pttTimerInterval: null,
+      finalTranscript: '',
+      interimTranscript: '',
+      lastRecognizedSnippet: '',
+      mediaRecorder: null,
+      recordedAudioChunks: [],
+      recordedAudioMimeType: 'audio/webm',
+      chatHistory: [],
+      recognition: null,
+      recognitionSupported: false,
+      currentAudioSource: null,
+      // Cola de oraciones para TTS sin cortes a los 15 segundos
+      ttsQueue: [],
+      ttsKeepAliveTimer: null,
+      isSpeakingQueue: false
+    };
+
+    // Enciclopedia Científica, Académica y Cultural Local de Alta Precisión (Respaldo Instantáneo)
+    const ENCICLOPEDIA_CIENTIFICA_Y_CULTURAL = [
+      {
+        keywords: ['celula', 'célula', 'celulas', 'células', 'eucariota', 'procariota', 'organelos', 'citoplasma'],
+        categoria: 'Biología y Ciencias Naturales',
+        respuesta: 'La célula es la unidad morfológica, estructural y funcional fundamental de todos los seres vivos; de hecho, todo organismo vivo está constituido por una sola célula (unicelular, como las bacterias y protozoos) o por millones de ellas (pluricelular, como las plantas y los animales).\n\nTodas las células comparten tres componentes esenciales: la membrana plasmática (que la delimita y regula el paso de nutrientes y desechos), el citoplasma (medio acuoso interno donde ocurren las reacciones metabólicas y se alojan los organelos) y el material genético o ADN (que contiene las instrucciones hereditarias).\n\nSe clasifican en dos grandes tipos: las células procariotas, que son más simples y antiguas y carecen de núcleo definido (su ADN está libre en el citoplasma, como en las bacterias), y las células eucariotas, que poseen un núcleo verdadero rodeado por membrana nuclear y organelos especializados como las mitocondrias (productoras de energía ATP), los ribosomas (síntesis de proteínas) y, en el caso de las células vegetales, cloroplastos para la fotosíntesis y pared celular de celulosa.'
+      },
+      {
+        keywords: ['mitocondria', 'mitocondrias', 'atp', 'respiracion celular'],
+        categoria: 'Biología Celular',
+        respuesta: 'La mitocondria es un organelo fundamental de las células eucariotas encargado de suministrar la mayor parte de la energía necesaria para la actividad celular mediante el proceso de respiración celular aeróbica. Actúa como la central energética de la célula, oxidando glucosa, ácidos grasos y aminoácidos para sintetizar trifosfato de adenosina (ATP), la moneda energética universal de los seres vivos. Además, las mitocondrias poseen su propio ADN circular (ADN mitocondrial) y ribosomas propios, lo que respalda la teoría endosimbiótica sobre su origen evolutivo.'
+      },
+      {
+        keywords: ['fotosintesis', 'fotosíntesis', 'clorofila', 'cloroplasto'],
+        categoria: 'Biología y Botánica',
+        respuesta: 'La fotosíntesis es el proceso bioquímico mediante el cual las plantas, las algas y algunas bacterias transforman la energía de la luz solar en energía química. Ocurre dentro de los cloroplastos gracias a un pigmento verde llamado clorofila. Durante este proceso, la planta absorbe dióxido de carbono del aire y agua del suelo para producir glucosa (su alimento energético) y liberar oxígeno puro a la atmósfera, siendo la base de la vida y de la cadena alimenticia en la Tierra.'
+      },
+      {
+        keywords: ['adn', 'acido desoxirribonucleico', 'arn', 'genetica', 'genes', 'cromosoma'],
+        categoria: 'Genética y Biología Molecular',
+        respuesta: 'El ADN (ácido desoxirribonucleico) es la molécula portadora de toda la información genética necesaria para el desarrollo, funcionamiento y reproducción de los seres vivos. Tiene una estructura de doble hélice formada por nucleótidos que contienen cuatro bases nitrogenadas: adenina (A), timina (T), citosina (C) y guanina (G), donde la adenina siempre se une con la timina y la citosina con la guanina. Los segmentos específicos de ADN que codifican proteínas se denominan genes y se empaquetan dentro del núcleo celular en estructuras llamadas cromosomas.'
+      },
+      {
+        keywords: ['pitagoras', 'pitágoras', 'hipotenusa', 'cateto', 'catetos'],
+        categoria: 'Matemáticas y Geometría',
+        respuesta: 'El Teorema de Pitágoras establece que, en todo triángulo rectángulo (aquel que tiene un ángulo recto de 90 grados), el cuadrado de la longitud de la hipotenusa (el lado más largo, opuesto al ángulo recto) es igual a la suma de los cuadrados de las longitudes de los dos catetos. Su fórmula es: a al cuadrado más b al cuadrado es igual a c al cuadrado.\n\nPor ejemplo, si un triángulo rectángulo tiene un cateto de 3 centímetros y otro cateto de 4 centímetros, calculamos 3 al cuadrado (9) más 4 al cuadrado (16), lo que suma 25. Al sacar la raíz cuadrada de 25, obtenemos que la hipotenusa mide exactamente 5 centímetros.'
+      },
+      {
+        keywords: ['cuadratica', 'cuadrática', 'ecuacion de segundo grado', 'discriminante', 'bhaskara'],
+        categoria: 'Álgebra y Matemáticas',
+        respuesta: 'Una ecuación cuadrática o de segundo grado tiene la forma general a por equis al cuadrado, más b por equis, más c, igual a cero, donde a es diferente de cero. Para resolverla se aplica la fórmula general: equis es igual a menos b, más o menos la raíz cuadrada de b al cuadrado menos cuatro por a por c, todo dividido entre dos por a.\n\nPor ejemplo, en la ecuación equis al cuadrado menos 5 equis más 6 igual a cero, los coeficientes son a igual a 1, b igual a menos 5 y c igual a 6. El discriminante es 25 menos 24 igual a 1, y las dos soluciones son equis igual a 3 y equis igual a 2.'
+      },
+      {
+        keywords: ['newton', 'leyes de newton', 'inercia', 'accion y reaccion', 'fuerza igual a masa'],
+        categoria: 'Física y Mecánica Clásica',
+        respuesta: 'Las tres leyes de Newton explican el movimiento de los cuerpos en la física clásica:\n1. Primera Ley o Ley de la Inercia: Todo cuerpo permanece en reposo o en movimiento rectilíneo uniforme a menos que una fuerza externa neta actúe sobre él.\n2. Segunda Ley o Ley Fundamental de la Dinámica: La aceleración de un objeto es directamente proporcional a la fuerza neta aplicada e inversamente proporcional a su masa, expresada en la fórmula Fuerza es igual a masa por aceleración (F igual a m por a).\n3. Tercera Ley o Principio de Acción y Reacción: Cuando un cuerpo ejerce una fuerza sobre otro, este último ejerce sobre el primero una fuerza de igual magnitud y dirección, pero en sentido contrario.'
+      },
+      {
+        keywords: ['agujero negro', 'agujeros negros', 'horizonte de sucesos', 'relatividad'],
+        categoria: 'Astronomía y Astrofísica',
+        respuesta: 'Un agujero negro es una región finita del espacio en cuyo interior existe una concentración de masa tan elevada y compacta que genera un campo gravitatorio extremo del cual ninguna partícula material, ni siquiera la luz, puede escapar. El límite alrededor del agujero negro a partir del cual nada puede salir se denomina horizonte de sucesos. La mayoría de los agujeros negros estelares se forman cuando una estrella supermasiva agota su combustible nuclear y colapsa sobre sí misma tras una explosión de supernova.'
+      },
+      {
+        keywords: ['puente h', 'l298n', 'arduino', 'motor dc', 'robotica', 'robótica', 'pwm'],
+        categoria: 'Robótica y Electrónica',
+        respuesta: 'El módulo puente H L298N permite controlar el sentido de giro y la velocidad de dos motores de corriente continua (DC) con Arduino. Para conectarlo: une el motor A en las borneras OUT1 y OUT2, y el motor B en OUT3 y OUT4. Alimenta el módulo entre 7 y 12 voltios en el pin VMS y conecta el pin GND del módulo al pin GND del Arduino para compartir referencia común.\n\nLos pines IN1 e IN2 van a dos pines digitales del Arduino para definir si el motor A gira adelante o atrás, mientras que el pin ENA se conecta a un pin PWM del Arduino (usando la función analogWrite de 0 a 255) para regular la velocidad.'
+      },
+      {
+        keywords: ['pandebono', 'receta', 'arepa', 'empanada', 'cocina', 'almojabana', 'buñuelo'],
+        categoria: 'Gastronomía Colombiana',
+        respuesta: 'Para preparar pandebonos colombianos tradicionales en casa necesitas: 250 gramos de queso costeño o cuajada rallada, 125 gramos de almidón agrio de yuca, 60 gramos de harina de maíz precocida, 1 huevo batido, 2 cucharadas de azúcar, 1 cucharada de mantequilla blanda y leche tibia al ojo.\n\nMezcla primero los ingredientes secos con el queso rallado, agrega el huevo y la mantequilla, y amasa añadiendo chorritos de leche tibia hasta lograr una masa suave y moldeable que no se agriete. Forma bolitas o roscas, colócalas en una bandeja engrasada y hornea a 220 grados centígrados durante 15 a 18 minutos hasta que inflen y queden doraditos.'
+      },
+      {
+        keywords: ['san agustin', 'san agustín', 'institucion educativa', 'colegio', 'popayan', 'popayán', 'mision', 'vision', 'valores'],
+        categoria: 'Institucional (I.E. San Agustín - Popayán)',
+        respuesta: 'La Institución Educativa San Agustín, ubicada en Popayán, Cauca, es un establecimiento oficial comprometido con la formación integral de niños, niñas y jóvenes desde preescolar hasta educación media. Su misión articula la excelencia académica en ciencias, humanidades, lectura crítica, tecnología y robótica con los valores agustinianos de interioridad, búsqueda de la verdad, solidaridad, respeto y responsabilidad ciudadana.'
+      }
+    ];
+
+    /***************************************************************************
+     * 2. INICIALIZACIÓN Y VERIFICACIÓN AUTOMÁTICA DE PERMISOS AL ARRANCAR
+     ***************************************************************************/
+    window.onload = function () {
+      inicializarVocesColombianas();
+      inicializarReconocimientoVozPTT();
+      configurarEventosBotonPTT();
+      actualizarPillsInterfaz();
+      verificarEstadoPermisoMicrofonoInicial();
+    };
+
+    /**
+     * Comprueba si el navegador ya concedió el permiso de micrófono anteriormente.
+     * Si ya está en 'granted', activa el stream persistente en silencio sin molestar al usuario.
+     */
+    async function verificarEstadoPermisoMicrofonoInicial() {
+      actualizarUIPermisoMicrofono(false);
+
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          const permStatus = await navigator.permissions.query({ name: 'microphone' });
+          if (permStatus.state === 'granted') {
+            await solicitarPermisoMicrofonoPersistente(false);
+          }
+          permStatus.onchange = () => {
+            if (permStatus.state === 'granted' && !appState.micAuthorized) {
+              solicitarPermisoMicrofonoPersistente(false);
+            } else if (permStatus.state === 'denied') {
+              appState.micAuthorized = false;
+              actualizarUIPermisoMicrofono(false);
+            }
+          };
+        } catch (e) {
+          // Algunos navegadores no exponen 'microphone' en permissions.query
+        }
+      }
+    }
+
+    /**
+     * SOLUCIÓN RAÍZ AL CONFLICTO DE BOTONES EN WINDOWS Y ANDROID:
+     * Se ejecuta con UN SOLO CLIC (sin necesidad de mantener presionado).
+     * Abre el diálogo del sistema operativo una única vez, guarda `window.persistentMicStream`
+     * abierto durante toda la sesión, y deja listo el botón PTT para usar sin más popups.
+     */
+    async function solicitarPermisoMicrofonoPersistente(anunciarConVoz = true) {
+      if (appState.micAuthorized && window.persistentMicStream && window.persistentMicStream.active) {
+        actualizarUIPermisoMicrofono(true);
+        if (anunciarConVoz) {
+          hablarTextoConAgustina('Tu micrófono ya está activo y listo para toda la sesión. Mantén presionado el botón inferior cuando quieras hablarme.');
+        }
+        return true;
+      }
+
+      if (appState.micRequestInProgress) return false;
+      appState.micRequestInProgress = true;
+
+      const micText = document.getElementById('micStatusText');
+      if (micText) micText.textContent = 'Autorizando...';
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
+
+        window.persistentMicStream = stream;
+        appState.micAuthorized = true;
+        appState.micRequestInProgress = false;
+
+        // Conectar stream persistente al analizador de espectro para medir voz real
+        configurarAnalizadorAudioPersistente(stream);
+
+        // Pre-calentar SpeechRecognition brevemente si existe para que no pida permiso después
+        if (appState.recognitionSupported && appState.recognition) {
+          try {
+            appState.recognition.start();
+            setTimeout(() => {
+              if (!appState.isHoldingPTT) {
+                try { appState.recognition.stop(); } catch (e) {}
+              }
+            }, 150);
+          } catch (e) {}
+        }
+
+        actualizarUIPermisoMicrofono(true);
+
+        if (anunciarConVoz) {
+          const msg = '¡Listo! Micrófono autorizado para toda la sesión. Ahora sí, mantén presionado el botón para hablar sobre cualquier tema y suéltalo para escuchar mi respuesta.';
+          agregarBurbujaSistema(msg);
+          hablarTextoConAgustina(msg);
+        }
+
+        return true;
+      } catch (err) {
+        appState.micRequestInProgress = false;
+        appState.micAuthorized = false;
+        actualizarUIPermisoMicrofono(false);
+
+        agregarBurbujaSistema(
+          'No se pudo activar el micrófono automáticamente. Por favor haz clic en "Permitir" cuando aparezca la ventana de Windows o Android, o escribe tu consulta abajo.'
+        );
+        return false;
+      }
+    }
+
+    function configurarAnalizadorAudioPersistente(stream) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!appState.audioContext) {
+          appState.audioContext = new AudioCtx();
+        }
+        if (appState.audioContext.state === 'suspended') {
+          appState.audioContext.resume();
+        }
+        const source = appState.audioContext.createMediaStreamSource(stream);
+        const analyser = appState.audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        appState.analyserNode = analyser;
+      } catch (e) {}
+    }
+
+    function actualizarUIPermisoMicrofono(autorizado) {
+      const banner = document.getElementById('micOnboardingBanner');
+      const pill = document.getElementById('micStatusPill');
+      const icon = document.getElementById('micStatusIcon');
+      const text = document.getElementById('micStatusText');
+      const dot = document.getElementById('micDotIndicator');
+      const pttShortLabel = document.getElementById('pttShortLabel');
+      const pttInstruction = document.getElementById('pttInstructionText');
+      const btnPTT = document.getElementById('btnPushToTalk');
+
+      if (autorizado) {
+        if (banner) banner.classList.add('hidden');
+        if (pill) {
+          pill.className = 'px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-semibold whitespace-nowrap flex items-center gap-1';
+        }
+        if (icon) icon.className = 'fa-solid fa-microphone text-[10px]';
+        if (text) text.textContent = 'Mic Activo (Sesión)';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+        if (btnPTT) btnPTT.classList.remove('ptt-needs-permission');
+
+        actualizarEtiquetasModoDisparo();
+      } else {
+        if (banner) banner.classList.remove('hidden');
+        if (pill) {
+          pill.className = 'px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-semibold whitespace-nowrap flex items-center gap-1 hover:bg-amber-500/30 transition';
+        }
+        if (icon) icon.className = 'fa-solid fa-microphone-slash text-[10px]';
+        if (text) text.textContent = 'Activar Mic (1 Clic)';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+        if (pttShortLabel) pttShortLabel.textContent = 'Activar Mic';
+        if (pttInstruction) {
+          pttInstruction.innerHTML = 'Haz <span class="text-amber-400 font-bold">1 clic simple</span> para autorizar el micrófono • <span class="text-emerald-400 font-semibold">Durará toda la sesión</span>';
+        }
+        if (btnPTT) btnPTT.classList.add('ptt-needs-permission');
+      }
+    }
+
+    function actualizarEtiquetasModoDisparo() {
+      const pttShortLabel = document.getElementById('pttShortLabel');
+      const pttInstruction = document.getElementById('pttInstructionText');
+      const triggerModeText = document.getElementById('triggerModeText');
+
+      if (!appState.micAuthorized) return;
+
+      if (appState.triggerMode === 'hold') {
+        if (triggerModeText) triggerModeText.textContent = 'Modo: Mantener';
+        if (pttShortLabel && !appState.isHoldingPTT) pttShortLabel.textContent = 'Mantener';
+        if (pttInstruction && !appState.isHoldingPTT) {
+          pttInstruction.innerHTML = 'Mantén presionado para hablar • <span class="text-emerald-400 font-semibold">Suelta para ejecutar respuesta</span>';
+        }
+      } else {
+        if (triggerModeText) triggerModeText.textContent = 'Modo: 1 Toque';
+        if (pttShortLabel && !appState.isHoldingPTT) pttShortLabel.textContent = 'Hablar';
+        if (pttInstruction && !appState.isHoldingPTT) {
+          pttInstruction.innerHTML = 'Toca 1 vez para empezar a hablar • <span class="text-emerald-400 font-semibold">Toca de nuevo para enviar</span>';
+        }
+      }
+    }
+
+    function alternarModoDisparoPTT() {
+      if (appState.isHoldingPTT) {
+        finalizarCapturaYEjecutarRespuesta();
+      }
+      appState.triggerMode = appState.triggerMode === 'hold' ? 'tap' : 'hold';
+      actualizarEtiquetasModoDisparo();
+    }
+
+    /***************************************************************************
+     * 3. GESTIÓN DE SÍNTESIS DE VOZ COLOMBIANA (es-CO) E HIGIENE FONÉTICA
+     ***************************************************************************/
+    function inicializarVocesColombianas() {
+      if (!('speechSynthesis' in window)) {
+        document.getElementById('detectedVoicesCount').textContent = 'TTS Nube Activo';
+        return;
+      }
+
+      const cargarVoces = () => {
+        const voices = window.speechSynthesis.getVoices() || [];
+        appState.availableVoices = voices;
+
+        const select = document.getElementById('selectVoice');
+        const currentSelection = select.value;
+        select.innerHTML = '<option value="auto">🇨🇴 Priorizar Español Colombia (es-CO) Automático</option>';
+
+        const spanishVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+
+        spanishVoices.sort((a, b) => {
+          const aCol = esVozColombiana(a) ? 1 : 0;
+          const bCol = esVozColombiana(b) ? 1 : 0;
+          if (aCol !== bCol) return bCol - aCol;
+
+          const aLatam = esVozLatinoamericana(a) ? 1 : 0;
+          const bLatam = esVozLatinoamericana(b) ? 1 : 0;
+          return bLatam - aLatam;
+        });
+
+        let countCol = 0;
+        spanishVoices.forEach(voice => {
+          const isCO = esVozColombiana(voice);
+          if (isCO) countCol++;
+          const opt = document.createElement('option');
+          opt.value = voice.voiceURI;
+          opt.textContent = `${isCO ? '🇨🇴 ' : '🌎 '}${voice.name} (${voice.lang})`;
+          select.appendChild(opt);
+        });
+
+        if (currentSelection && Array.from(select.options).some(o => o.value === currentSelection)) {
+          select.value = currentSelection;
+        }
+
+        const badge = document.getElementById('detectedVoicesCount');
+        if (countCol > 0) {
+          badge.textContent = `${countCol} voz es-CO nativa`;
+        } else if (spanishVoices.length > 0) {
+          badge.textContent = `${spanishVoices.length} voces ES listas`;
+        } else {
+          badge.textContent = 'Voz IA Activa';
+        }
+      };
+
+      cargarVoces();
+      window.speechSynthesis.onvoiceschanged = cargarVoces;
+    }
+
+    function esVozColombiana(voice) {
+      if (!voice) return false;
+      const lang = (voice.lang || '').toLowerCase();
+      const name = (voice.name || '').toLowerCase();
+      return (
+        lang.includes('es-co') ||
+        lang.includes('es_co') ||
+        name.includes('colombia') ||
+        name.includes('salome') ||
+        name.includes('gonzalo')
+      );
+    }
+
+    function esVozLatinoamericana(voice) {
+      if (!voice) return false;
+      const lang = (voice.lang || '').toLowerCase();
+      const name = (voice.name || '').toLowerCase();
+      return (
+        lang.includes('es-mx') ||
+        lang.includes('es-419') ||
+        lang.includes('es-us') ||
+        lang.includes('es-ar') ||
+        lang.includes('es-cl') ||
+        lang.includes('es-pe') ||
+        name.includes('sabina') ||
+        name.includes('paulina') ||
+        name.includes('latino') ||
+        name.includes('estados unidos')
+      );
+    }
+
+    function obtenerMejorVozColombiana() {
+      const voices = appState.availableVoices.length
+        ? appState.availableVoices
+        : (window.speechSynthesis ? window.speechSynthesis.getVoices() : []);
+
+      if (!voices || voices.length === 0) return null;
+
+      if (appState.selectedVoiceURI !== 'auto') {
+        const manual = voices.find(v => v.voiceURI === appState.selectedVoiceURI);
+        if (manual) return manual;
+      }
+
+      const colVoice = voices.find(v => esVozColombiana(v));
+      if (colVoice) return colVoice;
+
+      const latamVoice = voices.find(v => esVozLatinoamericana(v));
+      if (latamVoice) return latamVoice;
+
+      return voices.find(v => (v.lang || '').toLowerCase().startsWith('es')) || voices[0];
+    }
+
+    function limpiarTextoParaVozColombiana(texto) {
+      if (!texto) return '';
+      let limpio = texto
+        .replace(/```[\s\S]*?```/g, ' bloque de código detallado en pantalla. ')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/\*([^*]+)\*/g, '$1')
+        .replace(/^#+\s+/gm, '')
+        .replace(/\bI\.E\.\s*/gi, 'Institución Educativa ')
+        .replace(/\bICFES\b/g, 'Icfes')
+        .replace(/\bADN\b/g, 'A D N')
+        .replace(/\bARN\b/g, 'A R N')
+        .replace(/\bATP\b/g, 'A T P')
+        .replace(/\bSTEM\b/g, 'Ciencia, Tecnología, Ingeniería y Matemáticas')
+        .replace(/\bL298N\b/gi, 'ele dos noventa y ocho ene')
+        .replace(/\bPWM\b/gi, 'pe doble u eme')
+        .replace(/\bGND\b/gi, 'tierra ge ene de')
+        .replace(/([a-zA-Z0-9]+)\^2\b/g, '$1 al cuadrado')
+        .replace(/([a-zA-Z0-9]+)\^3\b/g, '$1 al cubo')
+        .replace(/²/g, ' al cuadrado ')
+        .replace(/³/g, ' al cubo ')
+        .replace(/√\s*\(?([^)]+)\)?/g, ' raíz cuadrada de $1 ')
+        .replace(/±/g, ' más o menos ')
+        .replace(/≥/g, ' mayor o igual que ')
+        .replace(/≤/g, ' menor o igual que ')
+        .replace(/!=/g, ' diferente de ')
+        .replace(/\s*\+\s*/g, ' más ')
+        .replace(/\s*=\s*/g, ' igual a ')
+        .replace(/(\d+)\s*\/\s*(\d+)/g, '$1 dividido entre $2')
+        .replace(/(\d+)\s*\*\s*(\d+)/g, '$1 por $2')
+        .replace(/^\s*[-•*]\s+/gm, '. ')
+        .replace(/\n+/g, '. ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
+      return limpio;
+    }
+
+    /**
+     * Divide respuestas largas en fragmentos naturales de oraciones (<= 180 caracteres)
+     * para evitar el bug de Chrome/Android/Windows que corta speechSynthesis a los 15 segundos.
+     */
+    function dividirTextoEnOracionesParaTTS(textoFonetico) {
+      const oracionesBrutas = textoFonetico.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [textoFonetico];
+      const fragmentos = [];
+      let actual = '';
+
+      for (const oracion of oracionesBrutas) {
+        const limpia = oracion.trim();
+        if (!limpia) continue;
+
+        if ((actual + ' ' + limpia).trim().length <= 185) {
+          actual = (actual + ' ' + limpia).trim();
+        } else {
+          if (actual) fragmentos.push(actual);
+          if (limpia.length <= 185) {
+            actual = limpia;
+          } else {
+            // Si una sola oración es muy larga, dividir por comas
+            const subPartes = limpia.split(/,\s*/);
+            let subActual = '';
+            for (const sub of subPartes) {
+              if ((subActual + ', ' + sub).trim().length <= 185) {
+                subActual = subActual ? `${subActual}, ${sub}` : sub;
+              } else {
+                if (subActual) fragmentos.push(subActual);
+                subActual = sub;
+              }
+            }
+            actual = subActual;
+          }
+        }
+      }
+      if (actual) fragmentos.push(actual);
+      return fragmentos;
+    }
+
+    function hablarTextoConAgustina(textoOriginal) {
+      detenerVozInmediatamente();
+
+      const textoFonetico = limpiarTextoParaVozColombiana(textoOriginal);
+      if (!textoFonetico || !('speechSynthesis' in window)) return;
+
+      const fragmentos = dividirTextoEnOracionesParaTTS(textoFonetico);
+      if (fragmentos.length === 0) return;
+
+      appState.ttsQueue = fragmentos;
+      appState.isSpeakingQueue = true;
+      actualizarEstadoVisualAgustina('SPEAKING');
+
+      const mejorVoz = obtenerMejorVozColombiana();
+      if (mejorVoz) {
+        document.getElementById('localeBadgeText').textContent =
+          esVozColombiana(mejorVoz) ? 'es-CO' : (mejorVoz.lang || 'ES').slice(0, 5);
+      }
+
+      // Watchdog para evitar que Chrome congele el sintetizador en textos largos
+      clearInterval(appState.ttsKeepAliveTimer);
+      appState.ttsKeepAliveTimer = setInterval(() => {
+        if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        }
+      }, 10000);
+
+      const reproducirSiguienteFragmento = () => {
+        if (!appState.isSpeakingQueue || appState.ttsQueue.length === 0) {
+          appState.isSpeakingQueue = false;
+          clearInterval(appState.ttsKeepAliveTimer);
+          actualizarEstadoVisualAgustina('IDLE');
+          return;
+        }
+
+        const chunk = appState.ttsQueue.shift();
+        try {
+          const utterance = new SpeechSynthesisUtterance(chunk);
+          if (mejorVoz) {
+            utterance.voice = mejorVoz;
+            utterance.lang = mejorVoz.lang || 'es-CO';
+          } else {
+            utterance.lang = 'es-CO';
+          }
+
+          utterance.rate = parseFloat(appState.voiceRate) || 1.02;
+          utterance.pitch = parseFloat(appState.voicePitch) || 1.0;
+
+          utterance.onend = () => {
+            if (appState.isSpeakingQueue) {
+              reproducirSiguienteFragmento();
+            }
+          };
+
+          utterance.onerror = () => {
+            if (appState.isSpeakingQueue) {
+              reproducirSiguienteFragmento();
+            }
+          };
+
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          appState.isSpeakingQueue = false;
+          clearInterval(appState.ttsKeepAliveTimer);
+          actualizarEstadoVisualAgustina('IDLE');
+        }
+      };
+
+      reproducirSiguienteFragmento();
+    }
+
+    function detenerVozInmediatamente() {
+      appState.isSpeakingQueue = false;
+      appState.ttsQueue = [];
+      clearInterval(appState.ttsKeepAliveTimer);
+
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {}
+      }
+      if (appState.currentAudioSource) {
+        try {
+          appState.currentAudioSource.stop();
+        } catch (e) {}
+        appState.currentAudioSource = null;
+      }
+      if (appState.status === 'SPEAKING') {
+        actualizarEstadoVisualAgustina('IDLE');
+      }
+    }
+
+    function alternarRespuestaHablada() {
+      appState.autoSpeak = !appState.autoSpeak;
+      const icon = document.getElementById('iconVoiceMute');
+      const btn = document.getElementById('btnToggleVoiceMute');
+
+      if (appState.autoSpeak) {
+        icon.className = 'fa-solid fa-volume-high text-sm';
+        btn.classList.replace('text-slate-400', 'text-emerald-400');
+      } else {
+        detenerVozInmediatamente();
+        icon.className = 'fa-solid fa-volume-off text-sm';
+        btn.classList.replace('text-emerald-400', 'text-slate-400');
+      }
+    }
+
+    function probarVozColombiana() {
+      hablarTextoConAgustina(
+        'La célula es la unidad estructural y funcional básica de todos los seres vivos. Mi sistema de voz colombiano ahora lee explicaciones completas de principio a fin sin cortarse.'
+      );
+    }
+
+    /***************************************************************************
+     * 4. SISTEMA HÍBRIDO PUSH-TO-TALK + VENTANA DE CONSOLIDACIÓN DE 450 MS
+     ***************************************************************************/
+    function inicializarReconocimientoVozPTT() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        appState.recognitionSupported = false;
+        return;
+      }
+
+      appState.recognitionSupported = true;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'es-CO';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = (event) => {
+        let interim = '';
+        let finalChunk = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const transcriptPiece = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalChunk += transcriptPiece + ' ';
+          } else {
+            interim += transcriptPiece;
+          }
+        }
+
+        if (finalChunk) {
+          appState.finalTranscript += finalChunk;
+        }
+        appState.interimTranscript = interim;
+
+        const textoActual = (appState.finalTranscript + ' ' + appState.interimTranscript).trim();
+        if (textoActual) {
+          appState.lastRecognizedSnippet = textoActual;
+        }
+        const liveEl = document.getElementById('liveTranscriptText');
+        if (textoActual && liveEl) {
+          liveEl.textContent = `"${textoActual}"`;
+        }
+      };
+
+      recognition.onerror = () => {
+        // Respaldo cubierto por MediaRecorder y Whisper/Gemini Audio
+      };
+
+      recognition.onend = () => {
+        if (appState.isHoldingPTT) {
+          try {
+            recognition.start();
+          } catch (e) {}
+        }
+      };
+
+      appState.recognition = recognition;
+    }
+
+    function configurarEventosBotonPTT() {
+      const btnPTT = document.getElementById('btnPushToTalk');
+
+      btnPTT.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      });
+
+      btnPTT.addEventListener('pointerdown', async (e) => {
+        e.preventDefault();
+
+        // INTERCEPTOR INTELIGENTE: Si el micrófono aún no está autorizado en esta sesión,
+        // este primer clic solicita el permiso con 1 solo toque sin obligar a mantener ambos botones presionados.
+        if (!appState.micAuthorized || !window.persistentMicStream || !window.persistentMicStream.active) {
+          await solicitarPermisoMicrofonoPersistente(true);
+          return;
+        }
+
+        // Si está en Modo 1-Toque (Manos libres)
+        if (appState.triggerMode === 'tap') {
+          if (!appState.isHoldingPTT) {
+            iniciarCapturaPushToTalk();
+          } else {
+            finalizarCapturaYEjecutarRespuesta();
+          }
+          return;
+        }
+
+        // Modo Push-To-Talk Estándar (Mantener presionado para hablar, soltar para responder)
+        if (btnPTT.setPointerCapture) {
+          try { btnPTT.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+        iniciarCapturaPushToTalk();
+      });
+
+      btnPTT.addEventListener('pointerup', (e) => {
+        e.preventDefault();
+        if (appState.triggerMode === 'tap') return;
+
+        if (btnPTT.releasePointerCapture) {
+          try { btnPTT.releasePointerCapture(e.pointerId); } catch (err) {}
+        }
+        if (appState.isHoldingPTT) {
+          finalizarCapturaYEjecutarRespuesta();
+        }
+      });
+
+      btnPTT.addEventListener('pointercancel', (e) => {
+        e.preventDefault();
+        if (appState.triggerMode === 'tap') return;
+        if (appState.isHoldingPTT) {
+          finalizarCapturaYEjecutarRespuesta();
+        }
+      });
+    }
+
+    function iniciarMedidorVolumenEnVivo() {
+      appState.maxRmsDuringHold = 0;
+      const bar = document.getElementById('micVolumeMeterBar');
+
+      if (!appState.analyserNode) return;
+      const bufferLength = appState.analyserNode.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      const actualizarNivel = () => {
+        if (!appState.isHoldingPTT) return;
+        appState.analyserNode.getByteTimeDomainData(dataArray);
+
+        let sumSquares = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          const normalized = (dataArray[i] - 128) / 128;
+          sumSquares += normalized * normalized;
+        }
+        const rms = Math.sqrt(sumSquares / bufferLength);
+        if (rms > appState.maxRmsDuringHold) {
+          appState.maxRmsDuringHold = rms;
+        }
+
+        const pct = Math.min(100, Math.max(8, Math.round(rms * 380)));
+        if (bar) bar.style.width = `${pct}%`;
+
+        appState.volumeAnimFrame = requestAnimationFrame(actualizarNivel);
+      };
+
+      appState.volumeAnimFrame = requestAnimationFrame(actualizarNivel);
+    }
+
+    function iniciarGrabadorAudioMultimodal() {
+      appState.recordedAudioChunks = [];
+      if (!window.persistentMicStream || !window.persistentMicStream.active || !('MediaRecorder' in window)) {
+        return;
+      }
+
+      try {
+        const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+        let chosenMime = '';
+        for (const m of mimeTypes) {
+          if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) {
+            chosenMime = m;
+            break;
+          }
+        }
+
+        const recorder = chosenMime
+          ? new MediaRecorder(window.persistentMicStream, { mimeType: chosenMime })
+          : new MediaRecorder(window.persistentMicStream);
+
+        appState.recordedAudioMimeType = (recorder.mimeType || 'audio/webm').split(';')[0];
+
+        recorder.ondataavailable = (ev) => {
+          if (ev.data && ev.data.size > 0) {
+            appState.recordedAudioChunks.push(ev.data);
+          }
+        };
+
+        recorder.start(150);
+        appState.mediaRecorder = recorder;
+      } catch (e) {
+        appState.mediaRecorder = null;
+      }
+    }
+
+    function iniciarCapturaPushToTalk() {
+      if (appState.isHoldingPTT || appState.isConsolidatingPTT) return;
+
+      detenerVozInmediatamente();
+
+      appState.isHoldingPTT = true;
+      appState.finalTranscript = '';
+      appState.interimTranscript = '';
+      appState.lastRecognizedSnippet = '';
+      appState.pttStartTime = performance.now();
+
+      if (navigator.vibrate) {
+        try { navigator.vibrate(35); } catch (e) {}
+      }
+
+      const btnPTT = document.getElementById('btnPushToTalk');
+      btnPTT.classList.add('ptt-active', 'from-rose-500', 'via-rose-600', 'to-red-700');
+      document.getElementById('pttPulseRing').classList.remove('hidden');
+      document.getElementById('pttIcon').className = 'fa-solid fa-ear-listen text-2xl mb-0.5 pointer-events-none animate-pulse';
+      document.getElementById('pttShortLabel').textContent = appState.triggerMode === 'hold' ? 'Soltar=Enviar' : 'Tocar=Enviar';
+
+      const actionLabel = document.getElementById('liveOverlayActionLabel');
+      if (actionLabel) {
+        actionLabel.textContent = appState.triggerMode === 'hold'
+          ? 'Escuchando tu pregunta... (Suelta al terminar de hablar)'
+          : 'Escuchando tu pregunta... (Toca el botón al terminar)';
+      }
+
+      document.getElementById('pttInstructionText').innerHTML = appState.triggerMode === 'hold'
+        ? '<span class="text-rose-400 font-bold">Habla ahora... Suelta el botón cuando termines tu pregunta</span>'
+        : '<span class="text-rose-400 font-bold">Habla ahora... Toca el botón nuevamente para enviar</span>';
+
+      const overlay = document.getElementById('liveTranscriptOverlay');
+      overlay.classList.remove('hidden');
+      document.getElementById('liveTranscriptText').textContent = 'Escuchando tu voz en vivo...';
+
+      actualizarEstadoVisualAgustina('LISTENING');
+
+      iniciarMedidorVolumenEnVivo();
+      iniciarGrabadorAudioMultimodal();
+
+      clearInterval(appState.pttTimerInterval);
+      appState.pttTimerInterval = setInterval(() => {
+        const elapsed = ((performance.now() - appState.pttStartTime) / 1000).toFixed(1);
+        document.getElementById('pttTimerText').textContent = `${elapsed}s`;
+      }, 100);
+
+      if (appState.recognitionSupported && appState.recognition) {
+        try {
+          appState.recognition.start();
+        } catch (err) {}
+      }
+    }
+
+    /**
+     * SINCRONIZACIÓN EXACTA AL SOLTAR EL BOTÓN (450 MS DE CONSOLIDACIÓN):
+     * Espera a que SpeechRecognition entregue las últimas sílabas pronunciadas
+     * justo antes de soltar el botón y a que MediaRecorder cierre el paquete de audio.
+     */
+    function finalizarCapturaYEjecutarRespuesta() {
+      if (!appState.isHoldingPTT) return;
+      appState.isHoldingPTT = false;
+      appState.isConsolidatingPTT = true;
+
+      clearInterval(appState.pttTimerInterval);
+      if (appState.volumeAnimFrame) {
+        cancelAnimationFrame(appState.volumeAnimFrame);
+      }
+
+      if (navigator.vibrate) {
+        try { navigator.vibrate([20, 30]); } catch (e) {}
+      }
+
+      const duracionHoldMs = performance.now() - appState.pttStartTime;
+
+      const btnPTT = document.getElementById('btnPushToTalk');
+      btnPTT.classList.remove('ptt-active', 'from-rose-500', 'via-rose-600', 'to-red-700');
+      document.getElementById('pttPulseRing').classList.add('hidden');
+      document.getElementById('pttIcon').className = 'fa-solid fa-microphone text-2xl mb-0.5 pointer-events-none';
+      actualizarEtiquetasModoDisparo();
+
+      const liveEl = document.getElementById('liveTranscriptText');
+      const actionLabel = document.getElementById('liveOverlayActionLabel');
+      if (actionLabel) {
+        actionLabel.textContent = 'Consolidando últimas palabras pronunciadas...';
+      }
+
+      // 1. Dejar correr SpeechRecognition 220ms adicionales tras soltar el dedo para no cortar la última palabra (ej. "...la célula")
+      setTimeout(() => {
+        if (appState.recognitionSupported && appState.recognition) {
+          try {
+            appState.recognition.stop();
+          } catch (e) {}
+        }
+      }, 220);
+
+      // 2. Detener MediaRecorder y esperar ventana total de 450ms
+      const detenerRecorderPromise = new Promise((resolve) => {
+        if (appState.mediaRecorder && appState.mediaRecorder.state !== 'inactive') {
+          appState.mediaRecorder.onstop = () => resolve();
+          try {
+            appState.mediaRecorder.stop();
+          } catch (e) {
+            resolve();
+          }
+        } else {
+          resolve();
+        }
+      });
+
+      setTimeout(async () => {
+        await detenerRecorderPromise;
+        appState.isConsolidatingPTT = false;
+        document.getElementById('liveTranscriptOverlay').classList.add('hidden');
+
+        const consultaCapturada = (
+          appState.finalTranscript + ' ' + appState.interimTranscript
+        ).trim() || appState.lastRecognizedSnippet.trim();
+
+        const inputManual = document.getElementById('inputManualQuery').value.trim();
+
+        // PRIORIDAD 1: Texto transcrito por voz en vivo
+        if (consultaCapturada.length > 1) {
+          procesarConsultaConOrquestadorMultiIA(consultaCapturada, 'Voz PTT (es-CO)');
+          return;
+        }
+
+        // PRIORIDAD 2: Si el navegador no generó texto en SpeechRecognition pero sí grabó voz en el micrófono persistente
+        if (appState.recordedAudioChunks.length > 0 && duracionHoldMs > 600 && appState.maxRmsDuringHold > 0.011) {
+          const audioBlob = new Blob(appState.recordedAudioChunks, { type: appState.recordedAudioMimeType || 'audio/webm' });
+          if (audioBlob.size > 700) {
+            await procesarAudioGrabadoSinTranscripcionLocal(audioBlob);
+            return;
+          }
+        }
+
+        // PRIORIDAD 3: Si el usuario escribió algo en la barra inferior y usó el botón para enviarlo
+        if (inputManual.length > 1) {
+          document.getElementById('inputManualQuery').value = '';
+          procesarConsultaConOrquestadorMultiIA(inputManual, 'Disparador PTT');
+          return;
+        }
+
+        actualizarEstadoVisualAgustina('IDLE');
+        mostrarAvisoRapidoSinVoz();
+      }, 450);
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const dataUrl = reader.result || '';
+          const base64 = String(dataUrl).split(',')[1] || '';
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    /**
+     * Cuando el navegador (p. ej. ciertos entornos de Windows) no devuelve texto en SpeechRecognition,
+     * intenta transcribir y responder con Groq Whisper o con Gemini Multimodal Audio directo.
+     */
+    async function procesarAudioGrabadoSinTranscripcionLocal(audioBlob) {
+      actualizarEstadoVisualAgustina('THINKING');
+      const inicioTiempo = performance.now();
+
+      // A. Si el usuario configuró Groq API Key, usamos Whisper Large v3 Turbo para transcribir el audio con precisión exacta
+      if (appState.groqApiKey && appState.groqApiKey.trim() !== '') {
+        try {
+          const formData = new FormData();
+          formData.append('file', audioBlob, 'consulta.webm');
+          formData.append('model', 'whisper-large-v3-turbo');
+          formData.append('language', 'es');
+
+          const respWhisper = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${appState.groqApiKey.trim()}` },
+            body: formData
+          });
+
+          if (respWhisper.ok) {
+            const dataWhisper = await respWhisper.json();
+            if (dataWhisper.text && dataWhisper.text.trim().length > 1) {
+              actualizarEstadoVisualAgustina('IDLE');
+              await procesarConsultaConOrquestadorMultiIA(dataWhisper.text.trim(), 'Voz Whisper PTT');
+              return;
+            }
+          }
+        } catch (e) {}
+      }
+
+      // B. Enviar el audio en Base64 directamente a Gemini 3 Flash Multimodal
+      const clasificacion = {
+        id: 'UNIVERSAL_AUDIO',
+        nombre: 'Comprensión de Voz Multimodal',
+        icono: 'fa-headphones',
+        color: 'text-emerald-300',
+        instruccionEspecializada: 'Responde directamente a la pregunta hablada en el audio sin introducciones ni saludos.'
+      };
+
+      const loadingId = agregarBurbujaCargandoOrquestador(clasificacion);
+
+      try {
+        const base64Audio = await blobToBase64(audioBlob);
+        const activeGeminiKey = (appState.customGeminiKey && appState.customGeminiKey.trim() !== '')
+          ? appState.customGeminiKey.trim()
+          : apiKey;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeGeminiKey}`;
+
+        const systemPrompt = `${construirSystemPromptColombiano(clasificacion)}
+FORMATO OBLIGATORIO PARA AUDIO:
+En la primera línea escribe únicamente la transcripción exacta de lo que preguntó el usuario usando este formato:
+[PREGUNTA: lo que dijo el usuario]
+En la siguiente línea empieza inmediatamente con la respuesta directa, científica, académica o cultural completa, SIN decir "¡Claro que sí!" ni "Hola".`;
+
+        const payload = {
+          contents: [
+            ...appState.chatHistory.slice(-4),
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: 'Escucha el audio adjunto. Primero transcribe exactamente lo que preguntó el usuario en formato [PREGUNTA: ...] y luego responde directamente a esa pregunta específica sin saludos ni introducciones.'
+                },
+                {
+                  inlineData: {
+                    mimeType: appState.recordedAudioMimeType || 'audio/webm',
+                    data: base64Audio
+                  }
+                }
+              ]
+            }
+          ],
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
+          generationConfig: {
+            maxOutputTokens: 2048,
+            temperature: 0.4
+          }
+        };
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        const rawText = result?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('\n').trim() || '';
+        eliminarElementoPorId(loadingId);
+
+        if (!rawText) {
+          throw new Error('Audio no transcrito por Gemini');
+        }
+
+        let preguntaTranscrita = 'Consulta por voz';
+        let respuestaDirecta = rawText;
+
+        const matchPregunta = rawText.match(/\[PREGUNTA:\s*([^\]]+)\]/i);
+        if (matchPregunta && matchPregunta[1]) {
+          preguntaTranscrita = matchPregunta[1].trim();
+          respuestaDirecta = rawText.replace(/\[PREGUNTA:\s*[^\]]+\]\s*/i, '').trim();
+        }
+
+        agregarBurbujaUsuario(preguntaTranscrita, 'Audio Multimodal PTT');
+
+        // Si por alguna razón el modelo solo transcribió la pregunta o dio menos de 40 caracteres,
+        // pasamos la pregunta transcrita por la cascada Multi-IA completa para garantizar la respuesta.
+        if (respuestaDirecta.length < 40 && preguntaTranscrita !== 'Consulta por voz') {
+          await ejecutarCascadaParaPreguntaYaMostrada(preguntaTranscrita);
+          return;
+        }
+
+        respuestaDirecta = limpiarMuletillasIniciales(respuestaDirecta);
+        const categoriaReal = clasificarConsultaUniversal(preguntaTranscrita);
+        const latenciaMs = Math.round(performance.now() - inicioTiempo);
+
+        appState.chatHistory.push(
+          { role: 'user', parts: [{ text: preguntaTranscrita }] },
+          { role: 'model', parts: [{ text: respuestaDirecta }] }
+        );
+
+        agregarBurbujaAgustina({
+          texto: respuestaDirecta,
+          categoria: categoriaReal,
+          motor: 'Gemini 3 Flash Audio Directo',
+          latencia: latenciaMs,
+          fuentes: []
+        });
+
+        if (appState.autoSpeak) {
+          hablarTextoConAgustina(respuestaDirecta);
+        } else {
+          actualizarEstadoVisualAgustina('IDLE');
+        }
+      } catch (err) {
+        eliminarElementoPorId(loadingId);
+        actualizarEstadoVisualAgustina('IDLE');
+        agregarBurbujaSistema(
+          'Tu micrófono grabó el audio, pero este navegador no transcribió las palabras localmente. Usa Google Chrome / Edge o escribe tu pregunta abajo para responderte de inmediato.'
+        );
+      }
+    }
+
+    function mostrarAvisoRapidoSinVoz() {
+      agregarBurbujaSistema(
+        'No alcancé a escuchar tu pregunta. Mantén presionado el botón verde mientras hablas y suéltalo medio segundo después de terminar tu frase, o toca cualquiera de los botones de ejemplo arriba.'
+      );
+    }
+
+    /***************************************************************************
+     * 5. ORQUESTADOR MULTI-IA REAL DE 4 CAPAS (PROHIBIDO RESPUESTAS GENÉRICAS)
+     ***************************************************************************/
+    function clasificarConsultaUniversal(query) {
+      const q = query.toLowerCase();
+
+      if (/(san agust[ií]n|instituci[oó]n educativa|rector|manual de convivencia|agustiniano)/i.test(q)) {
+        return {
+          id: 'INSTITUCIONAL',
+          nombre: 'Institucional (I.E. San Agustín)',
+          icono: 'fa-school',
+          color: 'text-emerald-300',
+          instruccionEspecializada:
+            'Explica directamente la información de la Institución Educativa San Agustín en Popayán, Cauca.'
+        };
+      }
+
+      if (/(arduino|puente h|l298n|sensor|ultrasonico|servo|robot|c[oó]digo|python|javascript|circuito|voltaje|resistencia|led|microcontrolador|programaci[oó]n|computador|algoritmo)/i.test(q)) {
+        return {
+          id: 'ROBOTICA',
+          nombre: 'Robótica, Tecnología e Informática',
+          icono: 'fa-microchip',
+          color: 'text-cyan-300',
+          instruccionEspecializada:
+            'Explica directamente los pasos técnicos, conexiones o funcionamiento electrónico/informático.'
+        };
+      }
+
+      if (/(c[eé]lula|mitocondria|adn|arn|fotos[ií]ntesis|biolog[ií]a|qu[ií]mica|f[ií]sica|ecuaci[oó]n|matem[aá]tica|pit[aá]goras|derivada|integral|tri[aá]ngulo|fracci[oó]n|ra[ií]z|polinomio|energ[ií]a|velocidad|fuerza|geometr[ií]a|[aá]tomo|tabla peri[oó]dica|agujero negro|planeta|universo)/i.test(q)) {
+        return {
+          id: 'STEM',
+          nombre: 'Ciencias Naturales y Matemáticas (STEM)',
+          icono: 'fa-dna',
+          color: 'text-amber-300',
+          instruccionEspecializada:
+            'Empieza en la primera oración con la definición científica o matemática exacta, sus partes, clasificación o fórmula explicada con claridad.'
+        };
+      }
+
+      if (/(icfes|saber 11|filosof[ií]a|historia|geograf[ií]a|literatura|ensayo|gram[aá]tica|ingl[eé]s|lectura cr[ií]tica|sociales|constituci[oó]n|revoluci[oó]n|bol[ií]var)/i.test(q)) {
+        return {
+          id: 'HUMANIDADES',
+          nombre: 'Humanidades, Historia e ICFES',
+          icono: 'fa-book-open-reader',
+          color: 'text-purple-300',
+          instruccionEspecializada:
+            'Explica directamente el hecho histórico, concepto filosófico, literario o análisis crítico.'
+        };
+      }
+
+      return {
+        id: 'TEMA_LIBRE',
+        nombre: 'Cultura General y Conocimiento Universal',
+        icono: 'fa-earth-americas',
+        color: 'text-pink-300',
+        instruccionEspecializada:
+          'Responde directamente al tema consultado (gastronomía, recetas, deportes, música, cine, salud, curiosidades o vida diaria) con datos reales, precisos y completos.'
+      };
+    }
+
+    /**
+     * SYSTEM PROMPT ESTRICTO: Prohibido usar "¡Claro que sí!", "Con mucho gusto",
+     * "Hola, soy Agustina" o introducciones vacías. Va directo a la respuesta en la frase 1.
+     */
+    function construirSystemPromptColombiano(clasificacion) {
+      const extensionInstruccion = appState.pedagogicalMode === 'socratico'
+        ? 'Desarrolla la explicación en 2 a 3 párrafos bien estructurados, claros y completos.'
+        : 'Desarrolla la explicación directa y concisa en 1 párrafo sustancioso (4 a 6 oraciones con toda la información clave).';
+
+      return `Eres Agustina Académica v3.0 (I.E. San Agustín, Popayán, Colombia), una enciclopedia y tutora inteligente de voz sobre CUALQUIER tema académico o no académico.
+REGLAS ESTRICTAS E INQUEBRANTABLES:
+1. PROHIBIDO usar saludos, muletillas o frases introductorias como "¡Claro que sí!", "Con mucho gusto", "Hola, soy Agustina", "Qué buena pregunta" o "Te cuento que...".
+2. Empieza SIEMPRE en la primera palabra definiendo o respondiendo directamente lo que el usuario preguntó con datos reales, concretos y completos (Ejemplo: si pregunta "¿Qué es la célula?", tu primera frase DEBE ser: "La célula es la unidad estructural, morfológica y funcional básica de todos los seres vivos...").
+3. NUNCA digas que vas a responder sin dar la respuesta completa ahí mismo.
+4. ${clasificacion.instruccionEspecializada} ${extensionInstruccion}
+5. Como tu respuesta será leída en voz alta por un sintetizador en español de Colombia, no uses código LaTeX ($, \\frac, \\sqrt); escribe las fórmulas en palabras naturales.`;
+    }
+
+    /**
+     * Filtro de posprocesamiento que elimina cualquier muletilla inicial si un modelo
+     * intenta empezar con "¡Claro que sí!" o similares, dejando la definición pura.
+     */
+    function limpiarMuletillasIniciales(texto) {
+      if (!texto) return '';
+      let limpio = texto.trim();
+      limpio = limpio.replace(/^(¡?claro que s[ií]!?[.,\s]*|¡?con mucho gusto!?[.,\s]*|¡?hola!?[^.\n]*[.\n]+\s*|¡?qu[eé] buena pregunta!?[.,\s]*|por supuesto[.,\s]*)+/i, '');
+      if (limpio.length > 0) {
+        limpio = limpio.charAt(0).toUpperCase() + limpio.slice(1);
+      }
+      return limpio;
+    }
+
+    async function procesarConsultaConOrquestadorMultiIA(consulta, origenEntrada = 'Voz PTT') {
+      if (!consulta || appState.status === 'THINKING') return;
+
+      agregarBurbujaUsuario(consulta, origenEntrada);
+      await ejecutarCascadaParaPreguntaYaMostrada(consulta);
+    }
+
+    async function ejecutarCascadaParaPreguntaYaMostrada(consulta) {
+      actualizarEstadoVisualAgustina('THINKING');
+
+      const clasificacion = clasificarConsultaUniversal(consulta);
+      const systemPrompt = construirSystemPromptColombiano(clasificacion);
+      const inicioTiempo = performance.now();
+      const loadingId = agregarBurbujaCargandoOrquestador(clasificacion);
+
+      let resultadoIA = null;
+
+      try {
+        // Selección explícita o Cascada Automática de 4 Capas
+        if (appState.routingMode === 'wiki') {
+          resultadoIA = await consultarWikipediaYEnciclopediaEnVivo(consulta);
+        } else if (appState.routingMode === 'pollinations') {
+          resultadoIA = await llamarMotorPollinationsCloudLLM(consulta, systemPrompt);
+        } else if (appState.routingMode === 'groq' && appState.groqApiKey.trim() !== '') {
+          resultadoIA = await llamarMotorGroqLlama(consulta, systemPrompt);
+        } else if (appState.routingMode === 'gemini') {
+          resultadoIA = await llamarMotorGeminiConBackoff(consulta, systemPrompt);
+        } else {
+          // MODO AUTO: CASCADA REAL DE 4 CAPAS (Nunca devuelve plantillas vacías)
+          // Capa 1: Gemini 3 Flash
+          try {
+            resultadoIA = await llamarMotorGeminiConBackoff(consulta, systemPrompt);
+          } catch (errCapa1) {
+            // Capa 2: Si el usuario tiene clave Groq, usar Groq Llama 3.3 70B
+            if (appState.groqApiKey && appState.groqApiKey.trim() !== '') {
+              try {
+                resultadoIA = await llamarMotorGroqLlama(consulta, systemPrompt);
+              } catch (errGroq) {
+                resultadoIA = null;
+              }
+            }
+
+            // Capa 3: Cloud LLM Libre Zero-Config (Pollinations OpenAI API)
+            if (!resultadoIA) {
+              try {
+                resultadoIA = await llamarMotorPollinationsCloudLLM(consulta, systemPrompt);
+              } catch (errCapa3) {
+                resultadoIA = null;
+              }
+            }
+
+            // Capa 4: Wikipedia en Español en Vivo + Enciclopedia Científica y Matemática Local
+            if (!resultadoIA) {
+              resultadoIA = await consultarWikipediaYEnciclopediaEnVivo(consulta);
+            }
+          }
+        }
+      } catch (errGlobal) {
+        // Si el modo manual elegido falló, garantizar respuesta real con Pollinations o Wikipedia ES
+        try {
+          resultadoIA = await llamarMotorPollinationsCloudLLM(consulta, systemPrompt);
+        } catch (e2) {
+          resultadoIA = await consultarWikipediaYEnciclopediaEnVivo(consulta);
+        }
+      }
+
+      const latenciaMs = Math.round(performance.now() - inicioTiempo);
+      eliminarElementoPorId(loadingId);
+
+      const textoFinalLimpio = limpiarMuletillasIniciales(resultadoIA.texto);
+
+      appState.chatHistory.push(
+        { role: 'user', parts: [{ text: consulta }] },
+        { role: 'model', parts: [{ text: textoFinalLimpio }] }
+      );
+      if (appState.chatHistory.length > 10) {
+        appState.chatHistory = appState.chatHistory.slice(-10);
+      }
+
+      agregarBurbujaAgustina({
+        texto: textoFinalLimpio,
+        categoria: clasificacion,
+        motor: resultadoIA.motor,
+        latencia: latenciaMs,
+        fuentes: resultadoIA.fuentes || []
+      });
+
+      if (appState.autoSpeak) {
+        hablarTextoConAgustina(textoFinalLimpio);
+      } else {
+        actualizarEstadoVisualAgustina('IDLE');
+      }
+    }
+
+    /**
+     * CAPA 1: Motor Gemini 3 Flash con maxOutputTokens: 2048 y reintento sin tools si falla Grounding
+     */
+    async function llamarMotorGeminiConBackoff(userQuery, systemPrompt) {
+      const activeGeminiKey = (appState.customGeminiKey && appState.customGeminiKey.trim() !== '')
+        ? appState.customGeminiKey.trim()
+        : apiKey;
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeGeminiKey}`;
+
+      const contents = [
+        ...appState.chatHistory.slice(-6),
+        {
+          role: 'user',
+          parts: [{
+            text: `Pregunta del usuario: "${userQuery}"\nResponde directamente a esta pregunta desde la primera palabra, sin saludos ni introducciones:`
+          }]
+        }
+      ];
+
+      const construirPayload = (usarSearch) => {
+        const p = {
+          contents: contents,
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
+          generationConfig: {
+            maxOutputTokens: 2048,
+            temperature: 0.35
+          }
+        };
+        if (usarSearch) {
+          p.tools = [{ google_search: {} }];
+        }
+        return p;
+      };
+
+      const intentosConfig = appState.useSearchGrounding ? [true, false] : [false];
+      let lastError = null;
+
+      for (const usarSearch of intentosConfig) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(construirPayload(usarSearch))
+          });
+
+          if (!response.ok) {
+            throw new Error(`Gemini HTTP ${response.status}`);
+          }
+
+          const result = await response.json();
+          const candidate = result.candidates?.[0];
+          const parts = candidate?.content?.parts || [];
+          const text = parts.map(p => p.text || '').join('\n').trim();
+
+          if (!text || text.length < 25) {
+            throw new Error('Respuesta insuficiente de Gemini');
+          }
+
+          let sources = [];
+          const groundingMetadata = candidate?.groundingMetadata;
+          if (groundingMetadata && groundingMetadata.groundingAttributions) {
+            sources = groundingMetadata.groundingAttributions
+              .map(attr => ({
+                uri: attr.web?.uri,
+                title: attr.web?.title
+              }))
+              .filter(s => s.uri && s.title)
+              .slice(0, 3);
+          }
+
+          return {
+            texto: text,
+            motor: usarSearch ? 'Gemini 3 Flash + Search' : 'Gemini 3 Flash',
+            fuentes: sources
+          };
+        } catch (err) {
+          lastError = err;
+        }
+      }
+
+      throw lastError || new Error('Gemini no disponible');
+    }
+
+    /**
+     * CAPA 2: Motor Cloud LLM Libre Zero-Config (Pollinations OpenAI API)
+     * Funciona sin API Key en cualquier dispositivo Android o Windows con internet.
+     */
+    async function llamarMotorPollinationsCloudLLM(userQuery, systemPrompt) {
+      const messages = [
+        { role: 'system', content: systemPrompt },
+        {
+          role: 'user',
+          content: `Responde de forma directa, completa y sin saludos iniciales la siguiente consulta: ${userQuery}`
+        }
+      ];
+
+      // 1. Intento vía endpoint compatible con OpenAI (POST JSON)
+      try {
+        const response = await fetch('https://text.pollinations.ai/openai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'openai',
+            messages: messages,
+            temperature: 0.4
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const text = data?.choices?.[0]?.message?.content?.trim();
+          if (text && text.length > 25) {
+            return {
+              texto: text,
+              motor: 'Cloud IA Universal (OpenAI)',
+              fuentes: []
+            };
+          }
+        }
+      } catch (e) {}
+
+      // 2. Fallback GET directo a Pollinations Text API
+      const promptDirecto = `Responde en español, empezando directamente con la definición o respuesta sin saludos ni introducciones: ${userQuery}`;
+      const urlGet = `https://text.pollinations.ai/${encodeURIComponent(promptDirecto)}?model=openai`;
+      const respGet = await fetch(urlGet);
+      if (!respGet.ok) {
+        throw new Error('Pollinations Cloud LLM no disponible');
+      }
+      const textGet = (await respGet.text()).trim();
+      if (!textGet || textGet.length < 25) {
+        throw new Error('Respuesta vacía de Cloud LLM');
+      }
+
+      return {
+        texto: textGet,
+        motor: 'Cloud IA Universal',
+        fuentes: []
+      };
+    }
+
+    /**
+     * CAPA 3: Motor Secundario Groq Cloud (Llama 3.3 70B Versatile)
+     */
+    async function llamarMotorGroqLlama(userQuery, systemPrompt) {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${appState.groqApiKey.trim()}`
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userQuery }
+          ],
+          temperature: 0.4,
+          max_tokens: 1024
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Groq Error ${response.status}`);
+      }
+
+      const data = await response.json();
+      const text = data.choices?.[0]?.message?.content?.trim();
+      if (!text) throw new Error('Groq sin contenido');
+
+      return {
+        texto: text,
+        motor: 'Groq • Llama 3.3 70B',
+        fuentes: []
+      };
+    }
+
+    /**
+     * CAPA 4: Consulta Enciclopédica en Vivo con Wikipedia API en Español +
+     * Evaluador Matemático + Enciclopedia Científica Local.
+     * Garantiza que NUNCA se responda con una plantilla vacía.
+     */
+    async function consultarWikipediaYEnciclopediaEnVivo(userQuery) {
+      const qNormalizada = userQuery
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+
+      // A. Verificar primero si es una operación matemática directa (ej. "cuánto es 25 por 14")
+      const resultadoMatematico = intentarResolverExpresionMatematica(qNormalizada);
+      if (resultadoMatematico) {
+        return {
+          texto: resultadoMatematico,
+          motor: 'Motor Matemático Agustina',
+          fuentes: []
+        };
+      }
+
+      // B. Revisar nuestra Enciclopedia Científica, Académica e Institucional de Alta Precisión
+      for (const item of ENCICLOPEDIA_CIENTIFICA_Y_CULTURAL) {
+        const coincide = item.keywords.some(kw => {
+          const kwNorm = kw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          return qNormalizada.includes(kwNorm);
+        });
+        if (coincide) {
+          return {
+            texto: item.respuesta,
+            motor: `Enciclopedia Agustina (${item.categoria})`,
+            fuentes: []
+          };
+        }
+      }
+
+      // C. Consultar en tiempo real la API Pública de Wikipedia en Español (CORS *)
+      const terminoBusqueda = extraerTerminoClaveParaWikipedia(userQuery);
+      if (terminoBusqueda) {
+        try {
+          const searchUrl = `https://es.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(terminoBusqueda)}&utf8=&format=json&origin=*`;
+          const searchResp = await fetch(searchUrl);
+          if (searchResp.ok) {
+            const searchData = await searchResp.json();
+            const primerResultado = searchData?.query?.search?.[0];
+
+            if (primerResultado && primerResultado.title) {
+              const tituloPagina = primerResultado.title;
+              const summaryUrl = `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(tituloPagina)}`;
+              const sumResp = await fetch(summaryUrl);
+
+              if (sumResp.ok) {
+                const sumData = await sumResp.json();
+                if (sumData.extract && sumData.extract.length > 40) {
+                  return {
+                    texto: sumData.extract,
+                    motor: 'Wikipedia Enciclopedia ES',
+                    fuentes: [{
+                      uri: sumData.content_urls?.desktop?.page || `https://es.wikipedia.org/wiki/${encodeURIComponent(tituloPagina)}`,
+                      title: `Wikipedia: ${tituloPagina}`
+                    }]
+                  };
+                }
+              }
+            }
+          }
+        } catch (errWiki) {}
+      }
+
+      // D. Si el dispositivo está 100% sin conexión a internet y el término no está en la base local
+      return {
+        texto: `En este momento el dispositivo no tiene conexión a los servidores de IA ni a Wikipedia para consultar "${userQuery}" en línea. Sin embargo, tengo disponibles sin conexión los módulos completos de Biología (la célula, ADN, mitocondria, fotosíntesis), Matemáticas (Pitágoras, ecuaciones cuadráticas, cálculo aritmético), Física (leyes de Newton, agujeros negros), Robótica (Arduino y puente H L298N), Gastronomía colombiana e información de la I.E. San Agustín.`,
+        motor: 'Modo Offline sin Internet',
+        fuentes: []
+      };
+    }
+
+    function extraerTerminoClaveParaWikipedia(pregunta) {
+      let limpia = pregunta
+        .replace(/[¿?¡!.,;:"]/g, ' ')
+        .replace(/\b(agustina|por favor|dime|explicame|explícame|cuentame|cuéntame|hablame|háblame|que es|qué es|que son|qué son|cual es|cuál es|cuales son|cuáles son|como funciona|cómo funciona|definicion de|definición de|acerca de|sobre|un|una|unos|unas|el|la|los|las|del|de la)\b/gi, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
+      return limpia || pregunta.replace(/[¿?¡!]/g, '').trim();
+    }
+
+    function intentarResolverExpresionMatematica(q) {
+      let expr = q
+        .replace(/cuanto es|calcula|resuelve/g, '')
+        .replace(/mas/g, '+')
+        .replace(/menos/g, '-')
+        .replace(/por|multiplicado por/g, '*')
+        .replace(/dividido entre|dividido por|entre/g, '/')
+        .replace(/[^0-9+\-*/().\s]/g, '')
+        .trim();
+
+      if (/^\d+(\.\d+)?(\s*[+\-*/]\s*\d+(\.\d+)?)+$/.test(expr)) {
+        try {
+          const resultado = Function(`"use strict"; return (${expr})`)();
+          if (typeof resultado === 'number' && isFinite(resultado)) {
+            return `El resultado del cálculo matemático ${expr} es exactamente ${Number(resultado.toFixed(4))}.`;
+          }
+        } catch (e) {}
+      }
+      return null;
+    }
+
+    /***************************************************************************
+     * 6. RENDERIZADO DE LA INTERFAZ DE CONVERSACIÓN Y TELEMETRÍA
+     ***************************************************************************/
+    function agregarBurbujaUsuario(texto, origenEntrada) {
+      const container = document.getElementById('chatContainer');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex justify-end items-end gap-2';
+
+      wrapper.innerHTML = `
+        <div class="max-w-[85%] bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl rounded-br-sm px-3.5 py-2.5 shadow-md border border-emerald-400/30">
+          <div class="flex items-center justify-end gap-1.5 text-[10px] text-emerald-100/90 mb-0.5">
+            <i class="fa-solid fa-microphone-lines"></i>
+            <span>Tú • ${escaparHTML(origenEntrada)}</span>
+          </div>
+          <p class="text-sm leading-relaxed break-words">${escaparHTML(texto)}</p>
+        </div>
+      `;
+
+      container.appendChild(wrapper);
+      desplazarChatAlFinal();
+    }
+
+    function agregarBurbujaCargandoOrquestador(clasificacion) {
+      const container = document.getElementById('chatContainer');
+      const id = 'loading-' + Date.now();
+      const wrapper = document.createElement('div');
+      wrapper.id = id;
+      wrapper.className = 'flex items-start gap-2.5';
+
+      wrapper.innerHTML = `
+        <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 shrink-0 mt-0.5">
+          <i class="fa-solid fa-spinner fa-spin text-sm"></i>
+        </div>
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-xs text-slate-300 space-y-1">
+          <div class="flex items-center gap-1.5 font-semibold text-amber-300">
+            <i class="fa-solid ${clasificacion.icono}"></i>
+            <span>Enrutando a: ${clasificacion.nombre}</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Consultando sistemas de IA y preparando voz colombiana...</p>
+        </div>
+      `;
+
+      container.appendChild(wrapper);
+      desplazarChatAlFinal();
+      return id;
+    }
+
+    function agregarBurbujaAgustina({ texto, categoria, motor, latencia, fuentes }) {
+      const container = document.getElementById('chatContainer');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex items-start gap-2.5';
+
+      const textoFormateadoHTML = formatearTextoAcademicoHTML(texto);
+      const textoSeguroParaBoton = encodeURIComponent(texto);
+
+      let fuentesHTML = '';
+      if (fuentes && fuentes.length > 0) {
+        const links = fuentes
+          .map(f => `<a href="${escaparHTML(f.uri)}" target="_blank" rel="noopener noreferrer" class="underline hover:text-emerald-300 truncate max-w-[180px] inline-block">${escaparHTML(f.title)}</a>`)
+          .join(' • ');
+        fuentesHTML = `
+          <div class="mt-2 pt-1.5 border-t border-slate-700/50 text-[10px] text-slate-400 flex flex-wrap items-center gap-1">
+            <i class="fa-brands fa-google text-emerald-400 mr-0.5"></i>
+            <span>Fuentes verificadas:</span> ${links}
+          </div>
+        `;
+      }
+
+      wrapper.innerHTML = `
+        <div class="w-8 h-8 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+          <i class="fa-solid ${categoria.icono} text-sm"></i>
+        </div>
+        <div class="flex-1 bg-slate-800/90 border border-slate-700/80 rounded-2xl rounded-tl-sm p-3.5 shadow-lg">
+          <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2 pb-1.5 border-b border-slate-700/60">
+            <div class="flex flex-wrap items-center gap-1.5 text-[10px]">
+              <span class="font-bold ${categoria.color} flex items-center gap-1">
+                <span>${categoria.nombre}</span>
+              </span>
+              <span class="text-slate-500">•</span>
+              <span class="px-1.5 py-0.5 rounded bg-slate-900/90 border border-slate-700 text-slate-300 font-mono">
+                ${escaparHTML(motor)} (${latencia} ms)
+              </span>
+            </div>
+
+            <button
+              onclick="hablarTextoCodificado('${textoSeguroParaBoton}')"
+              class="text-xs text-emerald-300 hover:text-white px-2 py-0.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/30 border border-emerald-500/30 transition flex items-center gap-1 shrink-0"
+              title="Volver a escuchar con voz colombiana"
+            >
+              <i class="fa-solid fa-volume-high text-[10px]"></i>
+              <span>Escuchar</span>
+            </button>
+          </div>
+
+          <div class="text-sm text-slate-100 leading-relaxed space-y-2">
+            ${textoFormateadoHTML}
+          </div>
+
+          ${fuentesHTML}
+        </div>
+      `;
+
+      container.appendChild(wrapper);
+      desplazarChatAlFinal();
+    }
+
+    function agregarBurbujaSistema(mensaje) {
+      const container = document.getElementById('chatContainer');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex justify-center';
+      wrapper.innerHTML = `
+        <div class="bg-slate-800/70 border border-amber-500/30 text-amber-200 text-xs rounded-xl px-3.5 py-2 max-w-[92%] text-center shadow">
+          <i class="fa-solid fa-circle-info mr-1 text-amber-400"></i>
+          ${escaparHTML(mensaje)}
+        </div>
+      `;
+      container.appendChild(wrapper);
+      desplazarChatAlFinal();
+    }
+
+    function hablarTextoCodificado(encoded) {
+      try {
+        const decoded = decodeURIComponent(encoded);
+        hablarTextoConAgustina(decoded);
+      } catch (e) {}
+    }
+
+    function formatearTextoAcademicoHTML(texto) {
+      if (!texto) return '';
+      let safe = escaparHTML(texto);
+      safe = safe.replace(/\*\*([^*]+)\*\*/g, '<strong class="text-emerald-300 font-semibold">$1</strong>');
+      safe = safe.replace(/\*([^*]+)\*/g, '<em class="text-amber-200">$1</em>');
+      const paragraphs = safe.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`);
+      return paragraphs.join('');
+    }
+
+    function escaparHTML(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function eliminarElementoPorId(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function desplazarChatAlFinal() {
+      const container = document.getElementById('chatContainer');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    /***************************************************************************
+     * 7. ESTADOS VISUALES, CONTROLES Y EVENTOS DE INTERFAZ
+     ***************************************************************************/
+    function actualizarEstadoVisualAgustina(nuevoEstado) {
+      appState.status = nuevoEstado;
+      const waveContainer = document.getElementById('waveContainer');
+      const statusLabel = document.getElementById('statusStateLabel');
+      const avatarRing = document.getElementById('avatarRing');
+      const avatarIcon = document.getElementById('avatarIcon');
+      const btnStopSpeech = document.getElementById('btnStopSpeech');
+
+      waveContainer.classList.remove('state-listening', 'state-thinking', 'state-speaking');
+      avatarRing.className = 'absolute -inset-1 rounded-full pointer-events-none opacity-0';
+      btnStopSpeech.classList.add('hidden');
+      btnStopSpeech.classList.remove('flex');
+
+      if (nuevoEstado === 'LISTENING') {
+        waveContainer.classList.add('state-listening');
+        statusLabel.textContent = 'Escuchando';
+        statusLabel.className = 'ml-1.5 text-[10px] font-bold text-rose-400 uppercase tracking-wider';
+        avatarRing.className = 'absolute -inset-1 rounded-full bg-rose-500/40 animate-ping pointer-events-none';
+        avatarIcon.className = 'fa-solid fa-ear-listen text-white text-lg';
+      } else if (nuevoEstado === 'THINKING') {
+        waveContainer.classList.add('state-thinking');
+        statusLabel.textContent = 'Pensando IA';
+        statusLabel.className = 'ml-1.5 text-[10px] font-bold text-amber-400 uppercase tracking-wider';
+        avatarRing.className = 'absolute -inset-1 rounded-full bg-amber-500/40 animate-pulse pointer-events-none';
+        avatarIcon.className = 'fa-solid fa-brain text-white text-lg animate-pulse';
+      } else if (nuevoEstado === 'SPEAKING') {
+        waveContainer.classList.add('state-speaking');
+        statusLabel.textContent = 'Hablando';
+        statusLabel.className = 'ml-1.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider';
+        avatarRing.className = 'absolute -inset-1 rounded-full bg-emerald-400/40 animate-pulse-ring pointer-events-none';
+        avatarIcon.className = 'fa-solid fa-volume-high text-white text-lg';
+        btnStopSpeech.classList.remove('hidden');
+        btnStopSpeech.classList.add('flex');
+      } else {
+        statusLabel.textContent = 'Lista';
+        statusLabel.className = 'ml-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-wider';
+        avatarIcon.className = 'fa-solid fa-graduation-cap text-white text-lg';
+      }
+    }
+
+    function ejecutarConsultaSugerida(pregunta) {
+      detenerVozInmediatamente();
+      procesarConsultaConOrquestadorMultiIA(pregunta, 'Tema Rápido');
+    }
+
+    function manejarEnvioTextoManual(event) {
+      event.preventDefault();
+      const input = document.getElementById('inputManualQuery');
+      const query = input.value.trim();
+      if (!query) return;
+      input.value = '';
+      detenerVozInmediatamente();
+      procesarConsultaConOrquestadorMultiIA(query, 'Teclado');
+    }
+
+    function limpiarConversacion() {
+      detenerVozInmediatamente();
+      appState.chatHistory = [];
+      const container = document.getElementById('chatContainer');
+      container.innerHTML = '';
+      agregarBurbujaSistema('Historial reiniciado. Puedes preguntarme sobre cualquier tema académico o libre.');
+    }
+
+    function abrirModalConfiguracion() {
+      document.getElementById('settingsModal').classList.remove('hidden');
+    }
+
+    function cerrarModalConfiguracion() {
+      document.getElementById('settingsModal').classList.add('hidden');
+    }
+
+    function cambiarVozSeleccionada() {
+      appState.selectedVoiceURI = document.getElementById('selectVoice').value;
+    }
+
+    function actualizarSlidersVoz() {
+      const rate = document.getElementById('rangeVoiceRate').value;
+      const pitch = document.getElementById('rangeVoicePitch').value;
+      appState.voiceRate = parseFloat(rate);
+      appState.voicePitch = parseFloat(pitch);
+      document.getElementById('valVoiceRate').textContent = `${parseFloat(rate).toFixed(2)}x`;
+      document.getElementById('valVoicePitch').textContent = parseFloat(pitch).toFixed(2);
+    }
+
+    function guardarConfiguracionMultiIA() {
+      appState.routingMode = document.getElementById('selectRoutingMode').value;
+      appState.useSearchGrounding = document.getElementById('chkSearchGrounding').checked;
+      const geminiInput = document.getElementById('inputGeminiKey');
+      if (geminiInput) appState.customGeminiKey = geminiInput.value;
+      appState.groqApiKey = document.getElementById('inputGroqKey').value;
+      actualizarPillsInterfaz();
+    }
+
+    function seleccionarModoPedagogico(modo) {
+      appState.pedagogicalMode = modo;
+      const btnSoc = document.getElementById('btnModeSocratic');
+      const btnCon = document.getElementById('btnModeConcise');
+
+      if (modo === 'socratico') {
+        btnSoc.className = 'p-2.5 rounded-xl border border-emerald-500 bg-emerald-500/20 text-left transition';
+        btnCon.className = 'p-2.5 rounded-xl border border-slate-700 bg-slate-900/60 text-left transition';
+      } else {
+        btnCon.className = 'p-2.5 rounded-xl border border-emerald-500 bg-emerald-500/20 text-left transition';
+        btnSoc.className = 'p-2.5 rounded-xl border border-slate-700 bg-slate-900/60 text-left transition';
+      }
+      actualizarPillsInterfaz();
+    }
+
+    function actualizarPillsInterfaz() {
+      const mapNombres = {
+        auto: 'Cascada 4-IA Activa',
+        gemini: 'Gemini 3 Flash',
+        pollinations: 'Cloud IA Libre',
+        groq: 'Groq Llama-3.3',
+        wiki: 'Wikipedia ES + Local'
+      };
+      const el = document.getElementById('activeEngineText');
+      if (el) el.textContent = mapNombres[appState.routingMode] || 'Cascada 4-IA Activa';
+    }
+  </script>
+</body>
+</html>
